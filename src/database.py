@@ -1,7 +1,7 @@
 from typing import Annotated
 
-from sqlalchemy import NullPool, String
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import NullPool, String, Integer, Sm
+from sqlalchemy.orm import DeclarativeBase, mapped_column
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from src.config import settings
@@ -19,7 +19,10 @@ engine = create_async_engine(url=DATABASE_URL, **DATABASE_PARAMS)
 
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
+
+intpk = Annotated[int, mapped_column(primary_key=True, autoincrement=True)]
 str_256 = Annotated[str, 256]
 
+
 class Base(DeclarativeBase):
-    type_annotation_map = {str_256: String(256) }
+    type_annotation_map = {str_256: String(256)}

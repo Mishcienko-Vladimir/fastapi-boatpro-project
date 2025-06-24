@@ -1,51 +1,42 @@
-from sqlalchemy import Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Text, ForeignKey, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.database import Base, str_256
+from src.database import Base, str_256, intpk
 
 class Boats(Base):
     """Таблица катеров"""
     __tablename__ = 'boats'
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[intpk]
     company_name: Mapped[str_256]
     model_name: Mapped[str_256] = mapped_column(unique=True)
     price: Mapped[int]
     image_id: Mapped[int]
     description: Mapped[str] = mapped_column(Text)
-    length_hull: Mapped[int]
+    length_hull: Mapped[int] = mapped_column(Integer(50))
     width_hull: Mapped[int]
     weight: Mapped[int]
     capacity: Mapped[int]
+
+    characteristics: Mapped["BoatCharacteristics"] = relationship(uselist=False, back_populates="boat")
+
+
+class BoatCharacteristics(Base):
+    """Таблица характеристик катеров"""
+    __tablename__ = 'boat_characteristics'
+
+    id: Mapped[intpk]
+    boat_id: Mapped[int] = mapped_column(ForeignKey("boats.id"), unique=True)
+    maximum_load: Mapped[int]
     fuel_capacity: Mapped[int | None]
-    engine_power: Mapped[int | None]
+    maximum_engine_power: Mapped[int | None]
+    height_side_midship: Mapped[int | None]
+    transom_height: Mapped[int | None]
     hull_material: Mapped[str_256]
+    thickness_side_sheet: Mapped[int]
+    bottom_sheet_thickness: Mapped[int]
 
-
-class OutboardMotor(Base):
-    """Таблица подвесных лодочных моторов"""
-    __tablename__ = 'outboard motor'
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    company_name: Mapped[str_256]
-    engine_power: Mapped[int]
-    price: Mapped[int]
-    weight: Mapped[int]
-    description: Mapped[str] = mapped_column(Text)
-
-
-class Trailer(Base):
-    """Таблица прицепов"""
-    __tablename__ = 'trailer'
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    model_name: Mapped[str_256] = mapped_column(unique=True)
-    full_mass: Mapped[int]
-    load_capacity: Mapped[int]
-    overall_dimensions: Mapped[str_256]
-    length_ship: Mapped[int]
-    description: Mapped[str] = mapped_column(Text)
-    price: Mapped[int]
+    boat: Mapped["Boats"] = relationship(back_populates="characteristics")
 
 
 
