@@ -1,4 +1,4 @@
-from sqlalchemy import Text, ForeignKey, Integer
+from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base, str_256, intpk
@@ -13,7 +13,7 @@ class Boats(Base):
     price: Mapped[int]
     image_id: Mapped[int]
     description: Mapped[str] = mapped_column(Text)
-    length_hull: Mapped[int] = mapped_column(Integer(50))
+    length_hull: Mapped[int]
     width_hull: Mapped[int]
     weight: Mapped[int]
     capacity: Mapped[int]

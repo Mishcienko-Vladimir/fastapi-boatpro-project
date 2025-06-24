@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from sqlalchemy import NullPool, String, Integer, Sm
+from sqlalchemy import NullPool, String
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
