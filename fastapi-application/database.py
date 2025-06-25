@@ -4,7 +4,7 @@ from sqlalchemy import NullPool, String
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from src.config import settings
+from core.config import settings
 
 
 # Проверка состояние (разработка или тестирование)

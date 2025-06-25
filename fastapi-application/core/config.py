@@ -1,9 +1,24 @@
 from typing import Literal
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class RunConfig(BaseModel):
+    """Конфигурация запуска"""
+    host: str = "0.0.0.1"
+    port: int = 8000
+
+
+class ApiPrefix(BaseModel):
+    """Конфигурация префикса API"""
+    prefix: str = "/api"
 
 
 class Settings(BaseSettings):
     """Настройка приложения"""
+
+    run: RunConfig = RunConfig()
+    api: ApiPrefix = ApiPrefix()
 
     # Проверка-что MODE одно из этих состояний
     MODE: Literal["DEV", "TEST", "PROD"]

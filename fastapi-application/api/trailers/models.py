@@ -1,7 +1,7 @@
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.database import Base, str_256, intpk
+from database import Base, str_256, intpk
 
 
 class Trailer(Base):
