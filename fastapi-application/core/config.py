@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,11 +14,21 @@ class ApiPrefix(BaseModel):
     prefix: str = "/api"
 
 
+class DataBaseConfig(BaseModel):
+    """Подключение к базе данных"""
+    url: PostgresDsn
+    echo: bool = False,
+    echo_pool: bool = False,
+    pool_size: int = 50,
+    max_overflow: int = 10,
+
+
 class Settings(BaseSettings):
     """Настройка приложения"""
 
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
+    db: DataBaseConfig
 
     # Данные для базы данных PostgreSQL
 #     DB_HOST: str
