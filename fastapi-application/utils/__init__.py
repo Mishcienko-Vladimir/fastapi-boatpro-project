@@ -1,4 +1,5 @@
-# Для импорта, что бы импортировать только этот модуль
+# Для удобного импорта
+
 __all__ = ("camel_case_to_snake_case",)
 
 from .case_converter import camel_case_to_snake_case
