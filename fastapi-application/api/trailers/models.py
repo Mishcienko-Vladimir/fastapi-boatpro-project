@@ -1,12 +1,12 @@
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base, str_256, intpk
+from core.models.base import Base, str_256, intpk
 
 
 class Trailer(Base):
     """Таблица прицепов"""
-    __tablename__ = 'trailer'
+    __tablename__ = 'trailers'
 
     id: Mapped[intpk]
     model_name: Mapped[str_256] = mapped_column(unique=True)

@@ -1,7 +1,7 @@
 from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database import Base, str_256, intpk
+from core.models.base import Base, str_256, intpk
 
 class Boats(Base):
     """Таблица катеров"""

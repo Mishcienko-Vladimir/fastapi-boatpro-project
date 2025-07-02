@@ -1,12 +1,12 @@
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database import Base, str_256, intpk
+from core.models.base import Base, str_256, intpk
 
 
 class OutboardMotor(Base):
     """Таблица подвесных лодочных моторов"""
-    __tablename__ = 'outboard_motor'
+    __tablename__ = 'outboard_motors'
 
     id: Mapped[intpk]
     company_name: Mapped[str_256]
