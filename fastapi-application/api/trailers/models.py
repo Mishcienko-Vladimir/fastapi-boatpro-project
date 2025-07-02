@@ -6,7 +6,7 @@ from core.models.base import Base, str_256, intpk
 
 class Trailer(Base):
     """Таблица прицепов"""
-    __tablename__ = 'trailers'
+    __tablename__ = "trailers"
 
     id: Mapped[intpk]
     model_name: Mapped[str_256] = mapped_column(unique=True)

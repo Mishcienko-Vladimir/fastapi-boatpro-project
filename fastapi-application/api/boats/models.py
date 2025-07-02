@@ -23,7 +23,7 @@ class Boats(Base):
 
 class BoatCharacteristics(Base):
     """Таблица характеристик катеров"""
-    __tablename__ = 'boat_characteristics'
+    __tablename__ = "boat_characteristics"
 
     id: Mapped[intpk]
     boat_id: Mapped[int] = mapped_column(ForeignKey("boats.id"), unique=True)
@@ -37,6 +37,3 @@ class BoatCharacteristics(Base):
     bottom_sheet_thickness: Mapped[int]
 
     boat: Mapped["Boats"] = relationship(back_populates="characteristics")
-
-
-

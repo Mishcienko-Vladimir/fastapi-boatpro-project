@@ -6,7 +6,7 @@ from core.models.base import Base, str_256, intpk
 
 class OutboardMotor(Base):
     """Таблица подвесных лодочных моторов"""
-    __tablename__ = 'outboard_motors'
+    __tablename__ = "outboard_motors"
 
     id: Mapped[intpk]
     company_name: Mapped[str_256]
