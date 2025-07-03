@@ -9,9 +9,16 @@ class RunConfig(BaseModel):
     port: int = 8000
 
 
+class ApiV1Prefix(BaseModel):
+    """Конфигурация префикса API версии 1"""
+    prefix: str = "/v1"
+    users: str = "/users"
+
+
 class ApiPrefix(BaseModel):
     """Конфигурация префикса API"""
     prefix: str = "/api"
+    v1: ApiV1Prefix = ApiV1Prefix()
 
 
 class DataBaseConfig(BaseModel):
