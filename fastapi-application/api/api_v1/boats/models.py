@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.base import Base, str_256, intpk
 
-class Boats(Base):
+class Boat(Base):
     """Таблица катеров"""
     __tablename__ = 'boats'
 
@@ -36,4 +36,4 @@ class BoatCharacteristics(Base):
     thickness_side_sheet: Mapped[int]
     bottom_sheet_thickness: Mapped[int]
 
-    boat: Mapped["Boats"] = relationship(back_populates="characteristics")
+    boat: Mapped["Boat"] = relationship(back_populates="characteristics")
