@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 
 
 class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[UserIdType]):
+    """Таблица для хранения access_token."""
+
     user_id: Mapped[UserIdType] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="cascade"),
