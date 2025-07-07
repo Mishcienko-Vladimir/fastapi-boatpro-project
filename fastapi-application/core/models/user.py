@@ -5,14 +5,15 @@ from fastapi_users.db import (
     SQLAlchemyUserDatabase
 )
 
-from .base import Base
-from .mixins.int_id_pk import IntIdPkMixin
+from core.types.user_id import UserIdType
+from core.models.base import Base
+from core.models.mixins.int_id_pk import IntIdPkMixin
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable):
+class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
     """Таблица пользователей"""
 
     # Получение данных из БД
