@@ -38,6 +38,11 @@ class DataBaseConfig(BaseModel):
     }
 
 
+class AccessToken(BaseModel):
+    """Настройки токена"""
+    lifetime_seconds: int = 3600
+
+
 class Settings(BaseSettings):
     """Настройка приложения"""
     model_config = SettingsConfigDict(
@@ -49,6 +54,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DataBaseConfig
+    access_token: AccessToken = AccessToken()
 
 
 settings = Settings()
