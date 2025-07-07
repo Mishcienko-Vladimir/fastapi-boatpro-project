@@ -19,5 +19,5 @@ class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
     # Получение данных из БД
     @classmethod
     def get_db(cls, session: "AsyncSession"):
-        return SQLAlchemyUserDatabase(session, User)
+        return SQLAlchemyUserDatabase(session, cls)
 
