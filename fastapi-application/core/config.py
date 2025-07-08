@@ -40,6 +40,7 @@ class DataBaseConfig(BaseModel):
 
 class AccessToken(BaseModel):
     """Настройки токена"""
+    # Срок жизни токена
     lifetime_seconds: int = 3600
 
 
