@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 
 from core.models import db_helper, User
 
