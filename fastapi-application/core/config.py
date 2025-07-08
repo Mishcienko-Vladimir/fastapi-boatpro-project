@@ -5,24 +5,29 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class RunConfig(BaseModel):
     """Конфигурация запуска"""
+
     host: str = "127.0.0.1"
     port: int = 8000
 
 
 class ApiV1Prefix(BaseModel):
     """Конфигурация префикса API версии 1"""
+
     prefix: str = "/v1"
+    auth: str = "/auth"
     users: str = "/users"
 
 
 class ApiPrefix(BaseModel):
     """Конфигурация префикса API"""
+
     prefix: str = "/api"
     v1: ApiV1Prefix = ApiV1Prefix()
 
 
 class DataBaseConfig(BaseModel):
     """Подключение к базе данных"""
+
     url: PostgresDsn
     echo: bool = False
     echo_pool: bool = False
@@ -40,6 +45,7 @@ class DataBaseConfig(BaseModel):
 
 class AccessToken(BaseModel):
     """Настройки токена"""
+
     # Срок жизни токена
     lifetime_seconds: int = 3600
 
@@ -49,6 +55,7 @@ class AccessToken(BaseModel):
 
 class Settings(BaseSettings):
     """Настройка приложения"""
+
     model_config = SettingsConfigDict(
         env_file=(".env.template", ".env"),
         case_sensitive=False,
@@ -62,4 +69,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
