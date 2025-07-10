@@ -15,6 +15,15 @@ router = APIRouter(
     tags=["Messages"],
 )
 
+@router.get("/error")
+def view_may_raise_error(
+    raise_error: bool = False,
+):
+    if raise_error:
+        # 1 / 0
+        UserRead.model_validate(None)
+    return {"ok": True}
+
 
 @router.get("")
 def get_user_messages(
