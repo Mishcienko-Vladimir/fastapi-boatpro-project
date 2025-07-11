@@ -1,6 +1,12 @@
+import logging
 from typing import Literal
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+LOG_DEFAULT_FORMAT = (
+    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+)
 
 
 class RunConfig(BaseModel):
@@ -17,6 +23,23 @@ class GunicornConfig(BaseModel):
     port: int = 8000
     workers: int = 1
     timeout: int = 900
+
+
+class LoggingConfig(BaseModel):
+    """Конфигурация логирования"""
+
+    log_level: Literal[
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "critical",
+    ] = "info"
+    log_format: str = LOG_DEFAULT_FORMAT
+
+    @property
+    def log_level_value(self) -> int:
+        return logging.getLevelNamesMapping()[self.log_level.upper()]
 
 
 class ApiV1Prefix(BaseModel):
