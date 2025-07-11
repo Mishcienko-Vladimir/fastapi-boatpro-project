@@ -10,6 +10,15 @@ class RunConfig(BaseModel):
     port: int = 8000
 
 
+class GunicornConfig(BaseModel):
+    """Конфигурация запуска через gunicorn"""
+
+    host: str = "127.0.0.1"
+    port: int = 8000
+    workers: int = 1
+    timeout: int = 900
+
+
 class ApiV1Prefix(BaseModel):
     """Конфигурация префикса API версии 1"""
 
@@ -71,6 +80,8 @@ class Settings(BaseSettings):
         env_prefix="APP_CONFIG__",
     )
     run: RunConfig = RunConfig()
+    gunicorn: GunicornConfig = GunicornConfig()
+    logging: LoggingConfig = LoggingConfig()
     api: ApiPrefix = ApiPrefix()
     db: DataBaseConfig
     access_token: AccessToken
