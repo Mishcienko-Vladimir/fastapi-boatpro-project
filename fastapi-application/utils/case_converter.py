@@ -1,5 +1,6 @@
 # Функция для конвертации имени таблицы
 
+
 def camel_case_to_snake_case(input_str: str) -> str:
     """
     >>> camel_case_to_snake_case("SomeSDK")
