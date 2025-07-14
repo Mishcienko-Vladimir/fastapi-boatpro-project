@@ -5,6 +5,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
+from api.webhooks import webhooks_router
 from api import router as api_router
 from core.config import settings
 from core.models import db_helper
@@ -25,7 +26,9 @@ async def lifespan(app: FastAPI):
     await db_helper.dispose()
 
 
-main_app = FastAPI(default_response_class=ORJSONResponse, lifespan=lifespan)
+main_app = FastAPI(
+    default_response_class=ORJSONResponse, lifespan=lifespan, webhooks=webhooks_router
+)
 main_app.include_router(api_router)
 
 
