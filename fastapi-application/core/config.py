@@ -83,6 +83,13 @@ class DataBaseConfig(BaseModel):
     }
 
 
+class WebhookConfig(BaseModel):
+    """Конфигурация вебхука, для отправки сообщений"""
+
+    # Куда будут отправляться сообщения
+    webhook_url: str
+
+
 class AccessToken(BaseModel):
     """Настройки токена"""
 
@@ -108,6 +115,7 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     db: DataBaseConfig
     access_token: AccessToken
+    webhook: WebhookConfig
 
 
 settings = Settings()
