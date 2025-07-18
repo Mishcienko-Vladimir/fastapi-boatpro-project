@@ -49,6 +49,12 @@ class LoggingConfig(BaseModel):
         return logging.getLevelNamesMapping()[self.log_level.upper()]
 
 
+class ViewPrefix(BaseModel):
+    """Конфигурация префикса для страниц"""
+
+    users: str = "/users"
+
+
 class ApiV1Prefix(BaseModel):
     """Конфигурация префикса API версии 1"""
 
@@ -120,6 +126,7 @@ class Settings(BaseSettings):
     gunicorn: GunicornConfig = GunicornConfig()
     logging: LoggingConfig = LoggingConfig()
     api: ApiPrefix = ApiPrefix()
+    view: ViewPrefix = ViewPrefix()
     db: DataBaseConfig
     access_token: AccessToken
     webhook: WebhookConfig
