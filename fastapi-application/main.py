@@ -9,6 +9,7 @@ from api.webhooks import webhooks_router
 from api import router as api_router
 from core.config import settings
 from core.models import db_helper
+from views import router as views_router
 
 
 logging.basicConfig(
@@ -30,6 +31,7 @@ main_app = FastAPI(
     default_response_class=ORJSONResponse, lifespan=lifespan, webhooks=webhooks_router
 )
 main_app.include_router(api_router)
+main_app.include_router(views_router)
 
 
 if __name__ == "__main__":
