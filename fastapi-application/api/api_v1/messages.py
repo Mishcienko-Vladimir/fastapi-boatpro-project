@@ -15,10 +15,12 @@ router = APIRouter(
     tags=["Messages"],
 )
 
+
 @router.get("/error")
 def view_may_raise_error(
     raise_error: bool = False,
 ):
+    """Для проверки обработчика ошибок, ValidationError"""
     if raise_error:
         # 1 / 0
         UserRead.model_validate(None)
