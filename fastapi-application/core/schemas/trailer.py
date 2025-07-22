@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime
+from typing import Optional
+from pydantic import Field
 
 from core.schemas.base import BaseSchema
 
@@ -46,7 +48,7 @@ class TrailerBase(BaseSchema):
         description="ID изображения прицепа",
     )
 
-    model_config = ConfigDict(from_attributes=True)
+
 class TrailerCreate(TrailerBase):
     """
     Схемы для создания нового прицепа
@@ -70,3 +72,11 @@ class TrailerUpdate(TrailerBase):
     image_id: Optional[int]
 
 
+class TrailerResponse(TrailerBase):
+    """
+    Схемы для чтения данных прицепа
+    """
+
+    id: int = Field(description="ID прицепа")
+    created_at: datetime = Field(description="Дата создания")
+    updated_at: datetime = Field(description="Дата последнего обновления")
