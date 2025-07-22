@@ -47,3 +47,10 @@ class TrailerBase(BaseSchema):
     )
 
     model_config = ConfigDict(from_attributes=True)
+class TrailerCreate(TrailerBase):
+    """
+    Схемы для создания нового прицепа
+    """
+
+    pass
+
