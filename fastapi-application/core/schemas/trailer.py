@@ -54,3 +54,19 @@ class TrailerCreate(TrailerBase):
 
     pass
 
+
+class TrailerUpdate(TrailerBase):
+    """
+    Схемы для обновления данных прицепа
+    """
+
+    model_name: Optional[str]
+    full_mass: Optional[int]
+    load_capacity: Optional[int]
+    trailer_length: Optional[int]
+    max_ship_length: Optional[int]
+    description: Optional[str]
+    price: Optional[int]
+    image_id: Optional[int]
+
+
