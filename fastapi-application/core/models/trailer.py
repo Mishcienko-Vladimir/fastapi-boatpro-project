@@ -5,17 +5,57 @@ from core.models.base import Base
 from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 
 
-class Trailer(IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin, Base):
-    """Таблица прицепов"""
+class Trailer(
+    IntIdPkMixin,
+    CreatedAtMixin,
+    UpdatedAtMixin,
+    Base,
+):
+    """
+    Таблица прицепов.
 
-    model_name: Mapped[str] = mapped_column(String(100), unique=True)
-    full_mass: Mapped[int] = mapped_column(SmallInteger, default=0)
-    load_capacity: Mapped[int] = mapped_column(SmallInteger, default=0)
-    trailer_length: Mapped[int] = mapped_column(SmallInteger, default=0)
-    max_ship_length: Mapped[int] = mapped_column(SmallInteger, default=0)
-    description: Mapped[str] = mapped_column(Text, default="", server_default="")
-    price: Mapped[int] = mapped_column(default=0)
-    image_id: Mapped[int] = mapped_column(default=0)
+    Уникальность обеспечивается по полю model_name.
+    """
+
+    model_name: Mapped[str] = mapped_column(
+        String(100),
+        unique=True,
+        comment="Модель прицепа",
+    )
+    full_mass: Mapped[int] = mapped_column(
+        SmallInteger,
+        default=0,
+        comment="Общая масса прицепа в кг",
+    )
+    load_capacity: Mapped[int] = mapped_column(
+        SmallInteger,
+        default=0,
+        comment="Грузоподъемность в кг",
+    )
+    trailer_length: Mapped[int] = mapped_column(
+        SmallInteger,
+        default=0,
+        comment="Длина прицепа в мм",
+    )
+    max_ship_length: Mapped[int] = mapped_column(
+        SmallInteger,
+        default=0,
+        comment="Максимальная длина перевозимого судна в мм",
+    )
+    description: Mapped[str] = mapped_column(
+        Text,
+        default="",
+        server_default="",
+        comment="Описание прицепа",
+    )
+    price: Mapped[int] = mapped_column(
+        default=0,
+        comment="Цена прицепа в рублях",
+    )
+    image_id: Mapped[int] = mapped_column(
+        default=0,
+        comment="ID изображения прицепа",
+    )
 
     def __str__(self):
         return (
