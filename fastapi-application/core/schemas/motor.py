@@ -45,3 +45,16 @@ class MotorCreate(MotorBase):
     """
 
     pass
+
+
+class MotorUpdate(MotorBase):
+    """
+    Схема для обновления дынных мотора
+    """
+
+    company_name: Optional[str]
+    engine_power: Optional[int]
+    price: Optional[int]
+    weight: Optional[int]
+    description: Optional[str]
+    image_id: Optional[int]
