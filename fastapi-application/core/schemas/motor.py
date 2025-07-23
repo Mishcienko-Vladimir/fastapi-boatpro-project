@@ -37,3 +37,11 @@ class MotorBase(BaseSchema):
         ge=0,
         description="ID изображения мотора",
     )
+
+
+class MotorCreate(MotorBase):
+    """
+    Схема для создания нового мотора
+    """
+
+    pass
