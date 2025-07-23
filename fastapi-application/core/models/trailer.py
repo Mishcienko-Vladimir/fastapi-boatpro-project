@@ -2,10 +2,10 @@ from sqlalchemy import Text, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.base import Base
-from core.models.mixins import IntIdPkMixin, CreatedAtMixin
+from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 
 
-class Trailer(IntIdPkMixin, CreatedAtMixin, Base):
+class Trailer(IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin, Base):
     """Таблица прицепов"""
 
     model_name: Mapped[str] = mapped_column(String(100), unique=True)
