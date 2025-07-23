@@ -60,7 +60,7 @@ class MotorUpdate(MotorBase):
     image_id: Optional[int]
 
 
-class MotorResponse(MotorBase):
+class MotorRead(MotorBase):
     """
     Схемы для чтения данных мотора
     """

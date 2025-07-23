@@ -72,7 +72,7 @@ class TrailerUpdate(TrailerBase):
     image_id: Optional[int]
 
 
-class TrailerResponse(TrailerBase):
+class TrailerRead(TrailerBase):
     """
     Схемы для чтения данных прицепа
     """
