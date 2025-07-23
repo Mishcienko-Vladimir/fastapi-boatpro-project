@@ -58,3 +58,13 @@ class MotorUpdate(MotorBase):
     weight: Optional[int]
     description: Optional[str]
     image_id: Optional[int]
+
+
+class MotorResponse(MotorBase):
+    """
+    Схемы для чтения данных мотора
+    """
+
+    id: int = Field(description="ID мотора")
+    created_at: datetime = Field(description="Дата создания")
+    updated_at: datetime = Field(description="Дата последнего обновления")
