@@ -1,16 +1,10 @@
 from sqlalchemy import Text, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.models.base import Base
-from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
+from core.models.products import ProductBase
 
 
-class Boat(
-    IntIdPkMixin,
-    CreatedAtMixin,
-    UpdatedAtMixin,
-    Base,
-):
+class Boat(ProductBase):
     """
     Таблица катеров.
 
@@ -21,20 +15,6 @@ class Boat(
         String(100),
         unique=True,
         comment="Модель катера",
-    )
-    company_name: Mapped[str] = mapped_column(
-        String(100),
-        comment="Название производителя",
-    )
-    price: Mapped[int] = mapped_column(
-        comment="Цена катера в рублях",
-    )
-    image_id: Mapped[list[int]] = mapped_column(
-        comment="ID изображения катера",
-    )
-    description: Mapped[str] = mapped_column(
-        Text,
-        comment="Описание катера",
     )
     length_hull: Mapped[int] = mapped_column(
         SmallInteger,
@@ -104,7 +84,8 @@ class Boat(
             f"fuel_capacity={self.fuel_capacity!r}, "
             f"maximum_engine_power={self.maximum_engine_power!r}, "
             f"height_side_midship={self.height_side_midship!r}, "
-            f"transom_height={self.transom_height!r})"
+            f"transom_height={self.transom_height!r}"
+            f"created_at={self.created_at!r})"
         )
 
     def __repr__(self):

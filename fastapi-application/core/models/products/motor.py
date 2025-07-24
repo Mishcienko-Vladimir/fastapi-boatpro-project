@@ -1,16 +1,10 @@
 from sqlalchemy import UniqueConstraint, Text, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.models.base import Base
-from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
+from core.models.products import ProductBase
 
 
-class OutboardMotor(
-    IntIdPkMixin,
-    CreatedAtMixin,
-    UpdatedAtMixin,
-    Base,
-):
+class OutboardMotor(ProductBase):
     """
     Таблица подвесных лодочных моторов.
 
@@ -31,19 +25,9 @@ class OutboardMotor(
         SmallInteger,
         comment="Мощность двигателя в л.с.",
     )
-    price: Mapped[int] = mapped_column(
-        comment="Цена мотора в рублях",
-    )
     weight: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Вес мотора в кг",
-    )
-    description: Mapped[str] = mapped_column(
-        Text,
-        comment="Описание мотора",
-    )
-    image_id: Mapped[list[int]] = mapped_column(
-        comment="ID изображения мотора",
     )
 
     def __str__(self):
@@ -54,7 +38,8 @@ class OutboardMotor(
             f"price={self.price!r}, "
             f"weight={self.weight!r}, "
             f"description={self.description!r}, "
-            f"image_id={self.image_id!r})"
+            f"image_id={self.image_id!r}"
+            f"created_at={self.created_at!r})"
         )
 
     def __repr__(self):
