@@ -3,9 +3,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.base import Base, str_256, intpk
 
+
 class Boat(Base):
     """Таблица катеров"""
-    __tablename__ = 'boats'
 
     id: Mapped[intpk]
     company_name: Mapped[str_256]
@@ -18,12 +18,15 @@ class Boat(Base):
     weight: Mapped[int]
     capacity: Mapped[int]
 
-    characteristics: Mapped["BoatCharacteristics"] = relationship(uselist=False, back_populates="boat")
+    characteristics: Mapped["BoatCharacteristics"] = relationship(
+        uselist=False, back_populates="boat"
+    )
 
 
 class BoatCharacteristics(Base):
     """Таблица характеристик катеров"""
-    __tablename__ = "boat_characteristics"
+
+    __tablename__ = "boat_c haracteristics"
 
     id: Mapped[intpk]
     boat_id: Mapped[int] = mapped_column(ForeignKey("boats.id"), unique=True)

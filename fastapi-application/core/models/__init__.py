@@ -11,6 +11,3 @@ from .db_helper import db_helper
 from .base import Base
 from .user import User
 from .access_token import AccessToken
-# from .boat import Boat, BoatCharacteristics
-# from .motor import OutboardMotor
-# from .trailer import Trailer
