@@ -52,8 +52,7 @@ class Trailer(
         default=0,
         comment="Цена прицепа в рублях",
     )
-    image_id: Mapped[int] = mapped_column(
-        default=0,
+    image_id: Mapped[list[int]] = mapped_column(
         comment="ID изображения прицепа",
     )
 

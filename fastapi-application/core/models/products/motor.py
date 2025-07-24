@@ -47,8 +47,7 @@ class OutboardMotor(
         server_default="",
         comment="Описание мотора",
     )
-    image_id: Mapped[int] = mapped_column(
-        default=0,
+    image_id: Mapped[list[int]] = mapped_column(
         comment="ID изображения мотора",
     )
 

@@ -33,8 +33,7 @@ class MotorBase(BaseSchema):
         min_length=0,
         description="Описание мотора",
     )
-    image_id: int = Field(
-        ge=0,
+    image_id: list[int] = Field(
         description="ID изображения мотора",
     )
 
@@ -57,7 +56,7 @@ class MotorUpdate(MotorBase):
     price: Optional[int]
     weight: Optional[int]
     description: Optional[str]
-    image_id: Optional[int]
+    image_id: Optional[list[int]]
 
 
 class MotorRead(MotorBase):

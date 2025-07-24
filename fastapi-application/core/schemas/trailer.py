@@ -43,8 +43,7 @@ class TrailerBase(BaseSchema):
         gt=0,
         description="Цена прицепа в рублях",
     )
-    image_id: int = Field(
-        ge=0,
+    image_id: list[int] = Field(
         description="ID изображения прицепа",
     )
 
