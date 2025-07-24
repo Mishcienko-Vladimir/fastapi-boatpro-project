@@ -24,32 +24,25 @@ class Trailer(
     )
     full_mass: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Общая масса прицепа в кг",
     )
     load_capacity: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Грузоподъемность в кг",
     )
     trailer_length: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Длина прицепа в мм",
     )
     max_ship_length: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Максимальная длина перевозимого судна в мм",
     )
     description: Mapped[str] = mapped_column(
         Text,
-        default="",
-        server_default="",
         comment="Описание прицепа",
     )
     price: Mapped[int] = mapped_column(
-        default=0,
         comment="Цена прицепа в рублях",
     )
     image_id: Mapped[list[int]] = mapped_column(

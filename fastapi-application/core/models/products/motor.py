@@ -29,22 +29,17 @@ class OutboardMotor(
     )
     engine_power: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Мощность двигателя в л.с.",
     )
     price: Mapped[int] = mapped_column(
-        default=0,
         comment="Цена мотора в рублях",
     )
     weight: Mapped[int] = mapped_column(
         SmallInteger,
-        default=0,
         comment="Вес мотора в кг",
     )
     description: Mapped[str] = mapped_column(
         Text,
-        default="",
-        server_default="",
         comment="Описание мотора",
     )
     image_id: Mapped[list[int]] = mapped_column(
