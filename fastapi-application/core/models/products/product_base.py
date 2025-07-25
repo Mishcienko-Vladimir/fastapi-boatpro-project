@@ -25,6 +25,11 @@ class ProductBase(
     type_id: Mapped[int] = mapped_column(
         ForeignKey("product_types.id"),
     )
+    model_name: Mapped[str] = mapped_column(
+        String(255),
+        unique=True,
+        comment="Название модели",
+    )
     price: Mapped[int] = mapped_column(
         comment="Цена в рублях",
     )

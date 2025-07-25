@@ -11,11 +11,6 @@ class Boat(ProductBase):
     Уникальность обеспечивается по полю model_name.
     """
 
-    model_name: Mapped[str] = mapped_column(
-        String(100),
-        unique=True,
-        comment="Модель катера",
-    )
     length_hull: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Длина корпуса в мм",

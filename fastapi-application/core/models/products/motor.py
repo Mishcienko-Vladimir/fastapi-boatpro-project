@@ -11,16 +11,13 @@ class OutboardMotor(ProductBase):
     Уникальность модели обеспечивается по комбинации:
     - company_name
     - engine_power
+    А также по полю - model_name.
     """
 
     __table_args__ = (
         UniqueConstraint("company_name", "engine_power", name="uq_company_engine"),
     )
 
-    company_name: Mapped[str] = mapped_column(
-        String(100),
-        comment="Название производителя",
-    )
     engine_power: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Мощность двигателя в л.с.",
@@ -33,6 +30,7 @@ class OutboardMotor(ProductBase):
     def __str__(self):
         return (
             f"{self.__class__.__name__}(id={self.id}, "
+            f"model_name={self.model_name!r}, "
             f"company_name={self.company_name!r}, "
             f"engine_power={self.engine_power!r}, "
             f"price={self.price!r}, "

@@ -11,11 +11,6 @@ class Trailer(ProductBase):
     Уникальность обеспечивается по полю model_name.
     """
 
-    model_name: Mapped[str] = mapped_column(
-        String(100),
-        unique=True,
-        comment="Модель прицепа",
-    )
     full_mass: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Общая масса прицепа в кг",
