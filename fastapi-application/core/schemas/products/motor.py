@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .product_type import ProductTypeBaseModelModel
 
 
-class MotorBaseModel(ProductBaseModel):
+class OutboardMotorBaseModel(ProductBaseModel):
     """
     Базовая схема для лодочных моторов
     """
@@ -25,7 +25,7 @@ class MotorBaseModel(ProductBaseModel):
     )
 
 
-class MotorCreate(MotorBaseModel):
+class OutboardMotorCreate(OutboardMotorBaseModel):
     """
     Схема для создания нового мотора
     """
@@ -33,7 +33,7 @@ class MotorCreate(MotorBaseModel):
     pass
 
 
-class MotorUpdate(MotorBaseModel):
+class OutboardMotorUpdate(OutboardMotorBaseModel):
     """
     Схема для обновления дынных мотора
     """
@@ -48,7 +48,7 @@ class MotorUpdate(MotorBaseModel):
     weight: Optional[int]
 
 
-class MotorRead(MotorBaseModel):
+class OutboardMotorRead(OutboardMotorBaseModel):
     """
     Схемы для чтения данных мотора
     """
