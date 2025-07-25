@@ -1,40 +1,27 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pydantic import Field
 
-from core.schemas.base_model import BaseSchemaModel
+from .product_base_model import ProductBaseModel
+
+if TYPE_CHECKING:
+    from .product_type import ProductTypeBaseModelModel
 
 
-class MotorBaseModel(BaseSchemaModel):
+class MotorBaseModel(ProductBaseModel):
     """
     Базовая схема для лодочных моторов
     """
 
-    company_name: str = Field(
-        min_length=1,
-        max_length=255,
-        description="Название производителя",
-    )
     engine_power: int = Field(
         gt=0,
         lt=1000,
         description="Мощность двигателя в л.с.",
     )
-    price: int = Field(
-        gt=0,
-        description="Цена мотора в рублях",
-    )
     weight: int = Field(
         gt=0,
         lt=1000,
         description="Вес мотора в кг",
-    )
-    description: str = Field(
-        min_length=0,
-        description="Описание мотора",
-    )
-    image_id: list[int] = Field(
-        description="ID изображения мотора",
     )
 
 
@@ -51,12 +38,14 @@ class MotorUpdate(MotorBaseModel):
     Схема для обновления дынных мотора
     """
 
-    company_name: Optional[str]
-    engine_power: Optional[int]
+    model_name: Optional[str]
     price: Optional[int]
-    weight: Optional[int]
+    company_name: Optional[str]
     description: Optional[str]
-    image_id: Optional[list[int]]
+    image_id: Optional[int]
+    is_active: Optional[bool]
+    engine_power: Optional[int]
+    weight: Optional[int]
 
 
 class MotorRead(MotorBaseModel):
@@ -64,6 +53,18 @@ class MotorRead(MotorBaseModel):
     Схемы для чтения данных мотора
     """
 
-    id: int = Field(description="ID мотора")
-    created_at: datetime = Field(description="Дата создания")
-    updated_at: datetime = Field(description="Дата последнего обновления")
+    id: int = Field(
+        description="ID мотора",
+    )
+    type_id: int = Field(
+        description="ID категории товара",
+    )
+    type: "ProductTypeBaseModelModel" = Field(
+        description="Категория товара",
+    )
+    created_at: datetime = Field(
+        description="Дата создания",
+    )
+    updated_at: datetime = Field(
+        description="Дата последнего обновления",
+    )
