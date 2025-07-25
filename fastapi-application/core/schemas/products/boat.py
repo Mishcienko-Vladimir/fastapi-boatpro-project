@@ -73,3 +73,58 @@ class BoatBaseModel(ProductBaseModel):
         lt=1000,
         description="Высота транца в мм",
     )
+
+
+class BoatCreate(BoatBaseModel):
+    """
+    Схема для создания нового катера
+    """
+
+    pass
+
+
+class BoatUpdate(BoatBaseModel):
+    """
+    Схема для обновления дынных катера
+    """
+
+    model_name: Optional[str]
+    price: Optional[int]
+    company_name: Optional[str]
+    description: Optional[str]
+    image_id: Optional[int]
+    is_active: Optional[bool]
+    length_hull: Optional[int]
+    width_hull: Optional[int]
+    weight: Optional[int]
+    capacity: Optional[int]
+    maximum_load: Optional[int]
+    hull_material: Optional[str]
+    thickness_side_sheet: Optional[int | None]
+    bottom_sheet_thickness: Optional[int | None]
+    fuel_capacity: Optional[int | None]
+    maximum_engine_power: Optional[int | None]
+    height_side_midship: Optional[int | None]
+    transom_height: Optional[int | None]
+
+
+class BoatRead(BoatBaseModel):
+    """
+    Схемы для чтения данных катера
+    """
+
+    id: int = Field(
+        description="ID катера",
+    )
+    type_id: int = Field(
+        description="ID категории товара",
+    )
+    type: "ProductTypeBaseModelModel" = Field(
+        description="Категория товара",
+    )
+    created_at: datetime = Field(
+        description="Дата создания",
+    )
+    updated_at: datetime = Field(
+        description="Дата последнего обновления",
+    )
