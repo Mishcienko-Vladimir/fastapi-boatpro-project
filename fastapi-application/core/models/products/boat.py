@@ -35,17 +35,17 @@ class Boat(ProductBase):
         String(50),
         comment="Материал корпуса",
     )
-    thickness_side_sheet: Mapped[int] = mapped_column(
+    thickness_side_sheet: Mapped[int | None] = mapped_column(
         SmallInteger,
-        comment="Толщина бортовой пластины в мм",
+        comment="Толщина бортового листа в мм",
     )
-    bottom_sheet_thickness: Mapped[int] = mapped_column(
+    bottom_sheet_thickness: Mapped[int | None] = mapped_column(
         SmallInteger,
-        comment="Толщина днищевой пластины в мм",
+        comment="Толщина днищевой листа в мм",
     )
     fuel_capacity: Mapped[int | None] = mapped_column(
         SmallInteger,
-        comment="Ёмкость топливного бака в литрах",
+        comment="Объём топливного бака в литрах",
     )
     maximum_engine_power: Mapped[int | None] = mapped_column(
         SmallInteger,
