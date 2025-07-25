@@ -85,6 +85,7 @@ class Boat(ProductBase):
             f"maximum_engine_power={self.maximum_engine_power!r}, "
             f"height_side_midship={self.height_side_midship!r}, "
             f"transom_height={self.transom_height!r}"
+            f"type={self.type!r}, "
             f"created_at={self.created_at!r})"
         )
 

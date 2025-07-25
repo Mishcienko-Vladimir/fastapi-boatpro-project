@@ -41,6 +41,7 @@ class ProductBase(
     )
     is_active: Mapped[bool] = mapped_column(
         default=True,
+        comment="Наличие товара",
     )
 
     type: Mapped["ProductType"] = relationship(back_populates="products")
