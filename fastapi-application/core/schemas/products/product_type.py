@@ -18,3 +18,31 @@ class ProductTypeBaseModelModel(BaseSchemaModel):
         description="Название категории товара",
     )
 
+
+class ProductTypeCreate(ProductTypeBaseModelModel):
+    """
+    Схемы для создания новой категории товара
+    """
+
+    pass
+
+
+class ProductTypeUpdate(ProductTypeBaseModelModel):
+    """
+    Схемы для обновления данных о категории товара
+    """
+
+    name_product_type: Optional[str]
+
+
+class ProductTypeRead(ProductTypeBaseModelModel):
+    """
+    Схемы для чтения данных о категории товара
+    """
+
+    id: int = Field(
+        description="ID категории товара",
+    )
+    products: list["ProductBaseModel"] = Field(
+        description="Список товаров в категории",
+    )
