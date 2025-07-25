@@ -1,20 +1,18 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pydantic import Field
 
-from core.schemas.base_model import BaseSchemaModel
+from .product_base_model import ProductBaseModel
+
+if TYPE_CHECKING:
+    from .product_type import ProductTypeBaseModelModel
 
 
-class TrailerBaseModel(BaseSchemaModel):
+class TrailerBaseModel(ProductBaseModel):
     """
     Базовая схема для прицепа
     """
 
-    model_name: str = Field(
-        min_length=1,
-        max_length=255,
-        description="Название модели прицепа",
-    )
     full_mass: int = Field(
         gt=0,
         lt=32767,
@@ -35,17 +33,6 @@ class TrailerBaseModel(BaseSchemaModel):
         lt=32767,
         description="Максимальная длина перевозимого судна в мм",
     )
-    description: str = Field(
-        min_length=0,
-        description="Описание прицепа",
-    )
-    price: int = Field(
-        gt=0,
-        description="Цена прицепа в рублях",
-    )
-    image_id: list[int] = Field(
-        description="ID изображения прицепа",
-    )
 
 
 class TrailerCreate(TrailerBaseModel):
@@ -62,13 +49,15 @@ class TrailerUpdate(TrailerBaseModel):
     """
 
     model_name: Optional[str]
+    price: Optional[int]
+    company_name: Optional[str]
+    description: Optional[str]
+    image_id: Optional[int]
+    is_active: Optional[bool]
     full_mass: Optional[int]
     load_capacity: Optional[int]
     trailer_length: Optional[int]
     max_ship_length: Optional[int]
-    description: Optional[str]
-    price: Optional[int]
-    image_id: Optional[int]
 
 
 class TrailerRead(TrailerBaseModel):
@@ -76,6 +65,18 @@ class TrailerRead(TrailerBaseModel):
     Схемы для чтения данных прицепа
     """
 
-    id: int = Field(description="ID прицепа")
-    created_at: datetime = Field(description="Дата создания")
-    updated_at: datetime = Field(description="Дата последнего обновления")
+    id: int = Field(
+        description="ID прицепа",
+    )
+    type_id: int = Field(
+        description="ID категории товара",
+    )
+    type: "ProductTypeBaseModelModel" = Field(
+        description="Категория товара",
+    )
+    created_at: datetime = Field(
+        description="Дата создания",
+    )
+    updated_at: datetime = Field(
+        description="Дата последнего обновления",
+    )
