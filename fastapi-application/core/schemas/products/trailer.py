@@ -2,10 +2,10 @@ from datetime import datetime
 from typing import Optional
 from pydantic import Field
 
-from core.schemas.base import BaseSchema
+from core.schemas.base_model import BaseSchemaModel
 
 
-class TrailerBase(BaseSchema):
+class TrailerBaseModel(BaseSchemaModel):
     """
     Базовая схема для прицепа
     """
@@ -48,7 +48,7 @@ class TrailerBase(BaseSchema):
     )
 
 
-class TrailerCreate(TrailerBase):
+class TrailerCreate(TrailerBaseModel):
     """
     Схемы для создания нового прицепа
     """
@@ -56,7 +56,7 @@ class TrailerCreate(TrailerBase):
     pass
 
 
-class TrailerUpdate(TrailerBase):
+class TrailerUpdate(TrailerBaseModel):
     """
     Схемы для обновления данных прицепа
     """
@@ -71,7 +71,7 @@ class TrailerUpdate(TrailerBase):
     image_id: Optional[int]
 
 
-class TrailerRead(TrailerBase):
+class TrailerRead(TrailerBaseModel):
     """
     Схемы для чтения данных прицепа
     """

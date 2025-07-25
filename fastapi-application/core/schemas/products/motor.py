@@ -2,10 +2,10 @@ from datetime import datetime
 from typing import Optional
 from pydantic import Field
 
-from core.schemas.base import BaseSchema
+from core.schemas.base_model import BaseSchemaModel
 
 
-class MotorBase(BaseSchema):
+class MotorBaseModel(BaseSchemaModel):
     """
     Базовая схема для лодочных моторов
     """
@@ -38,7 +38,7 @@ class MotorBase(BaseSchema):
     )
 
 
-class MotorCreate(MotorBase):
+class MotorCreate(MotorBaseModel):
     """
     Схема для создания нового мотора
     """
@@ -46,7 +46,7 @@ class MotorCreate(MotorBase):
     pass
 
 
-class MotorUpdate(MotorBase):
+class MotorUpdate(MotorBaseModel):
     """
     Схема для обновления дынных мотора
     """
@@ -59,7 +59,7 @@ class MotorUpdate(MotorBase):
     image_id: Optional[list[int]]
 
 
-class MotorRead(MotorBase):
+class MotorRead(MotorBaseModel):
     """
     Схемы для чтения данных мотора
     """
