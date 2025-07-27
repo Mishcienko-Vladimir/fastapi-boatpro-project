@@ -63,6 +63,9 @@ class ApiV1Prefix(BaseModel):
     users: str = "/users"
     messages: str = "/messages"
     products: str = "/products"
+    boats: str = "/boats"
+    trailers: str = "/trailers"
+    outboard_motors: str = "/outboard-motors"
 
 
 class ApiPrefix(BaseModel):
