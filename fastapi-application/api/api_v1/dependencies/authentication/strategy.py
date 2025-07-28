@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Annotated
 from fastapi import Depends
 from fastapi_users.authentication.strategy.db import DatabaseStrategy
 
-from api.dependencies.authentication.access_tokens import get_access_token_db
+from api.api_v1.dependencies.authentication import get_access_token_db
 from core.config import settings
 
 if TYPE_CHECKING:

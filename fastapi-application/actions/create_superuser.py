@@ -3,8 +3,8 @@ import contextlib
 
 from os import getenv
 
-from api.dependencies.authentication import get_users_db
-from api.dependencies.authentication import get_user_manager
+from api.api_v1.dependencies.authentication import get_users_db
+from api.api_v1.dependencies.authentication import get_user_manager
 
 from core.authentication.user_manager import UserManager
 from core.models import db_helper, User
