@@ -3,7 +3,7 @@ from typing import Annotated, TYPE_CHECKING
 from fastapi import Depends
 
 from core.authentication.user_manager import UserManager
-from api.api_v1.dependencies.authentication import get_users_db
+from .users import get_users_db
 
 if TYPE_CHECKING:
     from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase

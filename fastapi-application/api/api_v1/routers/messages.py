@@ -3,7 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter
 from fastapi import Depends
 
-from api.api_v1.fastapi_users import current_active_user, current_active_superuser
+from api.api_v1.routers.fastapi_users import (
+    current_active_user,
+    current_active_superuser,
+)
 
 from core.config import settings
 from core.models import User
