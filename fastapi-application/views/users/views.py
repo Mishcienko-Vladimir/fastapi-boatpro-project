@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import db_helper
 from core.config import settings
 from utils.templates import templates
-from crud import users as users_crud
-
+from core.repositories import users as users_crud
 
 router = APIRouter(prefix=settings.view.users, tags=["Users"])
 
