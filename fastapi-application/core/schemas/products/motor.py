@@ -38,14 +38,14 @@ class OutboardMotorUpdate(OutboardMotorBaseModel):
     Схема для обновления дынных мотора
     """
 
-    model_name: Optional[str]
-    price: Optional[int]
-    company_name: Optional[str]
-    description: Optional[str]
-    image_id: Optional[int]
-    is_active: Optional[bool]
-    engine_power: Optional[int]
-    weight: Optional[int]
+    model_name: Optional[str] = None
+    price: Optional[int] = None
+    company_name: Optional[str] = None
+    description: Optional[str] = None
+    image_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    engine_power: Optional[int] = None
+    weight: Optional[int] = None
 
 
 class OutboardMotorRead(OutboardMotorBaseModel):

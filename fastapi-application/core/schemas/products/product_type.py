@@ -32,7 +32,7 @@ class ProductTypeUpdate(ProductTypeBaseModelModel):
     Схемы для обновления данных о категории товара
     """
 
-    name_product_type: Optional[str]
+    name_product_type: Optional[str] = None
 
 
 class ProductTypeRead(ProductTypeBaseModelModel):

@@ -88,24 +88,24 @@ class BoatUpdate(BoatBaseModel):
     Схема для обновления дынных катера
     """
 
-    model_name: Optional[str]
-    price: Optional[int]
-    company_name: Optional[str]
-    description: Optional[str]
-    image_id: Optional[int]
-    is_active: Optional[bool]
-    length_hull: Optional[int]
-    width_hull: Optional[int]
-    weight: Optional[int]
-    capacity: Optional[int]
-    maximum_load: Optional[int]
-    hull_material: Optional[str]
-    thickness_side_sheet: Optional[int | None]
-    bottom_sheet_thickness: Optional[int | None]
-    fuel_capacity: Optional[int | None]
-    maximum_engine_power: Optional[int | None]
-    height_side_midship: Optional[int | None]
-    transom_height: Optional[int | None]
+    model_name: Optional[str] = None
+    price: Optional[int] = None
+    company_name: Optional[str] = None
+    description: Optional[str] = None
+    image_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    length_hull: Optional[int] = None
+    width_hull: Optional[int] = None
+    weight: Optional[int] = None
+    capacity: Optional[int] = None
+    maximum_load: Optional[int] = None
+    hull_material: Optional[str] = None
+    thickness_side_sheet: Optional[int] = None
+    bottom_sheet_thickness: Optional[int] = None
+    fuel_capacity: Optional[int] = None
+    maximum_engine_power: Optional[int] = None
+    height_side_midship: Optional[int] = None
+    transom_height: Optional[int] = None
 
 
 class BoatRead(BoatBaseModel):

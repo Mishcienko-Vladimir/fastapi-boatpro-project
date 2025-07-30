@@ -48,16 +48,16 @@ class TrailerUpdate(TrailerBaseModel):
     Схемы для обновления данных прицепа
     """
 
-    model_name: Optional[str]
-    price: Optional[int]
-    company_name: Optional[str]
-    description: Optional[str]
-    image_id: Optional[int]
-    is_active: Optional[bool]
-    full_mass: Optional[int]
-    load_capacity: Optional[int]
-    trailer_length: Optional[int]
-    max_ship_length: Optional[int]
+    model_name: Optional[str] = None
+    price: Optional[int] = None
+    company_name: Optional[str] = None
+    description: Optional[str] = None
+    image_id: Optional[int] = None
+    is_active: Optional[bool] = None
+    full_mass: Optional[int] = None
+    load_capacity: Optional[int] = None
+    trailer_length: Optional[int] = None
+    max_ship_length: Optional[int] = None
 
 
 class TrailerRead(TrailerBaseModel):
