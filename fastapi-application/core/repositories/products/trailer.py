@@ -57,7 +57,13 @@ class TrailerRepository:
             return trailer
         return None
 
-
-    async def delete_trailer(self, trailer: Trailer) -> None:
-        await self.session.delete(trailer)
-        await self.session.commit()
+    async def delete_trailer_by_id(
+        self,
+        trailer_id: int,
+    ) -> bool:
+        trailer = await self.session.get(Trailer, trailer_id)
+        if trailer:
+            await self.session.delete(trailer)
+            await self.session.commit()
+            return True
+        return False
