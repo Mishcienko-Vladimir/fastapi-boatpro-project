@@ -32,24 +32,3 @@ class ProductBaseModel(BaseSchemaModel):
     is_active: bool = Field(
         description="Наличие товара",
     )
-
-
-class ProductCreateBaseModel(ProductBaseModel):
-    """
-    Абстрактная модель создания товаров для product_manager_crud.
-    """
-
-    pass
-
-
-class ProductUpdateBaseModel(ProductCreateBaseModel):
-    """
-    Абстрактная модель обновления товаров для product_manager_crud.
-    """
-
-    model_name: str | None = None
-    price: int | None = None
-    company_name: str | None = None
-    description: str | None = None
-    image_id: int | None = None
-    is_active: bool | None = None
