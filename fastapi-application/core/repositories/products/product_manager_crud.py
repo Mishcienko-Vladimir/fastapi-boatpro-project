@@ -38,9 +38,17 @@ class ProductManagerCrud:
         await self.session.commit()
         return new_product
 
+    async def get_product_by_name(self, model_name: str):
+        """
+        Найдет товар по model_name.
+        """
+        stmt = select(self.product_db).where(self.product_db.model_name == model_name)  # type: ignore
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def get_product_by_id(self, product_id: int):
         """
-        Получает товар по ID.
+        Получает товар по id.
         """
 
         return await self.session.get(self.product_db, product_id)
@@ -56,7 +64,7 @@ class ProductManagerCrud:
 
     async def update_product(self, product_id: int):
         """
-        Обновляет товар по ID.
+        Обновляет товар по id.
         """
 
         product = await self.get_product_by_id(product_id)
@@ -71,7 +79,7 @@ class ProductManagerCrud:
 
     async def delete_product(self, product_id: int) -> bool:
         """
-        Удаляет товар по ID.
+        Удаляет товар по id.
         """
 
         product = await self.get_product_by_id(product_id)
