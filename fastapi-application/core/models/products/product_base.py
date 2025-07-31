@@ -28,6 +28,7 @@ class ProductBase(
     model_name: Mapped[str] = mapped_column(
         String(255),
         unique=True,
+        index=True,
         comment="Название модели",
     )
     price: Mapped[int] = mapped_column(

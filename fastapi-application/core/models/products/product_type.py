@@ -17,6 +17,6 @@ class ProductType(IntIdPkMixin, Base):
     Уникальность обеспечивается по полю name_product_type.
     """
 
-    name_product_type: Mapped[str] = mapped_column(String(50), unique=True)
+    name_product_type: Mapped[str] = mapped_column(String(50), unique=True, index=True)
 
     products: Mapped[list["ProductBase"]] = relationship(back_populates="type")
