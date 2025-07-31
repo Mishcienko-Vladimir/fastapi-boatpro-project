@@ -1,5 +1,7 @@
 __all__ = (
     "ProductBaseModel",
+    "ProductCreateBaseModel",
+    "ProductUpdateBaseModel",
     "ProductTypeCreate",
     "ProductTypeUpdate",
     "ProductTypeRead",
@@ -16,6 +18,8 @@ __all__ = (
 
 from .product_base_model import (
     ProductBaseModel,
+    ProductCreateBaseModel,
+    ProductUpdateBaseModel,
 )
 from .product_type import (
     ProductTypeCreate,
