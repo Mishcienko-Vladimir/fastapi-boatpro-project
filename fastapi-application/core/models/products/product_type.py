@@ -7,7 +7,7 @@ from core.models.base import Base
 from core.models.mixins import IntIdPkMixin
 
 if TYPE_CHECKING:
-    from core.models.products import ProductBase
+    from core.models.products.product_base import ProductBase
 
 
 class ProductType(IntIdPkMixin, Base):

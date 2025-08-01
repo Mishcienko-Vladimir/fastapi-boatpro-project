@@ -1,4 +1,4 @@
-from sqlalchemy import Text, SmallInteger, String
+from sqlalchemy import SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.products import ProductBase
