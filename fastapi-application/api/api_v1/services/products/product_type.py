@@ -23,3 +23,15 @@ class ProductTypeService:
 
         new_product_type = await self.repo.create_product(product_data)
         return ProductTypeRead.model_validate(new_product_type)
+
+    async def get_product_type_by_name(self, name_product_type: str) -> ProductTypeRead:
+        """
+        Получение типа товара по имени
+        """
+        product_type = await self.repo.product_type_exists_by_name(name_product_type)
+        if not product_type:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Product type with name {name_product_type} not found",
+            )
+        return ProductTypeRead.model_validate(product_type)
