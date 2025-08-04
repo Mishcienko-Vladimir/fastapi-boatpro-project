@@ -22,9 +22,6 @@ class ProductBase(
 
     __abstract__ = True  # Абстрактная модель, не создает таблицу
 
-    type_id: Mapped[int] = mapped_column(
-        ForeignKey("product_types.id"),
-    )
     model_name: Mapped[str] = mapped_column(
         String(255),
         unique=True,
@@ -50,6 +47,10 @@ class ProductBase(
         default=True,
         comment="Наличие товара",
     )
+
+    @declared_attr
+    def type_id(cls):
+        return mapped_column(ForeignKey("product_types.id"))
 
     @declared_attr
     def type(cls):
