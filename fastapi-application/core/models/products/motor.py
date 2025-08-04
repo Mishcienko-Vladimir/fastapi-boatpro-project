@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, Text, SmallInteger, String
+from sqlalchemy import UniqueConstraint, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.products import ProductBase
@@ -29,16 +29,20 @@ class OutboardMotor(ProductBase):
 
     def __str__(self):
         return (
-            f"{self.__class__.__name__}(id={self.id}, "
-            f"model_name={self.model_name!r}, "
-            f"company_name={self.company_name!r}, "
-            f"engine_power={self.engine_power!r}, "
+            f"{self.__class__.__name__}"
+            f"(id={self.id}, "
+            f"model_name={self.model_name!r},"
             f"price={self.price!r}, "
-            f"weight={self.weight!r}, "
+            f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
-            f"image_id={self.image_id!r}"
+            f"image_ids={self.image_ids!r}, "
+            f"is_active={self.is_active!r}, "
+            f"engine_power={self.engine_power!r}, "
+            f"weight={self.weight!r}, "
+            f"type_id={self.type_id!r}, "
             f"type={self.type!r}, "
-            f"created_at={self.created_at!r})"
+            f"created_at={self.created_at!r}, "
+            f"updated_at={self.updated_at!r})"
         )
 
     def __repr__(self):

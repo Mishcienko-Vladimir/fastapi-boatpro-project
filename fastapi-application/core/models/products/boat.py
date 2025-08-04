@@ -62,12 +62,14 @@ class Boat(ProductBase):
 
     def __str__(self):
         return (
-            f"{self.__class__.__name__}(id={self.id}, "
+            f"{self.__class__.__name__}"
+            f"(id={self.id}, "
             f"model_name={self.model_name!r}, "
-            f"company_name={self.company_name!r}, "
             f"price={self.price!r}, "
-            f"image_id={self.image_id!r}, "
+            f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
+            f"image_ids={self.image_ids!r}, "
+            f"is_active={self.is_active!r}, "
             f"length_hull={self.length_hull!r}, "
             f"width_hull={self.width_hull!r}, "
             f"weight={self.weight!r}, "
@@ -79,9 +81,11 @@ class Boat(ProductBase):
             f"fuel_capacity={self.fuel_capacity!r}, "
             f"maximum_engine_power={self.maximum_engine_power!r}, "
             f"height_side_midship={self.height_side_midship!r}, "
-            f"transom_height={self.transom_height!r}"
+            f"transom_height={self.transom_height!r}, "
+            f"type_id={self.type_id!r}, "
             f"type={self.type!r}, "
-            f"created_at={self.created_at!r})"
+            f"created_at={self.created_at!r}, "
+            f"updated_at={self.updated_at!r})"
         )
 
     def __repr__(self):
