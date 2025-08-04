@@ -20,3 +20,13 @@ class ProductType(IntIdPkMixin, Base):
     name_product_type: Mapped[str] = mapped_column(String(50), unique=True, index=True)
 
     products: Mapped[list["ProductBase"]] = relationship(back_populates="type")
+
+    def __str__(self):
+        return (
+            f"{self.__class__.__name__}"
+            f"(id={self.id!r}, "
+            f"name_product_type='{self.name_product_type}')"
+        )
+
+    def __repr__(self):
+        return str(self)
