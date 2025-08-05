@@ -35,7 +35,7 @@ class OutboardMotor(ProductBase):
             f"price={self.price!r}, "
             f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
-            f"image_ids={self.image_ids!r}, "
+            f"images={self.images!r}, "
             f"is_active={self.is_active!r}, "
             f"engine_power={self.engine_power!r}, "
             f"weight={self.weight!r}, "

@@ -36,7 +36,7 @@ class Trailer(ProductBase):
             f"price={self.price!r}, "
             f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
-            f"image_ids={self.image_ids!r}, "
+            f"images={self.images!r}, "
             f"is_active={self.is_active!r}, "
             f"full_mass={self.full_mass!r}, "
             f"load_capacity={self.load_capacity!r}, "

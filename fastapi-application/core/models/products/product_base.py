@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Text, String, ForeignKey, JSON
+from sqlalchemy import Text, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship, declared_attr
 
 from core.models.base import Base
@@ -8,6 +8,7 @@ from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from core.models.products.product_type import ProductType
+    from core.models.image_path import ImagePath
 
 
 class ProductBase(
@@ -39,19 +40,23 @@ class ProductBase(
         Text,
         comment="Описание",
     )
-    image_ids: Mapped[list[int]] = mapped_column(
-        JSON,
-        comment="ID изображения",
-    )
     is_active: Mapped[bool] = mapped_column(
         default=True,
         comment="Наличие товара",
     )
 
     @declared_attr
-    def type_id(cls):
+    def images(cls) -> Mapped[list["ImagePath"]]:
+        return relationship(
+            ImagePath,
+            backref=f"{cls.__tablename__.rstrip("s")}",
+            comment="Пути к изображениям товара",
+        )
+
+    @declared_attr
+    def type_id(cls) -> Mapped[int]:
         return mapped_column(ForeignKey("product_types.id"))
 
     @declared_attr
-    def type(cls):
-        return relationship("ProductType", back_populates="products")
+    def type(cls) -> Mapped["ProductType"]:
+        return relationship(ProductType)

@@ -68,7 +68,7 @@ class Boat(ProductBase):
             f"price={self.price!r}, "
             f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
-            f"image_ids={self.image_ids!r}, "
+            f"images={self.images!r}, "
             f"is_active={self.is_active!r}, "
             f"length_hull={self.length_hull!r}, "
             f"width_hull={self.width_hull!r}, "
