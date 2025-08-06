@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import ProductType
@@ -19,7 +19,10 @@ class ProductTypeService:
         """
         # Проверка на существование типа товара
         if await self.repo.product_type_exists_by_name(product_data.name_product_type):
-            raise HTTPException(status_code=400, detail=f"Product type already exists")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Product type already exists",
+            )
 
         new_product_type = await self.repo.create_product(product_data)
         return ProductTypeRead.model_validate(new_product_type)
@@ -31,7 +34,7 @@ class ProductTypeService:
         product_type = await self.repo.product_type_exists_by_name(name_product_type)
         if not product_type:
             raise HTTPException(
-                status_code=404,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Product type with name {name_product_type} not found",
             )
         return ProductTypeRead.model_validate(product_type)
