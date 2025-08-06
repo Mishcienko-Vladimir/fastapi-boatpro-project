@@ -48,9 +48,8 @@ class ProductBase(
     @declared_attr
     def images(cls) -> Mapped[list["ImagePath"]]:
         return relationship(
-            ImagePath,
-            backref=f"{cls.__tablename__.rstrip("s")}",
-            comment="Пути к изображениям товара",
+            "ImagePath",
+            backref=f"{cls.__tablename__.rstrip('s')}",
         )
 
     @declared_attr
@@ -59,4 +58,4 @@ class ProductBase(
 
     @declared_attr
     def type(cls) -> Mapped["ProductType"]:
-        return relationship(ProductType)
+        return relationship("ProductType")
