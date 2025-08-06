@@ -66,6 +66,7 @@ class ApiV1Prefix(BaseModel):
     boats: str = "/boats"
     trailers: str = "/trailers"
     outboard_motors: str = "/outboard-motors"
+    images: str = "/images"
 
 
 class ApiPrefix(BaseModel):
