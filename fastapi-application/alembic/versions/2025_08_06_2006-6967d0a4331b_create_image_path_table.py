@@ -1,8 +1,8 @@
-"""Create ImagePath table
+"""Create image path table
 
-Revision ID: 8cd850c97cc0
+Revision ID: 6967d0a4331b
 Revises: 052243c714f8
-Create Date: 2025-08-06 12:02:10.039594
+Create Date: 2025-08-06 20:06:39.124873
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "8cd850c97cc0"
+revision: str = "6967d0a4331b"
 down_revision: Union[str, Sequence[str], None] = "052243c714f8"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,15 +24,26 @@ def upgrade() -> None:
     op.create_table(
         "image_paths",
         sa.Column(
-            "path",
-            sa.String(length=255),
-            nullable=False,
-            comment="Путь к изображению",
+            "path", sa.String(length=255), nullable=False, comment="Путь к изображению"
         ),
-        sa.Column(
-            "id",
-            sa.Integer(),
-            nullable=False,
+        sa.Column("trailer_id", sa.Integer(), nullable=False),
+        sa.Column("boat_id", sa.Integer(), nullable=False),
+        sa.Column("outboard_motor_id", sa.Integer(), nullable=False),
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["boat_id"],
+            ["boats.id"],
+            name=op.f("fk_image_paths_boat_id_boats"),
+        ),
+        sa.ForeignKeyConstraint(
+            ["outboard_motor_id"],
+            ["outboard_motors.id"],
+            name=op.f("fk_image_paths_outboard_motor_id_outboard_motors"),
+        ),
+        sa.ForeignKeyConstraint(
+            ["trailer_id"],
+            ["trailers.id"],
+            name=op.f("fk_image_paths_trailer_id_trailers"),
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_image_paths")),
     )
@@ -49,14 +60,20 @@ def upgrade() -> None:
         existing_type=sa.INTEGER(),
         nullable=False,
     )
-    op.drop_column("outboard_motors", "image_ids")
+    op.drop_column(
+        "outboard_motors",
+        "image_ids",
+    )
     op.alter_column(
         "trailers",
         "type_id",
         existing_type=sa.INTEGER(),
         nullable=False,
     )
-    op.drop_column("trailers", "image_ids")
+    op.drop_column(
+        "trailers",
+        "image_ids",
+    )
 
 
 def downgrade() -> None:
