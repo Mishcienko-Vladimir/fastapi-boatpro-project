@@ -38,6 +38,15 @@ class ProductManagerCrud:
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
+    async def image_exists_by_path(self, path) -> bool:
+        """
+        Проверяет, существует ли изображение с заданным путем.
+        """
+
+        stmt = select(self.product_db).filter_by(path=path)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
     async def get_product_by_name(self, model_name: str):
         """
         Найдет товар по model_name.
