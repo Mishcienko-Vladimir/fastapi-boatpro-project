@@ -1,11 +1,9 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from pydantic import Field
 
 from .product_base_model import ProductBaseModel
-
-if TYPE_CHECKING:
-    from .product_type import ProductTypeBaseModelModel
+from .product_type import ProductTypeRead
 
 
 class OutboardMotorBaseModel(ProductBaseModel):
@@ -46,6 +44,7 @@ class OutboardMotorUpdate(OutboardMotorBaseModel):
     is_active: Optional[bool] = None
     engine_power: Optional[int] = None
     weight: Optional[int] = None
+    type_id: Optional[int] = None
 
 
 class OutboardMotorRead(OutboardMotorBaseModel):
@@ -59,7 +58,7 @@ class OutboardMotorRead(OutboardMotorBaseModel):
     type_id: int = Field(
         description="ID категории товара",
     )
-    type: "ProductTypeBaseModelModel" = Field(
+    type: ProductTypeRead = Field(
         description="Категория товара",
     )
     created_at: datetime = Field(

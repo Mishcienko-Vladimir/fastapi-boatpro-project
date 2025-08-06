@@ -1,13 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
 
-if TYPE_CHECKING:
-    from .product_base_model import ProductBaseModel
 
-
-class ProductTypeBaseModelModel(BaseSchemaModel):
+class ProductTypeBaseModel(BaseSchemaModel):
     """
     Базовая схема для категории товара
     """
@@ -19,7 +16,7 @@ class ProductTypeBaseModelModel(BaseSchemaModel):
     )
 
 
-class ProductTypeCreate(ProductTypeBaseModelModel):
+class ProductTypeCreate(ProductTypeBaseModel):
     """
     Схемы для создания новой категории товара
     """
@@ -27,7 +24,7 @@ class ProductTypeCreate(ProductTypeBaseModelModel):
     pass
 
 
-class ProductTypeUpdate(ProductTypeBaseModelModel):
+class ProductTypeUpdate(ProductTypeBaseModel):
     """
     Схемы для обновления данных о категории товара
     """
@@ -35,7 +32,7 @@ class ProductTypeUpdate(ProductTypeBaseModelModel):
     name_product_type: Optional[str] = None
 
 
-class ProductTypeRead(ProductTypeBaseModelModel):
+class ProductTypeRead(ProductTypeBaseModel):
     """
     Схемы для чтения данных о категории товара
     """
@@ -43,6 +40,6 @@ class ProductTypeRead(ProductTypeBaseModelModel):
     id: int = Field(
         description="ID категории товара",
     )
-    products: list["ProductBaseModel"] = Field(
-        description="Список товаров в категории",
-    )
+    # products: list["ProductBaseModel"] = Field(
+    #     description="Список товаров в категории",
+    # )

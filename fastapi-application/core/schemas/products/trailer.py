@@ -1,11 +1,9 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from pydantic import Field
 
 from .product_base_model import ProductBaseModel
-
-if TYPE_CHECKING:
-    from .product_type import ProductTypeBaseModelModel
+from .product_type import ProductTypeRead
 
 
 class TrailerBaseModel(ProductBaseModel):
@@ -58,6 +56,7 @@ class TrailerUpdate(TrailerBaseModel):
     load_capacity: Optional[int] = None
     trailer_length: Optional[int] = None
     max_ship_length: Optional[int] = None
+    type_id: Optional[int] = None
 
 
 class TrailerRead(TrailerBaseModel):
@@ -68,10 +67,7 @@ class TrailerRead(TrailerBaseModel):
     id: int = Field(
         description="ID прицепа",
     )
-    type_id: int = Field(
-        description="ID категории товара",
-    )
-    type: "ProductTypeBaseModelModel" = Field(
+    type: ProductTypeRead = Field(
         description="Категория товара",
     )
     created_at: datetime = Field(

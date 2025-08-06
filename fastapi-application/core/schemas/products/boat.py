@@ -1,11 +1,9 @@
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 from pydantic import Field
 
 from .product_base_model import ProductBaseModel
-
-if TYPE_CHECKING:
-    from .product_type import ProductTypeBaseModelModel
+from .product_type import ProductTypeRead
 
 
 class BoatBaseModel(ProductBaseModel):
@@ -106,6 +104,7 @@ class BoatUpdate(BoatBaseModel):
     maximum_engine_power: Optional[int] = None
     height_side_midship: Optional[int] = None
     transom_height: Optional[int] = None
+    type_id: Optional[int] = None
 
 
 class BoatRead(BoatBaseModel):
@@ -116,10 +115,7 @@ class BoatRead(BoatBaseModel):
     id: int = Field(
         description="ID катера",
     )
-    type_id: int = Field(
-        description="ID категории товара",
-    )
-    type: "ProductTypeBaseModelModel" = Field(
+    type: ProductTypeRead = Field(
         description="Категория товара",
     )
     created_at: datetime = Field(

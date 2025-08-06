@@ -32,3 +32,6 @@ class ProductBaseModel(BaseSchemaModel):
     is_active: bool = Field(
         description="Наличие товара",
     )
+    type_id: int = Field(
+        description="ID категории товара",
+    )
