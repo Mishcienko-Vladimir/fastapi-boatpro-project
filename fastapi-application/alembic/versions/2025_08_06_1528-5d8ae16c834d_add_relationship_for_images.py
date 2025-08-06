@@ -1,7 +1,7 @@
 """Add relationship for images
 
 Revision ID: 5d8ae16c834d
-Revises: 8cd850c97cc0
+Revises: 052243c714f8
 Create Date: 2025-08-06 15:28:50.862902
 
 """
@@ -14,7 +14,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "5d8ae16c834d"
-down_revision: Union[str, Sequence[str], None] = "8cd850c97cc0"
+down_revision: Union[str, Sequence[str], None] = "052243c714f8"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

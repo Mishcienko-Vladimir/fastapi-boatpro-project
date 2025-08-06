@@ -1,7 +1,7 @@
 """Create image path table
 
 Revision ID: 6967d0a4331b
-Revises: 052243c714f8
+Revises: 5d8ae16c834d
 Create Date: 2025-08-06 20:06:39.124873
 
 """
@@ -14,7 +14,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = "6967d0a4331b"
-down_revision: Union[str, Sequence[str], None] = "052243c714f8"
+down_revision: Union[str, Sequence[str], None] = "5d8ae16c834d"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
