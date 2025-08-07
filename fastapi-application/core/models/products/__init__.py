@@ -1,13 +1,19 @@
 __all__ = (
-    "ProductType",
-    "ProductBase",
+    "Product",
+    "product_images_association",
+    "Category",
     "Boat",
     "OutboardMotor",
     "Trailer",
+    "ImagePath",
 )
 
-from .product_type import ProductType
-from .product_base import ProductBase
+from .product_base import (
+    Product,
+    product_images_association,
+)
+from .category import Category
 from .boat import Boat
 from .motor import OutboardMotor
 from .trailer import Trailer
+from .image_path import ImagePath
