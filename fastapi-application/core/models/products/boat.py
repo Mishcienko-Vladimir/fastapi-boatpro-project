@@ -1,16 +1,23 @@
-from sqlalchemy import SmallInteger, String
+from sqlalchemy import SmallInteger, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.models.products import ProductBase
+from core.models.products.product_base import Product
 
 
-class Boat(ProductBase):
+class Boat(Product):
     """
     Таблица катеров.
 
-    Уникальность обеспечивается по полю model_name.
+    Уникальность обеспечивается по полю name и id.
     """
 
+    __mapper_args__ = {"polymorphic_identity": "boat"}
+
+    id: Mapped[int] = mapped_column(
+        ForeignKey("products.id"),
+        primary_key=True,
+        doc="Для полиморфной связи с таблицей products",
+    )
     length_hull: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Длина корпуса в мм",
@@ -64,7 +71,7 @@ class Boat(ProductBase):
         return (
             f"{self.__class__.__name__}"
             f"(id={self.id}, "
-            f"model_name={self.model_name!r}, "
+            f"name={self.name!r}, "
             f"price={self.price!r}, "
             f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
@@ -82,8 +89,8 @@ class Boat(ProductBase):
             f"maximum_engine_power={self.maximum_engine_power!r}, "
             f"height_side_midship={self.height_side_midship!r}, "
             f"transom_height={self.transom_height!r}, "
-            f"type_id={self.type_id!r}, "
-            f"type={self.type!r}, "
+            f"category_id={self.category_id!r}, "
+            f"type_product={self.type_product!r}, "
             f"created_at={self.created_at!r}, "
             f"updated_at={self.updated_at!r})"
         )
