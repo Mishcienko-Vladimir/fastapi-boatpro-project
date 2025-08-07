@@ -1,29 +1,57 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Text, String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship, declared_attr
+from sqlalchemy import Text, String, ForeignKey, Table, Integer, Column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.base import Base
 from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
-    from core.models.products.product_type import ProductType
-    from core.models.image_path import ImagePath
+    from core.models.products.category import Category  # noqa
+    from core.models.products.image_path import ImagePath  # noqa
 
 
-class ProductBase(
+# Промежуточная таблица для many-to-many отношения
+product_images_association = Table(
+    "product_images",
+    Base.metadata,
+    Column(
+        "product_id",
+        Integer,
+        ForeignKey("products.id"),
+    ),
+    Column(
+        "image_id",
+        Integer,
+        ForeignKey("image_paths.id"),
+    ),
+)
+
+
+class Product(
     IntIdPkMixin,
     CreatedAtMixin,
     UpdatedAtMixin,
     Base,
 ):
     """
-    Базовая модель для товаров
+    Базовая модель для товаров, с полиморфизмом.
     """
 
-    __abstract__ = True  # Абстрактная модель, не создает таблицу
+    __mapper_args__ = {
+        "polymorphic_identity": "product",
+        "polymorphic_on": "type_product",
+    }
 
-    model_name: Mapped[str] = mapped_column(
+    type_product: Mapped[str] = mapped_column(
+        String(50),
+        doc="Полиморфизм для разделения типов товаров",
+    )
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("categories.id"),
+        doc="Внешний ключ к ID категории",
+    )
+    name: Mapped[str] = mapped_column(
         String(255),
         unique=True,
         index=True,
@@ -45,17 +73,13 @@ class ProductBase(
         comment="Наличие товара",
     )
 
-    @declared_attr
-    def images(cls) -> Mapped[list["ImagePath"]]:
-        return relationship(
-            "ImagePath",
-            backref=f"{cls.__tablename__.rstrip('s')}",
-        )
+    # Many-to-Many отношение к изображениям
+    images: Mapped[list["ImagePath"]] = relationship(
+        secondary=product_images_association,
+        back_populates="products",
+    )
 
-    @declared_attr
-    def type_id(cls) -> Mapped[int]:
-        return mapped_column(ForeignKey("product_types.id"))
-
-    @declared_attr
-    def type(cls) -> Mapped["ProductType"]:
-        return relationship("ProductType")
+    # Обратная ссылка на категорию
+    category: Mapped["Category"] = relationship(
+        back_populates="products",
+    )
