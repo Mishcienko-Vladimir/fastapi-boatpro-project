@@ -1,26 +1,37 @@
-from sqlalchemy import UniqueConstraint, SmallInteger
+from sqlalchemy import UniqueConstraint, SmallInteger, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.models.products import ProductBase
+from core.models.products.product_base import Product
 
 
-class OutboardMotor(ProductBase):
+class OutboardMotor(Product):
     """
     Таблица подвесных лодочных моторов.
 
     Уникальность модели обеспечивается по комбинации:
     - company_name
     - engine_power
-    А также по полю - model_name.
+    А также по полю - name и id.
     """
 
     __table_args__ = (
         UniqueConstraint("company_name", "engine_power", name="uq_company_engine"),
     )
 
+    __mapper_args__ = {"polymorphic_identity": "motor"}
+
+    id: Mapped[int] = mapped_column(
+        ForeignKey("products.id"),
+        primary_key=True,
+        doc="Для полиморфной связи с таблицей products",
+    )
     engine_power: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Мощность двигателя в л.с.",
+    )
+    engine_type: Mapped[str] = mapped_column(
+        Enum("Двухтактный", "Четырехтактный"),
+        comment="Тип двигателя",
     )
     weight: Mapped[int] = mapped_column(
         SmallInteger,
@@ -31,16 +42,17 @@ class OutboardMotor(ProductBase):
         return (
             f"{self.__class__.__name__}"
             f"(id={self.id}, "
-            f"model_name={self.model_name!r},"
+            f"name={self.name!r}, "
             f"price={self.price!r}, "
             f"company_name={self.company_name!r}, "
             f"description={self.description!r}, "
             f"images={self.images!r}, "
             f"is_active={self.is_active!r}, "
             f"engine_power={self.engine_power!r}, "
+            f"engine_type={self.engine_type!r}, "
             f"weight={self.weight!r}, "
-            f"type_id={self.type_id!r}, "
-            f"type={self.type!r}, "
+            f"category_id={self.category_id!r}, "
+            f"type_product={self.type_product!r}, "
             f"created_at={self.created_at!r}, "
             f"updated_at={self.updated_at!r})"
         )
