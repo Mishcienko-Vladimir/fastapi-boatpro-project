@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Optional
 from pydantic import Field
 
+from core.schemas.base_model import BaseSchemaModel
 from .product_base_model import ProductBaseModel
 from .image_path import ImageRead
 from .category import CategoryRead
@@ -80,4 +81,41 @@ class OutboardMotorRead(OutboardMotorBaseModel):
     )
     images: list[ImageRead] = Field(
         description="Список изображений",
+    )
+
+
+class OutboardMotorSummarySchema(BaseSchemaModel):
+    """
+    Краткая информация о лодочном моторе.
+    """
+
+    id: int = Field(
+        description="ID товара",
+    )
+    name: str = Field(
+        min_length=1,
+        max_length=255,
+        description="Название модели",
+    )
+    price: int = Field(
+        gt=0,
+        description="Цена в рублях",
+    )
+    company_name: str = Field(
+        min_length=1,
+        max_length=100,
+        description="Название производителя",
+    )
+    engine_power: int = Field(
+        gt=0,
+        lt=1000,
+        description="Мощность двигателя в л.с.",
+    )
+    weight: int = Field(
+        gt=0,
+        lt=1000,
+        description="Вес мотора в кг",
+    )
+    image: ImageRead = Field(
+        description="Главное изображение",
     )
