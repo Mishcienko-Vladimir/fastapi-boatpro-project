@@ -18,7 +18,7 @@ class OutboardMotor(Product):
         UniqueConstraint("company_name", "engine_power", name="uq_company_engine"),
     )
 
-    __mapper_args__ = {"polymorphic_identity": "motor"}
+    __mapper_args__ = {"polymorphic_identity": "outboard_motor"}
 
     id: Mapped[int] = mapped_column(
         ForeignKey("products.id"),
