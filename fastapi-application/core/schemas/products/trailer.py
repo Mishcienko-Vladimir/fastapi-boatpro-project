@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import Field
 
+from core.schemas.base_model import BaseSchemaModel
 from .product_base_model import ProductBaseModel
 from .image_path import ImageRead
 from .category import CategoryRead
@@ -25,12 +26,12 @@ class TrailerBaseModel(ProductBaseModel):
     trailer_length: int = Field(
         gt=0,
         lt=32767,
-        description="Длина прицепа в мм",
+        description="Длина прицепа в см",
     )
     max_ship_length: int = Field(
         gt=0,
         lt=32767,
-        description="Максимальная длина перевозимого судна в мм",
+        description="Максимальная длина перевозимого судна в см",
     )
 
 
@@ -78,4 +79,41 @@ class TrailerRead(TrailerBaseModel):
     )
     images: list[ImageRead] = Field(
         description="Список изображений",
+    )
+
+
+class TrailerSummarySchema(BaseSchemaModel):
+    """
+    Краткая информация о прицепе.
+    """
+
+    id: int = Field(
+        description="ID товара",
+    )
+    name: str = Field(
+        min_length=1,
+        max_length=255,
+        description="Название модели",
+    )
+    price: int = Field(
+        gt=0,
+        description="Цена в рублях",
+    )
+    company_name: str = Field(
+        min_length=1,
+        max_length=100,
+        description="Название производителя",
+    )
+    full_mass: int = Field(
+        gt=0,
+        lt=32767,
+        description="Полный вес прицепа в кг",
+    )
+    max_ship_length: int = Field(
+        gt=0,
+        lt=32767,
+        description="Максимальная длина перевозимого судна в см",
+    )
+    image: ImageRead = Field(
+        description="Главное изображение",
     )
