@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, SmallInteger, ForeignKey, Enum, String
+from sqlalchemy import UniqueConstraint, SmallInteger, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.products.product_base import Product
@@ -34,7 +34,7 @@ class OutboardMotor(Product):
         comment="Название производителя",
     )
     engine_type: Mapped[str] = mapped_column(
-        Enum("Двухтактный", "Четырехтактный"),
+        String(20),
         comment="Тип двигателя",
     )
     weight: Mapped[int] = mapped_column(
