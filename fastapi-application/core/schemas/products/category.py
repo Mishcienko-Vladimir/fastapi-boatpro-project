@@ -3,6 +3,8 @@ from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
 from .boat import BoatSummarySchema
+from .motor import OutboardMotorSummarySchema
+from .trailer import TrailerSummarySchema
 
 
 class CategoryBaseModel(BaseSchemaModel):
@@ -48,14 +50,41 @@ class CategoryRead(CategoryBaseModel):
     )
 
 
-class CategoryListBoat(CategoryBaseModel):
+class CategoryListBaseModel(CategoryBaseModel):
     """
-    Список всех товаров в категории катера и их количество.
+    Базовая модель для схемы чтения списка категорий товара
     """
 
     products_count: int = Field(
         description="Количество товаров в категории",
     )
+
+
+class CategoryListBoat(CategoryListBaseModel):
+    """
+    Список всех товаров в категории катера и их количество.
+    """
+
     products_preview: list[BoatSummarySchema] = Field(
+        description="Превью товаров в категории",
+    )
+
+
+class CategoryListOutboardMotor(CategoryListBaseModel):
+    """
+    Список всех товаров в категории лодочные моторы и их количество.
+    """
+
+    products_preview: list[OutboardMotorSummarySchema] = Field(
+        description="Превью товаров в категории",
+    )
+
+
+class CategoryListTrailer(CategoryListBaseModel):
+    """
+    Список всех товаров в категории прицепы и их количество.
+    """
+
+    products_preview: list[TrailerSummarySchema] = Field(
         description="Превью товаров в категории",
     )
