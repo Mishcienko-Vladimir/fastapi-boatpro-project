@@ -28,11 +28,11 @@ class Trailer(Product):
     )
     trailer_length: Mapped[int] = mapped_column(
         SmallInteger,
-        comment="Длина прицепа в мм",
+        comment="Длина прицепа в см",
     )
     max_ship_length: Mapped[int] = mapped_column(
         SmallInteger,
-        comment="Максимальная длина перевозимого судна в мм",
+        comment="Максимальная длина перевозимого судна в см",
     )
 
     def __str__(self):

@@ -20,11 +20,11 @@ class Boat(Product):
     )
     length_hull: Mapped[int] = mapped_column(
         SmallInteger,
-        comment="Длина корпуса в мм",
+        comment="Длина корпуса в см",
     )
     width_hull: Mapped[int] = mapped_column(
         SmallInteger,
-        comment="Ширина корпуса в мм",
+        comment="Ширина корпуса в см",
     )
     weight: Mapped[int] = mapped_column(
         SmallInteger,
