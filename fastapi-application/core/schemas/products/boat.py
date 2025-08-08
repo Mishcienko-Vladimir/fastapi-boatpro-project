@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import Field
 
+from core.schemas.base_model import BaseSchemaModel
 from .product_base_model import ProductBaseModel
 from .image_path import ImageRead
 from .category import CategoryRead
@@ -15,12 +16,12 @@ class BoatBaseModel(ProductBaseModel):
     length_hull: int = Field(
         gt=0,
         lt=30000,
-        description="Длина корпуса в мм",
+        description="Длина корпуса в см",
     )
     width_hull: int = Field(
         gt=0,
         lt=10000,
-        description="Ширина корпуса в мм",
+        description="Ширина корпуса в см",
     )
     weight: int = Field(
         gt=0,
@@ -126,4 +127,51 @@ class BoatRead(BoatBaseModel):
     )
     images: list[ImageRead] = Field(
         description="Список изображений",
+    )
+
+
+class BoatSummarySchema(BaseSchemaModel):
+    """
+    Краткая информация о катере.
+    """
+
+    id: int = Field(
+        description="ID товара",
+    )
+    name: str = Field(
+        min_length=1,
+        max_length=255,
+        description="Название модели",
+    )
+    price: int = Field(
+        gt=0,
+        description="Цена в рублях",
+    )
+    company_name: str = Field(
+        min_length=1,
+        max_length=100,
+        description="Название производителя",
+    )
+    length_hull: int = Field(
+        gt=0,
+        lt=30000,
+        description="Длина корпуса в см",
+    )
+    width_hull: int = Field(
+        gt=0,
+        lt=10000,
+        description="Ширина корпуса в см",
+    )
+    weight: int = Field(
+        gt=0,
+        lt=32767,
+        description="Вес катера в кг",
+    )
+    capacity: int = Field(
+        gt=0,
+        lt=100,
+        description="Количество мест",
+    )
+    image: ImageRead = Field(
+        description="Главное изображение",
     )
