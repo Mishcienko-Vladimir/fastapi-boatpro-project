@@ -4,7 +4,7 @@ from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
 from .product_base_model import ProductBaseModel
-from .image_path import ImageRead
+from .image_path import ImagePathRead
 from .category import CategoryRead
 
 
@@ -77,7 +77,7 @@ class TrailerRead(TrailerBaseModel):
     updated_at: datetime = Field(
         description="Дата последнего обновления",
     )
-    images: list[ImageRead] = Field(
+    images: list[ImagePathRead] = Field(
         description="Список изображений",
     )
 
@@ -114,6 +114,6 @@ class TrailerSummarySchema(BaseSchemaModel):
         lt=32767,
         description="Максимальная длина перевозимого судна в см",
     )
-    image: ImageRead = Field(
+    image: ImagePathRead = Field(
         description="Главное изображение",
     )
