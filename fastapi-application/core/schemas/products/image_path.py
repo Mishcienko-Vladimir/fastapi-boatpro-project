@@ -1,3 +1,4 @@
+from fastapi import UploadFile
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
@@ -13,20 +14,11 @@ class ImagePathBaseModel(BaseSchemaModel):
         max_length=255,
         description="Путь к изображению",
     )
-    trailer_id: int | None = Field(
-        description="ID прицепа",
-    )
-    boat_id: int | None = Field(
-        description="ID лодки",
-    )
-    outboard_motor_id: int | None = Field(
-        description="ID мотора",
-    )
 
 
 class ImagePathCreate(ImagePathBaseModel):
     """
-    Схемы для создания новому пути к изображению.
+    Схема для создания новому пути к изображению.
     """
 
     pass
@@ -34,18 +26,20 @@ class ImagePathCreate(ImagePathBaseModel):
 
 class ImagePathUpdate(ImagePathBaseModel):
     """
-    Схемы для обновления данных пути к изображению.
+    Схема для обновления новых и удаления старых изображений.
     """
 
-    path: str | None = None
-    trailer_id: int | None = None
-    boat_id: int | None = None
-    outboard_motor_id: int | None = None
+    remove_images: set[int] = Field(
+        description="Id изображений, для удаления",
+    )
+    add_images: list[UploadFile] = Field(
+        description="Новые изображения",
+    )
 
 
 class ImagePathRead(ImagePathBaseModel):
     """
-    Схемы для чтения данных пути к изображению.
+    Схема для чтения пути к изображению.
     """
 
     id: int = Field(
