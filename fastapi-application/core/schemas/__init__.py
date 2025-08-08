@@ -3,9 +3,6 @@ __add__ = (
     "UserCreate",
     "UserUpdate",
     "UserRead",
-    "ImagePathCreate",
-    "ImagePathUpdate",
-    "ImagePathRead",
     "BaseSchemaModel",
 )
 
@@ -14,10 +11,5 @@ from .user import (
     UserCreate,
     UserUpdate,
     UserRead,
-)
-from .image_path import (
-    ImagePathCreate,
-    ImagePathUpdate,
-    ImagePathRead,
 )
 from .base_model import BaseSchemaModel
