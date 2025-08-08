@@ -3,7 +3,8 @@ from typing import Optional
 from pydantic import Field
 
 from .product_base_model import ProductBaseModel
-from .product_type import ProductTypeRead
+from .image_path import ImageRead
+from .category import CategoryRead
 
 
 class TrailerBaseModel(ProductBaseModel):
@@ -46,17 +47,16 @@ class TrailerUpdate(TrailerBaseModel):
     Схемы для обновления данных прицепа
     """
 
-    model_name: Optional[str] = None
+    category_id: Optional[int] = None
+    name: Optional[str] = None
     price: Optional[int] = None
     company_name: Optional[str] = None
     description: Optional[str] = None
-    image_id: Optional[int] = None
     is_active: Optional[bool] = None
     full_mass: Optional[int] = None
     load_capacity: Optional[int] = None
     trailer_length: Optional[int] = None
     max_ship_length: Optional[int] = None
-    type_id: Optional[int] = None
 
 
 class TrailerRead(TrailerBaseModel):
@@ -67,12 +67,15 @@ class TrailerRead(TrailerBaseModel):
     id: int = Field(
         description="ID прицепа",
     )
-    type: ProductTypeRead = Field(
-        description="Категория товара",
+    category: CategoryRead = Field(
+        description="Категория",
     )
     created_at: datetime = Field(
         description="Дата создания",
     )
     updated_at: datetime = Field(
         description="Дата последнего обновления",
+    )
+    images: list[ImageRead] = Field(
+        description="Список изображений",
     )

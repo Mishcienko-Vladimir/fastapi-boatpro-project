@@ -1,3 +1,4 @@
+from fastapi import UploadFile
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
@@ -8,7 +9,10 @@ class ProductBaseModel(BaseSchemaModel):
     Базовая модель для товаров.
     """
 
-    model_name: str = Field(
+    category_id: int = Field(
+        description="ID категории товара",
+    )
+    name: str = Field(
         min_length=1,
         max_length=255,
         description="Название модели",
@@ -26,12 +30,9 @@ class ProductBaseModel(BaseSchemaModel):
         min_length=0,
         description="Описание",
     )
-    image_id: list[int] = Field(
-        description="ID изображения",
-    )
     is_active: bool = Field(
         description="Наличие товара",
     )
-    type_id: int = Field(
-        description="ID категории товара",
+    images: list[UploadFile] = Field(
+        description="Прием изображений",
     )
