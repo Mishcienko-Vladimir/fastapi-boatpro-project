@@ -1,9 +1,5 @@
-from typing import TYPE_CHECKING, Annotated
-from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from core.models import db_helper
 
 
 class ProductManagerCrud:
@@ -29,30 +25,12 @@ class ProductManagerCrud:
         await self.session.commit()
         return new_product
 
-    async def product_type_exists_by_name(self, name) -> bool:
+    async def get_product_by_name(self, name: str):
         """
-        Проверяет, существует ли тип товара с заданным именем.
-        """
-
-        stmt = select(self.product_db).filter_by(name_product_type=name)
-        result = await self.session.execute(stmt)
-        return result.scalars().first()
-
-    async def image_exists_by_path(self, path) -> bool:
-        """
-        Проверяет, существует ли изображение с заданным путем.
+        Найдет товар по name.
         """
 
-        stmt = select(self.product_db).filter_by(path=path)
-        result = await self.session.execute(stmt)
-        return result.scalars().first()
-
-    async def get_product_by_name(self, model_name: str):
-        """
-        Найдет товар по model_name.
-        """
-
-        stmt = select(self.product_db).filter_by(model_name=model_name)
+        stmt = select(self.product_db).filter_by(name=name)
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
@@ -60,6 +38,10 @@ class ProductManagerCrud:
         """
         Получает товар по id.
         """
+
+        # stmt = select(self.product_db).filter_by(id=product_id)
+        # result = await self.session.execute(stmt)
+        # return result.scalars().first()
 
         return await self.session.get(self.product_db, product_id)
 
@@ -72,7 +54,7 @@ class ProductManagerCrud:
         result = await self.session.scalars(stmt)
         return result.all()
 
-    async def update_product(self, product_update_schema, product_id: int):
+    async def update_product_by_id(self, product_update_schema, product_id: int):
         """
         Обновляет товар по id.
         """
@@ -87,14 +69,14 @@ class ProductManagerCrud:
             return product
         return None
 
-    # async def delete_product(self, product_id: int) -> bool:
-    #     """
-    #     Удаляет товар по id.
-    #     """
-    #
-    #     product = await self.get_product_by_id(product_id)
-    #     if product:
-    #         await self.session.delete(product)
-    #         await self.session.commit()
-    #         return True
-    #     return False
+    async def delete_product_by_id(self, product_id: int) -> bool:
+        """
+        Удаляет товар по id.
+        """
+
+        product = await self.get_product_by_id(product_id)
+        if product:
+            await self.session.delete(product)
+            await self.session.commit()
+            return True
+        return False
