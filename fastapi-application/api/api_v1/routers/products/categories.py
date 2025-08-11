@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import CategoryService
 
-from core.schemas.products import CategoryCreate, CategoryRead
+from core.schemas.products import CategoryCreate, CategoryRead, CategoryUpdate
 from core.models import db_helper
 
 
@@ -46,3 +46,13 @@ async def get_categories(
 ) -> list[CategoryRead]:
     _service = CategoryService(session)
     return await _service.get_categories()
+
+
+@router.patch("/{category_id}", status_code=200, response_model=CategoryRead)
+async def update_category_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    category_id: int,
+    category_data: CategoryUpdate,
+) -> CategoryRead:
+    _service = CategoryService(session)
+    return await _service.update_category_by_id(category_id, category_data)
