@@ -20,7 +20,9 @@ async def create_category(
     return await _service.create_category(category_data)
 
 
-@router.get("/{name_category}", status_code=200, response_model=CategoryRead)
+@router.get(
+    "/category-name/{name_category}", status_code=200, response_model=CategoryRead
+)
 async def get_category_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     name_category: str,
@@ -29,10 +31,18 @@ async def get_category_by_name(
     return await _service.get_category_by_name(name_category)
 
 
-@router.get("/{category_id}", status_code=200, response_model=CategoryRead)
+@router.get("/category-id/{category_id}", status_code=200, response_model=CategoryRead)
 async def get_category_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     category_id: int,
 ) -> CategoryRead:
     _service = CategoryService(session)
     return await _service.get_category_by_id(category_id)
+
+
+@router.get("/", status_code=200, response_model=list[CategoryRead])
+async def get_categories(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[CategoryRead]:
+    _service = CategoryService(session)
+    return await _service.get_categories()
