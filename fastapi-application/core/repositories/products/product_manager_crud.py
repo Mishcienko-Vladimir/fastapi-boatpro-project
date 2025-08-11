@@ -39,10 +39,6 @@ class ProductManagerCrud:
         Получает товар по id.
         """
 
-        # stmt = select(self.product_db).filter_by(id=product_id)
-        # result = await self.session.execute(stmt)
-        # return result.scalars().first()
-
         return await self.session.get(self.product_db, product_id)
 
     async def get_all_products(self):
