@@ -82,3 +82,16 @@ class CategoryService:
                 detail=f"Category with id {category_id} not found",
             )
         return CategoryRead.model_validate(updated_category)
+
+    async def delete_category_by_id(self, category_id: int) -> None:
+        """
+        Удаление категории по id.
+        """
+
+        category = await self.repo.delete_product_by_id(category_id)
+        if not category:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Category with id {category_id} not found",
+            )
+        return None
