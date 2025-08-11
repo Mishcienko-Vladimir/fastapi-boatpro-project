@@ -18,6 +18,9 @@ __all__ = (
     "TrailerUpdate",
     "TrailerRead",
     "TrailerSummarySchema",
+    "ImagePathCreate",
+    "ImagePathUpdate",
+    "ImagePathRead",
 )
 
 from .product_base_model import (
@@ -48,4 +51,9 @@ from .trailer import (
     TrailerUpdate,
     TrailerRead,
     TrailerSummarySchema,
+)
+from .image_path import (
+    ImagePathCreate,
+    ImagePathUpdate,
+    ImagePathRead,
 )
