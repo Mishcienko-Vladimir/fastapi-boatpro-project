@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import Category
-from core.schemas.products import CategoryCreate, CategoryRead
+from core.schemas.products import CategoryCreate, CategoryRead, CategoryUpdate
 from core.repositories.products import ProductManagerCrud
 
 
@@ -63,3 +63,22 @@ class CategoryService:
                 detail=f"Categories are missing",
             )
         return [CategoryRead.model_validate(category) for category in categories]
+
+    async def update_category_by_id(
+        self,
+        category_id: int,
+        category_data: CategoryUpdate,
+    ) -> CategoryRead:
+        """
+        Обновление категории по id.
+        """
+
+        updated_category = await self.repo.update_product_by_id(
+            category_id, category_data
+        )
+        if not updated_category:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Category with id {category_id} not found",
+            )
+        return CategoryRead.model_validate(updated_category)
