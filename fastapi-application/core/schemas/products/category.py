@@ -1,10 +1,12 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
-from .boat import BoatSummarySchema
-from .motor import OutboardMotorSummarySchema
-from .trailer import TrailerSummarySchema
+
+if TYPE_CHECKING:
+    from .boat import BoatSummarySchema
+    from .motor import OutboardMotorSummarySchema
+    from .trailer import TrailerSummarySchema
 
 
 class CategoryBaseModel(BaseSchemaModel):
@@ -36,7 +38,7 @@ class CategoryUpdate(CategoryBaseModel):
     Схемы для обновления данных о категории товара
     """
 
-    name_product_type: Optional[str] = None
+    name: Optional[str] = None
     description: Optional[str] = None
 
 
@@ -65,7 +67,7 @@ class CategoryListBoat(CategoryListBaseModel):
     Список всех товаров в категории катера и их количество.
     """
 
-    products_preview: list[BoatSummarySchema] = Field(
+    products_preview: list["BoatSummarySchema"] = Field(
         description="Превью товаров в категории",
     )
 
@@ -75,7 +77,7 @@ class CategoryListOutboardMotor(CategoryListBaseModel):
     Список всех товаров в категории лодочные моторы и их количество.
     """
 
-    products_preview: list[OutboardMotorSummarySchema] = Field(
+    products_preview: list["OutboardMotorSummarySchema"] = Field(
         description="Превью товаров в категории",
     )
 
@@ -85,6 +87,6 @@ class CategoryListTrailer(CategoryListBaseModel):
     Список всех товаров в категории прицепы и их количество.
     """
 
-    products_preview: list[TrailerSummarySchema] = Field(
+    products_preview: list["TrailerSummarySchema"] = Field(
         description="Превью товаров в категории",
     )
