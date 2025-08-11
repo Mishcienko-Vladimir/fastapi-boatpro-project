@@ -1,4 +1,4 @@
-from sqlalchemy import UniqueConstraint, SmallInteger, ForeignKey, String
+from sqlalchemy import SmallInteger, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.products.product_base import Product
@@ -8,15 +8,8 @@ class OutboardMotor(Product):
     """
     Таблица подвесных лодочных моторов.
 
-    Уникальность модели обеспечивается по комбинации:
-    - company_name
-    - engine_power
-    А также по полю - name и id.
+    Уникальность модели обеспечивается по полю - name и id.
     """
-
-    __table_args__ = (
-        UniqueConstraint("company_name", "engine_power", name="uq_company_engine"),
-    )
 
     __mapper_args__ = {"polymorphic_identity": "outboard_motor"}
 
@@ -28,10 +21,6 @@ class OutboardMotor(Product):
     engine_power: Mapped[int] = mapped_column(
         SmallInteger,
         comment="Мощность двигателя в л.с.",
-    )
-    company_name: Mapped[str] = mapped_column(
-        String(100),
-        comment="Название производителя",
     )
     engine_type: Mapped[str] = mapped_column(
         String(20),
