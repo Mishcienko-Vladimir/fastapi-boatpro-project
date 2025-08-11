@@ -56,3 +56,12 @@ async def update_category_by_id(
 ) -> CategoryRead:
     _service = CategoryService(session)
     return await _service.update_category_by_id(category_id, category_data)
+
+
+@router.delete("/{category_id}", status_code=204)
+async def delete_category_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    category_id: int,
+) -> None:
+    _service = CategoryService(session)
+    return await _service.delete_category_by_id(category_id)
