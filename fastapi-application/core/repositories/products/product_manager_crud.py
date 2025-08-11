@@ -50,7 +50,11 @@ class ProductManagerCrud:
         result = await self.session.scalars(stmt)
         return result.all()
 
-    async def update_product_by_id(self, product_update_schema, product_id: int):
+    async def update_product_by_id(
+        self,
+        product_id: int,
+        product_update_schema,
+    ):
         """
         Обновляет товар по id.
         """
