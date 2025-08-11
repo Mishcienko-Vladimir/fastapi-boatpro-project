@@ -29,6 +29,7 @@ class CategoryService:
         """
         Получение категории по имени.
         """
+
         category = await self.repo.get_product_by_name(name_category)
         if not category:
             raise HTTPException(
@@ -41,6 +42,7 @@ class CategoryService:
         """
         Получение категории по id.
         """
+
         category = await self.repo.get_product_by_id(category_id)
         if not category:
             raise HTTPException(
@@ -48,3 +50,16 @@ class CategoryService:
                 detail=f"Category with id {category_id} not found",
             )
         return CategoryRead.model_validate(category)
+
+    async def get_categories(self) -> list[CategoryRead]:
+        """
+        Получение всех категорий.
+        """
+
+        categories = await self.repo.get_all_products()
+        if not categories:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Categories are missing",
+            )
+        return [CategoryRead.model_validate(category) for category in categories]
