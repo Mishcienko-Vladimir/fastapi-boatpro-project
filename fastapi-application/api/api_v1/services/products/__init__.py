@@ -1,3 +1,7 @@
-__all__ = ("CategoryService",)
+__all__ = (
+    "CategoryService",
+    "TrailerService",
+)
 
 from .category import CategoryService
+from .trailer import TrailerService
