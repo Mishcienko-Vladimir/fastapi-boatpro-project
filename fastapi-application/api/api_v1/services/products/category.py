@@ -19,7 +19,7 @@ class CategoryService:
         if await self.repo.get_product_by_name(category_data.name):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Category already exists",
+                detail=f"Category with name {category_data.name} already exists",
             )
 
         new_category = await self.repo.create_product(category_data)
@@ -74,7 +74,8 @@ class CategoryService:
         """
 
         updated_category = await self.repo.update_product_by_id(
-            category_id, category_data
+            category_id,
+            category_data,
         )
         if not updated_category:
             raise HTTPException(
