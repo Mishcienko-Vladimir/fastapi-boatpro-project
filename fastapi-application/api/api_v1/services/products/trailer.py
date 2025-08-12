@@ -1,7 +1,7 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models.products import Trailer
+from core.models.products import Trailer, ImagePath
 from core.schemas.products import TrailerCreate, TrailerUpdate, TrailerRead
 from core.repositories.products import ProductManagerCrud
 
@@ -11,10 +11,15 @@ class TrailerService:
     def __init__(self, session: AsyncSession):
         self.repo = ProductManagerCrud(session, Trailer)
 
-    async def create_trailer(self, trailer_data: TrailerCreate) -> TrailerRead:
+    async def create_trailer(
+        self,
+        trailer_data: TrailerCreate,
+        images: list[UploadFile],
+    ) -> TrailerRead:
         """
-        Создание нового прицепа.
+        Создание нового прицепа с изображениями.
         """
+
         # Проверка на существование прицепа
         if await self.repo.get_product_by_name(trailer_data.name):
             raise HTTPException(
@@ -22,7 +27,11 @@ class TrailerService:
                 detail=f"Trailer with name {trailer_data.name} already exists",
             )
 
-        new_trailer = await self.repo.create_product(trailer_data)
+        new_trailer = await self.repo.create_product_with_images(
+            trailer_data,
+            images,
+            ImagePath,
+        )
         return TrailerRead.model_validate(new_trailer)
 
     async def get_trailer_by_name(self, name_trailer: str) -> TrailerRead:
