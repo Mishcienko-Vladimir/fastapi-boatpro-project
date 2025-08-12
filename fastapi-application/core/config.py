@@ -108,6 +108,12 @@ class WebhookConfig(BaseModel):
     webhook_url: str
 
 
+class PathImageUploadDir(BaseModel):
+    """Путь до папки с изображениями"""
+
+    path: Path = BASE_DIR / "static" / "images"
+
+
 class AccessToken(BaseModel):
     """Настройки токена"""
 
@@ -135,6 +141,7 @@ class Settings(BaseSettings):
     db: DataBaseConfig
     access_token: AccessToken
     webhook: WebhookConfig
+    image_upload_dir: PathImageUploadDir = PathImageUploadDir()
 
 
 settings = Settings()
