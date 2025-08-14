@@ -33,6 +33,3 @@ class ProductBaseModel(BaseSchemaModel):
     is_active: bool = Field(
         description="Наличие товара",
     )
-    images: list[UploadFile] = Field(
-        description="Прием изображений",
-    )
