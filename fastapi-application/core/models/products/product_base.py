@@ -1,31 +1,14 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Text, String, ForeignKey, Table, Integer, Column
+from sqlalchemy import Text, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.base import Base
 from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
-    from core.models.products.category import Category  # noqa
-    from core.models.products.image_path import ImagePath  # noqa
-
-
-# Промежуточная таблица для many-to-many отношения
-product_images_association = Table(
-    "product_images",
-    Base.metadata,
-    Column(
-        "product_id",
-        Integer,
-        ForeignKey("products.id"),
-    ),
-    Column(
-        "image_id",
-        Integer,
-        ForeignKey("image_paths.id"),
-    ),
-)
+    from core.models.products import Category  # noqa
+    from core.models.products import ImagePath  # noqa
 
 
 class Product(
@@ -75,7 +58,7 @@ class Product(
 
     # Many-to-Many отношение к изображениям
     images: Mapped[list["ImagePath"]] = relationship(
-        secondary=product_images_association,
+        secondary="product_images_associations",
         back_populates="products",
     )
 

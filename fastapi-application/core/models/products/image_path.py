@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.base import Base
 from core.models.mixins import IntIdPkMixin
-from core.models.products.product_base import product_images_association
 
 if TYPE_CHECKING:
     from core.models.products.product_base import Product  # noqa
@@ -22,7 +21,7 @@ class ImagePath(IntIdPkMixin, Base):
 
     # Many-to-Many обратная ссылка
     products: Mapped[list["Product"]] = relationship(
-        secondary=product_images_association,
+        secondary="product_images_associations",
         back_populates="images",
     )
 
