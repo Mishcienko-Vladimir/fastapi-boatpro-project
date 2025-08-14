@@ -22,7 +22,7 @@ class CategoryService:
                 detail=f"Category with name {category_data.name} already exists",
             )
 
-        new_category = await self.repo.create_product(category_data)
+        new_category = await self.repo.create_category(category_data)
         return CategoryRead.model_validate(new_category)
 
     async def get_category_by_name(self, name_category: str) -> CategoryRead:
