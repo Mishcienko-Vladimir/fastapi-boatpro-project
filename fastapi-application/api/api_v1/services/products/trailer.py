@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status, UploadFile
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import Trailer, ImagePath
@@ -15,7 +16,7 @@ class TrailerService:
         self,
         trailer_data: TrailerCreate,
         images: list[UploadFile],
-    ) -> TrailerRead:
+    ):
         """
         Создание нового прицепа с изображениями.
         """
@@ -32,14 +33,18 @@ class TrailerService:
             images,
             ImagePath,
         )
-        return TrailerRead.model_validate(new_trailer)
+        return new_trailer
 
     async def get_trailer_by_name(self, name_trailer: str) -> TrailerRead:
         """
         Получение прицепа по названию.
         """
 
-        trailer = await self.repo.get_product_by_name(name_trailer)
+        # Используем joinedload для предварительной загрузки category и images
+        trailer = await self.repo.get_product_by_name(
+            name_trailer,
+            options=[joinedload(Trailer.category), joinedload(Trailer.images)],
+        )
         if not trailer:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -52,7 +57,11 @@ class TrailerService:
         Получение прицепа по id.
         """
 
-        trailer = await self.repo.get_product_by_id(trailer_id)
+        # Используем joinedload для предварительной загрузки category и images
+        trailer = await self.repo.get_product_by_id(
+            trailer_id,
+            options=[joinedload(Trailer.category), joinedload(Trailer.images)],
+        )
         if not trailer:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -65,7 +74,13 @@ class TrailerService:
         Получение всех прицепов.
         """
 
-        trailers = await self.repo.get_all_products()
+        # Используем joinedload для предварительной загрузки category и images
+        trailers = await self.repo.get_all_products(
+            options=[
+                joinedload(Trailer.category),
+                joinedload(Trailer.images),
+            ]
+        )
         if not trailers:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
