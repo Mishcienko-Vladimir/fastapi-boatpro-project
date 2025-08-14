@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import TrailerService
@@ -12,12 +12,81 @@ from core.models import db_helper
 router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы"])
 
 
-@router.post("/", status_code=201, response_model=TrailerRead)
+@router.post("/", status_code=201)
 async def create_trailer(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    trailer_data: TrailerCreate,
-    images: list[UploadFile] = File(...),
-) -> TrailerRead:
+    category_id: int = Form(
+        ...,
+        description="ID категории товара",
+    ),
+    name: str = Form(
+        ...,
+        min_length=1,
+        max_length=255,
+        description="Название модели",
+    ),
+    price: int = Form(
+        ...,
+        gt=0,
+        description="Цена в рублях",
+    ),
+    company_name: str = Form(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Название производителя",
+    ),
+    description: str = Form(
+        ...,
+        min_length=0,
+        description="Описание",
+    ),
+    is_active: bool = Form(
+        ...,
+        description="Наличие товара",
+    ),
+    full_mass: int = Form(
+        ...,
+        gt=0,
+        lt=32767,
+        description="Полный вес прицепа в кг",
+    ),
+    load_capacity: int = Form(
+        ...,
+        gt=0,
+        lt=32767,
+        description="Грузоподъемность в кг",
+    ),
+    trailer_length: int = Form(
+        ...,
+        gt=0,
+        lt=32767,
+        description="Длина прицепа в см",
+    ),
+    max_ship_length: int = Form(
+        ...,
+        gt=0,
+        lt=32767,
+        description="Максимальная длина перевозимого судна в см",
+    ),
+    images: list[UploadFile] = File(
+        ...,
+        description="Изображения товара",
+    ),
+):
+    trailer_data = {
+        "category_id": category_id,
+        "name": name,
+        "price": price,
+        "company_name": company_name,
+        "description": description,
+        "is_active": is_active,
+        "full_mass": full_mass,
+        "load_capacity": load_capacity,
+        "trailer_length": trailer_length,
+        "max_ship_length": max_ship_length,
+    }
+    trailer_data = TrailerCreate(**trailer_data)
     _service = TrailerService(session)
     return await _service.create_trailer(trailer_data, images)
 
