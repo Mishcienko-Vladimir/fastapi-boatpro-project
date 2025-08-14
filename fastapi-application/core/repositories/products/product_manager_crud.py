@@ -18,17 +18,17 @@ class ProductManagerCrud:
         product_db,
     ):
         self.session = session
-        self.product_db = product_db
+        self.product_db = product_db  # Тип модели SQLAlchemy (Boat, Trailer и т.д.)
 
-    async def create_product(self, product_data):
+    async def create_category(self, category_data):
         """
-        Создает новый товар.
+        Создает новую категорию.
         """
 
-        new_product = self.product_db(**product_data.model_dump())
-        self.session.add(new_product)
+        new_category = self.product_db(**category_data.model_dump())
+        self.session.add(new_category)
         await self.session.commit()
-        return new_product
+        return new_category
 
     async def create_product_with_images(self, product_data, images, image_path_db):
         """
@@ -42,44 +42,54 @@ class ProductManagerCrud:
         for image in images:
             file_path = f"{settings.image_upload_dir.path}/{uuid4().hex}.jpg"
 
-            # Сохранение изображений в папку images
+            # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
             async with aiofiles.open(file_path, "wb") as file:
                 await file.write(image.file.read())
 
+            # Сокращаем путь до /static/images/...
+            shortened_path = file_path.partition("fastapi-application")[2]
+
             # Создаем запись в таблицу ImagePath
-            image_path = image_path_db(path=file_path)
+            image_path = image_path_db(path=shortened_path)
             self.session.add(image_path)
 
             # Добавляем изображение к прицепу
-            self.product_db.images.append(image_path)
-
+            new_product.images.append(image_path)
         await self.session.commit()
-        return new_product
+        return {"message": "Product and images created successfully"}
 
-    async def get_product_by_name(self, name: str):
+    async def get_product_by_name(self, name: str, options=None):
         """
         Найдет товар по name.
         """
 
         stmt = select(self.product_db).filter_by(name=name)
+        if options:
+            stmt = stmt.options(*options)
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def get_product_by_id(self, product_id: int):
+    async def get_product_by_id(self, product_id: int, options=None):
         """
         Получает товар по id.
         """
 
-        return await self.session.get(self.product_db, product_id)
+        stmt = select(self.product_db).filter_by(id=product_id)
+        if options:
+            stmt = stmt.options(*options)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
 
-    async def get_all_products(self):
+    async def get_all_products(self, options=None):
         """
         Получает все товары.
         """
 
-        stmt = select(self.product_db).order_by(self.product_db.id)
-        result = await self.session.scalars(stmt)
-        return result.all()
+        stmt = select(self.product_db)
+        if options:
+            stmt = stmt.options(*options)
+        result = await self.session.execute(stmt)
+        return result.scalars().unique().all()
 
     async def update_product_by_id(
         self,
