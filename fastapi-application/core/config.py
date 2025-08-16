@@ -111,7 +111,11 @@ class WebhookConfig(BaseModel):
 class PathImageUploadDir(BaseModel):
     """Путь до папки с изображениями"""
 
+    # Путь до Sources root: ....\MFBoats\fastapi-application\static\images
     path: Path = BASE_DIR / "static" / "images"
+
+    # Путь до Sources root: ....\MFBoats\fastapi-application\
+    base_dir: Path = BASE_DIR
 
 
 class AccessToken(BaseModel):
