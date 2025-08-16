@@ -88,7 +88,6 @@ class BoatUpdate(BoatBaseModel):
     Схема для обновления дынных катера
     """
 
-    category_id: Optional[int] = None
     name: Optional[str] = None
     price: Optional[int] = None
     company_name: Optional[str] = None
