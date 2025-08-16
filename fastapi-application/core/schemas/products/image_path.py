@@ -29,12 +29,7 @@ class ImagePathUpdate(ImagePathBaseModel):
     Схема для обновления новых и удаления старых изображений.
     """
 
-    remove_images: set[int] = Field(
-        description="Id изображений, для удаления",
-    )
-    add_images: list[UploadFile] = Field(
-        description="Новые изображения",
-    )
+    pass
 
 
 class ImagePathRead(ImagePathBaseModel):

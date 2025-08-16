@@ -1,4 +1,3 @@
-from fastapi import UploadFile
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
