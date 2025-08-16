@@ -1,10 +1,13 @@
 import aiofiles
+from aiofiles import os
 
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import uuid4
 
 from core.config import settings
+from core.models.products import ImagePath
 
 
 class ProductManagerCrud:
@@ -20,16 +23,6 @@ class ProductManagerCrud:
         self.session = session
         self.product_db = product_db  # Тип модели SQLAlchemy (Boat, Trailer и т.д.)
 
-    async def create_category(self, category_data):
-        """
-        Создает новую категорию.
-        """
-
-        new_category = self.product_db(**category_data.model_dump())
-        self.session.add(new_category)
-        await self.session.commit()
-        return new_category
-
     async def create_product_with_images(self, product_data, images, image_path_db):
         """
         Создает новый товар с изображением.
@@ -40,7 +33,7 @@ class ProductManagerCrud:
         self.session.add(new_product)
 
         for image in images:
-            file_path = f"{settings.image_upload_dir.path}/{uuid4().hex}.jpg"
+            file_path = f"{settings.image_upload_dir.path}\\{uuid4().hex}.jpg"
 
             # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
             async with aiofiles.open(file_path, "wb") as file:
@@ -56,7 +49,7 @@ class ProductManagerCrud:
             # Добавляем изображение к прицепу
             new_product.images.append(image_path)
         await self.session.commit()
-        return {"message": "Product and images created successfully"}
+        return new_product
 
     async def get_product_by_name(self, name: str, options=None):
         """
@@ -91,13 +84,188 @@ class ProductManagerCrud:
         result = await self.session.execute(stmt)
         return result.scalars().unique().all()
 
-    async def update_product_by_id(
+    async def update_productееее_by_id(
+        self, product_id: int, product_update_data, images, image_path_db
+    ):
+        """
+        Обновляет товар по id, включая обработку изображений.
+        """
+
+        product = await self.get_product_by_id(
+            product_id,
+            options=[
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            ],
+        )
+        if not product:
+            return None
+
+        # Если есть новые изображения, сохраняем их
+        if images:
+            for image in images:
+                file_path = f"{settings.image_upload_dir.path}{uuid4().hex}.jpg"
+
+                # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
+                async with aiofiles.open(file_path, "wb") as file:
+                    await file.write(image.file.read())
+
+                # Сокращаем путь до /static/images/...
+                shortened_path = file_path.partition("fastapi-application")[2]
+
+                # Создаем запись в таблицу ImagePath
+                image_path = image_path_db(path=shortened_path)
+                self.session.add(image_path)
+
+                # Добавляем изображение к прицепу
+                product.images.append(image_path)
+
+        # Удаляем изображения, которые переданы в запросе
+        if product_update_data.remove_images:
+            for image_id in product_update_data.remove_images:
+                # Находим изображение по id
+                image_to_delete = next(
+                    (img for img in product.images if img.id == image_id), None
+                )
+                if image_to_delete:
+                    # Получаем путь к изображению
+                    file_path = settings.image_upload_dir.path / image_to_delete.path
+
+                    try:
+                        # Удаляем файл с диска
+                        await aiofiles.os.remove(file_path)
+                    except FileNotFoundError:
+                        # Файл не найден — можно логировать ошибку
+                        print(f"Файл {file_path} не найден.")
+
+                    # Удаляем запись из БД
+                    await self.session.delete(image_to_delete)
+
+        for name, value in product_update_data.model_dump(exclude_unset=True).items():
+            if value is not None:
+                setattr(product, name, value)
+        await self.session.commit()
+
+        # Получаем обновлённый объект с отношениями
+        updated_product = await self.get_product_by_id(
+            product_id,
+            options=[
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            ],
+        )
+        return updated_product
+
+    async def update_product_data_by_id(
         self,
         product_id: int,
         product_update_schema,
     ):
         """
-        Обновляет товар по id.
+        Обновляет товар по id, без обработки изображений.
+        """
+
+        product = await self.get_product_by_id(
+            product_id,
+            options=[
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            ],
+        )
+        if product:
+            for name, value in product_update_schema.model_dump(
+                exclude_unset=True
+            ).items():
+                setattr(product, name, value)
+            await self.session.commit()
+            return product
+        return None
+
+    async def delete_product_by_id(self, product_id: int) -> bool:
+        """
+        Удаляет товар по id.
+        """
+
+        product = await self.get_product_by_id(
+            product_id,
+            options=[
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            ],
+        )
+        if product:
+            # Получаем список связанных изображений
+            related_images = list(product.images)
+
+            # Удаление изображений с диска
+            for image in related_images:
+                # Получаем путь к изображению
+                file_path = f"{settings.image_upload_dir.base_dir}{image.path}"
+
+                # Удаление записи из ImagePath
+                stmt = select(ImagePath).filter_by(id=image.id)
+                result = await self.session.execute(stmt)
+                image_record = result.scalars().first()
+
+                if image_record:
+                    await self.session.delete(image_record)
+
+                try:
+                    # Удаляем файл с диска
+                    await aiofiles.os.remove(file_path)
+                except FileNotFoundError:
+                    # Файл не найден — можно логировать ошибку
+                    print(f"Файл {file_path} не найден.")
+
+            await self.session.delete(product)
+            await self.session.commit()
+            return True
+        return False
+
+    async def create_category(self, category_data):
+        """
+        Создает новую категорию.
+        """
+
+        new_category = self.product_db(**category_data.model_dump())
+        self.session.add(new_category)
+        await self.session.commit()
+        return new_category
+
+    async def get_category_by_name(self, name: str):
+        """
+        Найдет категорию по name.
+        """
+
+        stmt = select(self.product_db).filter_by(name=name)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
+    async def get_category_by_id(self, product_id: int):
+        """
+        Получает категорию по id.
+        """
+
+        stmt = select(self.product_db).filter_by(id=product_id)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
+    async def get_all_category(self):
+        """
+        Получает все категории.
+        """
+
+        stmt = select(self.product_db)
+        result = await self.session.execute(stmt)
+        return result.scalars().unique().all()
+
+    async def update_category_by_id(
+        self,
+        product_id: int,
+        product_update_schema,
+    ):
+        """
+        Обновляет категория по id.
         """
 
         product = await self.get_product_by_id(product_id)
@@ -110,7 +278,7 @@ class ProductManagerCrud:
             return product
         return None
 
-    async def delete_product_by_id(self, product_id: int) -> bool:
+    async def delete_category_by_id(self, product_id: int) -> bool:
         """
         Удаляет товар по id.
         """
