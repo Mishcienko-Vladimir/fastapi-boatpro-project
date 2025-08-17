@@ -8,9 +8,6 @@ class ProductBaseModel(BaseSchemaModel):
     Базовая модель для товаров.
     """
 
-    category_id: int = Field(
-        description="ID категории товара",
-    )
     name: str = Field(
         min_length=1,
         max_length=255,

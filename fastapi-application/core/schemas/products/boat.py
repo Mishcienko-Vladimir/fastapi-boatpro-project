@@ -80,7 +80,9 @@ class BoatCreate(BoatBaseModel):
     Схема для создания нового катера
     """
 
-    pass
+    category_id: int = Field(
+        description="ID категории товара",
+    )
 
 
 class BoatUpdate(BoatBaseModel):

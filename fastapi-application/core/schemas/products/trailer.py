@@ -40,7 +40,9 @@ class TrailerCreate(TrailerBaseModel):
     Схемы для создания нового прицепа
     """
 
-    pass
+    category_id: int = Field(
+        description="ID категории товара",
+    )
 
 
 class TrailerUpdate(TrailerBaseModel):

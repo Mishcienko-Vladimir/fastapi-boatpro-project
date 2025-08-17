@@ -43,7 +43,9 @@ class OutboardMotorCreate(OutboardMotorBaseModel):
     Схема для создания нового мотора
     """
 
-    pass
+    category_id: int = Field(
+        description="ID категории товара",
+    )
 
 
 class OutboardMotorUpdate(OutboardMotorBaseModel):
