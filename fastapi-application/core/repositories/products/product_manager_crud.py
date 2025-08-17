@@ -6,8 +6,10 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import uuid4
 
+
 from core.config import settings
 from core.models.products import ImagePath
+from core.repositories.products.image_manager import ImageManager
 
 
 class ProductManagerCrud:
@@ -23,31 +25,17 @@ class ProductManagerCrud:
         self.session = session
         self.product_db = product_db  # Тип модели SQLAlchemy (Boat, Trailer и т.д.)
 
-    async def create_product_with_images(self, product_data, images, image_path_db):
+    async def create_product_with_images(self, product_data, images):
         """
         Создает новый товар с изображением.
         """
 
-        # Создаем продукт
-        new_product = self.product_db(**product_data.model_dump())
-        self.session.add(new_product)
+        product = self.product_db(**product_data.model_dump())
+        self.session.add(product)
 
-        for image in images:
-            file_path = f"{settings.image_upload_dir.path}\\{uuid4().hex}.jpg"
+        _service = ImageManager(self.session)
+        new_product = await _service.add_image_to_db(product, images)
 
-            # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
-            async with aiofiles.open(file_path, "wb") as file:
-                await file.write(image.file.read())
-
-            # Сокращаем путь до /static/images/...
-            shortened_path = file_path.partition("fastapi-application")[2]
-
-            # Создаем запись в таблицу ImagePath
-            image_path = image_path_db(path=shortened_path)
-            self.session.add(image_path)
-
-            # Добавляем изображение к прицепу
-            new_product.images.append(image_path)
         await self.session.commit()
         return new_product
 
