@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, File, UploadFile, Form
+from fastapi import APIRouter, Depends, UploadFile, Form, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import TrailerService
@@ -12,7 +12,7 @@ from core.models import db_helper
 router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы"])
 
 
-@router.post("/", status_code=201)
+@router.post("/", status_code=201, response_model=TrailerRead)
 async def create_trailer(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     category_id: int = Form(
@@ -73,8 +73,8 @@ async def create_trailer(
         ...,
         description="Изображения товара",
     ),
-):
-    trailer_data = {
+) -> TrailerRead:
+    trailer_data_json = {
         "category_id": category_id,
         "name": name,
         "price": price,
@@ -86,7 +86,7 @@ async def create_trailer(
         "trailer_length": trailer_length,
         "max_ship_length": max_ship_length,
     }
-    trailer_data = TrailerCreate(**trailer_data)
+    trailer_data = TrailerCreate(**trailer_data_json)
     _service = TrailerService(session)
     return await _service.create_trailer(trailer_data, images)
 
@@ -118,13 +118,32 @@ async def get_trailers(
 
 
 @router.patch("/{trailer_id}", status_code=200, response_model=TrailerRead)
-async def update_trailer_by_id(
+async def update_trailer_data_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
     trailer_data: TrailerUpdate,
 ) -> TrailerRead:
     _service = TrailerService(session)
-    return await _service.update_trailer_by_id(trailer_id, trailer_data)
+    return await _service.update_trailer_data_by_id(trailer_id, trailer_data)
+
+
+@router.patch("/images/{trailer_id}", status_code=200, response_model=TrailerRead)
+async def update_trailer_images_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    trailer_id: int,
+    remove_images: str | None = Form(
+        None,
+        description="Список id изображений для удаления (через запятую, без пробелов)",
+    ),
+    add_images: list[UploadFile] | None = File(
+        ...,
+        description="Изображения товара",
+    ),
+) -> TrailerRead:
+    _service = TrailerService(session)
+    return await _service.update_trailer_images_by_id(
+        trailer_id, remove_images, add_images
+    )
 
 
 @router.delete("/{trailer_id}", status_code=204)
