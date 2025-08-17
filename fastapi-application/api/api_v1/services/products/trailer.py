@@ -16,7 +16,7 @@ class TrailerService:
         self,
         trailer_data: TrailerCreate,
         images: list[UploadFile],
-    ):
+    ) -> TrailerRead:
         """
         Создание нового прицепа с изображениями.
         """
@@ -28,12 +28,22 @@ class TrailerService:
                 detail=f"Trailer with name {trailer_data.name} already exists",
             )
 
+        # Создание и сохранение прицепа с изображениями
         new_trailer = await self.repo.create_product_with_images(
             trailer_data,
             images,
             ImagePath,
         )
-        return new_trailer
+
+        # Получение прицепа с загруженными изображениями
+        full_trailer = await self.repo.get_product_by_id(
+            new_trailer.id,
+            options=[
+                joinedload(Trailer.category),
+                joinedload(Trailer.images),
+            ],
+        )
+        return TrailerRead.model_validate(full_trailer)
 
     async def get_trailer_by_name(self, name_trailer: str) -> TrailerRead:
         """
@@ -88,19 +98,54 @@ class TrailerService:
             )
         return [TrailerRead.model_validate(trailer) for trailer in trailers]
 
-    async def update_trailer_by_id(
+    async def update_trailer_data_by_id(
         self,
         trailer_id: int,
         trailer_data: TrailerUpdate,
     ) -> TrailerRead:
         """
-        Обновление прицепа по id.
+        Обновление прицепа по id, кроме изображений.
         """
 
-        updated_trailer = await self.repo.update_product_by_id(
+        updated_trailer = await self.repo.update_product_data_by_id(
             trailer_id,
             trailer_data,
         )
+        if not updated_trailer:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Trailer with id {trailer_id} not found",
+            )
+        return TrailerRead.model_validate(updated_trailer)
+
+    async def update_trailer_images_by_id(
+        self,
+        trailer_id: int,
+        remove_images: str | None,
+        add_images: list[UploadFile] | None,
+    ) -> TrailerRead:
+        """
+        Обновление изображений прицепа по id.
+        """
+
+        if remove_images:
+            remove_images_list = [
+                int(item) if item.isdecimal() else None
+                for item in remove_images.split(",")
+            ]
+
+            if None in remove_images_list:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail=f"remove_images must be a list of integers or a single integer",
+                )
+        else:
+            remove_images_list = None
+
+        updated_trailer = await self.repo.update_product_images_by_id(
+            trailer_id, remove_images_list, add_images
+        )
+
         if not updated_trailer:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
