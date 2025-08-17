@@ -181,6 +181,66 @@ class ProductManagerCrud:
             return product
         return None
 
+    async def update_product_images_by_id(
+        self,
+        product_id: int,
+        remove_images_list,
+        add_images,
+    ):
+        product = await self.get_product_by_id(
+            product_id,
+            options=[
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            ],
+        )
+
+        if not product:
+            return None
+
+        if remove_images_list:
+            # Удаление изображений с диска
+            for image in remove_images_list:
+                # Удаление записи из ImagePath
+                stmt = select(ImagePath).filter_by(id=image)
+                result = await self.session.execute(stmt)
+                image_record = result.scalars().first()
+
+                # Получаем путь к изображению
+                file_path = f"{settings.image_upload_dir.base_dir}{image_record.path}"
+                product.images.clear(image_record.path)
+
+                if image_record:
+                    await self.session.delete(image_record)
+
+                try:
+                    # Удаляем файл с диска
+                    await aiofiles.os.remove(file_path)
+                except FileNotFoundError:
+                    # Файл не найден — можно логировать ошибку
+                    print(f"Файл {file_path} не найден.")
+
+        # Если есть новые изображения, сохраняем их
+        if add_images:
+            for image in add_images:
+                file_path = f"{settings.image_upload_dir.path}\\{uuid4().hex}.jpg"
+
+                # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
+                async with aiofiles.open(file_path, "wb") as file:
+                    await file.write(image.file.read())
+
+                # Сокращаем путь до /static/images/...
+                shortened_path = file_path.partition("fastapi-application")[2]
+
+                # Создаем запись в таблицу ImagePath
+                image_path = ImagePath(path=shortened_path)
+                self.session.add(image_path)
+
+                # Добавляем изображение к прицепу
+                product.images.append(image_path)
+        await self.session.commit()
+        return product
+
     async def delete_product_by_id(self, product_id: int) -> bool:
         """
         Удаляет товар по id.
