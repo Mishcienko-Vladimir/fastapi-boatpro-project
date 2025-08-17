@@ -39,110 +39,49 @@ class ProductManagerCrud:
         await self.session.commit()
         return new_product
 
-    async def get_product_by_name(self, name: str, options=None):
+    async def get_product_by_name(self, name: str):
         """
         Найдет товар по name.
         """
 
-        stmt = select(self.product_db).filter_by(name=name)
-        if options:
-            stmt = stmt.options(*options)
+        stmt = (
+            select(self.product_db)
+            .filter_by(name=name)
+            .options(
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            )
+        )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def get_product_by_id(self, product_id: int, options=None):
+    async def get_product_by_id(self, product_id: int):
         """
         Получает товар по id.
         """
 
-        stmt = select(self.product_db).filter_by(id=product_id)
-        if options:
-            stmt = stmt.options(*options)
+        stmt = (
+            select(self.product_db)
+            .filter_by(id=product_id)
+            .options(
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            )
+        )
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def get_all_products(self, options=None):
+    async def get_all_products(self):
         """
         Получает все товары.
         """
 
-        stmt = select(self.product_db)
-        if options:
-            stmt = stmt.options(*options)
+        stmt = select(self.product_db).options(
+            joinedload(self.product_db.category),
+            joinedload(self.product_db.images),
+        )
         result = await self.session.execute(stmt)
         return result.scalars().unique().all()
-
-    async def update_productееее_by_id(
-        self, product_id: int, product_update_data, images, image_path_db
-    ):
-        """
-        Обновляет товар по id, включая обработку изображений.
-        """
-
-        product = await self.get_product_by_id(
-            product_id,
-            options=[
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
-            ],
-        )
-        if not product:
-            return None
-
-        # Если есть новые изображения, сохраняем их
-        if images:
-            for image in images:
-                file_path = f"{settings.image_upload_dir.path}{uuid4().hex}.jpg"
-
-                # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
-                async with aiofiles.open(file_path, "wb") as file:
-                    await file.write(image.file.read())
-
-                # Сокращаем путь до /static/images/...
-                shortened_path = file_path.partition("fastapi-application")[2]
-
-                # Создаем запись в таблицу ImagePath
-                image_path = image_path_db(path=shortened_path)
-                self.session.add(image_path)
-
-                # Добавляем изображение к прицепу
-                product.images.append(image_path)
-
-        # Удаляем изображения, которые переданы в запросе
-        if product_update_data.remove_images:
-            for image_id in product_update_data.remove_images:
-                # Находим изображение по id
-                image_to_delete = next(
-                    (img for img in product.images if img.id == image_id), None
-                )
-                if image_to_delete:
-                    # Получаем путь к изображению
-                    file_path = settings.image_upload_dir.path / image_to_delete.path
-
-                    try:
-                        # Удаляем файл с диска
-                        await aiofiles.os.remove(file_path)
-                    except FileNotFoundError:
-                        # Файл не найден — можно логировать ошибку
-                        print(f"Файл {file_path} не найден.")
-
-                    # Удаляем запись из БД
-                    await self.session.delete(image_to_delete)
-
-        for name, value in product_update_data.model_dump(exclude_unset=True).items():
-            if value is not None:
-                setattr(product, name, value)
-        await self.session.commit()
-
-        # Получаем обновлённый объект с отношениями
-        updated_product = await self.get_product_by_id(
-            product_id,
-            options=[
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
-            ],
-        )
-        return updated_product
 
     async def update_product_data_by_id(
         self,
@@ -153,13 +92,8 @@ class ProductManagerCrud:
         Обновляет товар по id, без обработки изображений.
         """
 
-        product = await self.get_product_by_id(
-            product_id,
-            options=[
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
-            ],
-        )
+        product = await self.get_product_by_id(product_id)
+
         if product:
             for name, value in product_update_schema.model_dump(
                 exclude_unset=True
@@ -175,13 +109,7 @@ class ProductManagerCrud:
         remove_images_list,
         add_images,
     ):
-        product = await self.get_product_by_id(
-            product_id,
-            options=[
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
-            ],
-        )
+        product = await self.get_product_by_id(product_id)
 
         if not product:
             return None
@@ -234,13 +162,8 @@ class ProductManagerCrud:
         Удаляет товар по id.
         """
 
-        product = await self.get_product_by_id(
-            product_id,
-            options=[
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
-            ],
-        )
+        product = await self.get_product_by_id(product_id)
+
         if product:
             # Получаем список связанных изображений
             related_images = list(product.images)

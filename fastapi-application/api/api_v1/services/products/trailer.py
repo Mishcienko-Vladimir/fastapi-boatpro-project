@@ -32,17 +32,11 @@ class TrailerService:
         new_trailer = await self.repo.create_product_with_images(
             trailer_data,
             images,
-            ImagePath,
         )
 
         # Получение прицепа с загруженными изображениями
-        full_trailer = await self.repo.get_product_by_id(
-            new_trailer.id,
-            options=[
-                joinedload(Trailer.category),
-                joinedload(Trailer.images),
-            ],
-        )
+        full_trailer = await self.repo.get_product_by_id(new_trailer.id)
+
         return TrailerRead.model_validate(full_trailer)
 
     async def get_trailer_by_name(self, name_trailer: str) -> TrailerRead:
@@ -50,11 +44,7 @@ class TrailerService:
         Получение прицепа по названию.
         """
 
-        # Используем joinedload для предварительной загрузки category и images
-        trailer = await self.repo.get_product_by_name(
-            name_trailer,
-            options=[joinedload(Trailer.category), joinedload(Trailer.images)],
-        )
+        trailer = await self.repo.get_product_by_name(name_trailer)
         if not trailer:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -67,11 +57,7 @@ class TrailerService:
         Получение прицепа по id.
         """
 
-        # Используем joinedload для предварительной загрузки category и images
-        trailer = await self.repo.get_product_by_id(
-            trailer_id,
-            options=[joinedload(Trailer.category), joinedload(Trailer.images)],
-        )
+        trailer = await self.repo.get_product_by_id(trailer_id)
         if not trailer:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -84,13 +70,8 @@ class TrailerService:
         Получение всех прицепов.
         """
 
-        # Используем joinedload для предварительной загрузки category и images
-        trailers = await self.repo.get_all_products(
-            options=[
-                joinedload(Trailer.category),
-                joinedload(Trailer.images),
-            ]
-        )
+        trailers = await self.repo.get_all_products()
+
         if not trailers:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
