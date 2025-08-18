@@ -60,3 +60,43 @@ class ImageHelper:
 
         await self.session.commit()
         return product
+
+    async def delete_image_from_db(self, product, remove_images: list[int]):
+        """
+        Удаление изображений в таблице ImagePath и в папке images.
+
+        :param product: - экземпляр модели товара.
+        :param remove_images: - список id изображений, которые нужно удалить.
+        :return: - обновленный экземпляр товара с добавленными изображениями.
+                 - либо None если id не найден.
+                 - А также выдаёт ошибку FileNotFoundError, если файл не найден в папке images.
+        """
+
+        for image_id in remove_images:
+            # Проверяем, существует ли изображения с таким id в product
+            if not any(image.id == image_id for image in product.images):
+                return None
+            # Получаем запись из таблицы ImagePath
+            stmt = select(ImagePath).filter_by(id=image_id)
+            result = await self.session.execute(stmt)
+            image_record = result.scalars().first()
+
+            if image_record:
+                # Получаем путь к изображению
+                file_path = f"{settings.image_upload_dir.base_dir}{image_record.path}"
+
+                # Удаляем запись из таблицы ImagePath и из таблицы ассоциации
+                product.images.clear(image_record.path)
+                await self.session.delete(image_record)
+
+                # Удаляем файл с папки images
+                await aiofiles.os.remove(file_path)
+                log.info("Deleted image %r", file_path)
+
+                # Обновляем время, чтобы миксин обновил updated_at
+                product.updated_at = datetime.now(UTC)
+            else:
+                return None
+
+        await self.session.commit()
+        return product
