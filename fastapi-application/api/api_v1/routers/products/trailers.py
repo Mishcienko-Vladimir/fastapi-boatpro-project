@@ -135,9 +135,9 @@ async def update_trailer_images_by_id(
         None,
         description="Список id изображений для удаления (через запятую, без пробелов)",
     ),
-    add_images: list[UploadFile] | None = File(
+    add_images: list[UploadFile] = File(
         ...,
-        description="Изображения товара",
+        description="Новые изображения для товара",
     ),
 ) -> TrailerRead:
     _service = TrailerService(session)
