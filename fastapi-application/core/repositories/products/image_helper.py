@@ -1,18 +1,26 @@
 import aiofiles
+import logging
+
 from aiofiles import os
-
-from fastapi import HTTPException, status, UploadFile
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import datetime, UTC
+from fastapi import UploadFile
 from uuid import uuid4
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
 from core.models.products import ImagePath
 
 
-class ImageManager:
+log = logging.getLogger(__name__)
+
+
+class ImageHelper:
     """
     Помощник для работы с изображениями.
+
+    :param session: - сессия для работы с БД.
     """
 
     def __init__(
@@ -25,8 +33,8 @@ class ImageManager:
         """
         Добавление изображений в таблицу ImagePath и в папку images.
 
-        :param product - экземпляр модели товара.
-        :param images - список файлов изображений.
+        :param product: - экземпляр модели товара.
+        :param images: - список файлов изображений.
         :return - обновленный экземпляр товара с добавленными изображениями.
         """
 
@@ -45,6 +53,7 @@ class ImageManager:
             # Создаем запись в таблицу ImagePath
             image_path = ImagePath(path=shortened_path)
             self.session.add(image_path)
+            log.info("Created image: %r", shortened_path)
 
             # Добавляем изображение к товару
             product.images.append(image_path)

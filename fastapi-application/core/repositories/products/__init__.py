@@ -1,7 +1,7 @@
 __all__ = (
     "ProductManagerCrud",
-    "ImageManager",
+    "ImageHelper",
 )
 
 from .product_manager_crud import ProductManagerCrud
-from .image_manager import ImageManager
+from .image_helper import ImageHelper
