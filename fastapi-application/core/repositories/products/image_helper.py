@@ -58,6 +58,9 @@ class ImageHelper:
             # Добавляем изображение к товару
             product.images.append(image_path)
 
+        # Обновляем время, чтобы миксин обновил updated_at
+        product.updated_at = datetime.now(tz=UTC).replace(tzinfo=None)
+
         await self.session.commit()
         return product
 
@@ -76,6 +79,9 @@ class ImageHelper:
             # Проверяем, существует ли изображения с таким id в product
             if not any(image.id == image_id for image in product.images):
                 return None
+
+        for image_id in remove_images:
+
             # Получаем запись из таблицы ImagePath
             stmt = select(ImagePath).filter_by(id=image_id)
             result = await self.session.execute(stmt)
@@ -94,7 +100,7 @@ class ImageHelper:
                 log.info("Deleted image %r", file_path)
 
                 # Обновляем время, чтобы миксин обновил updated_at
-                product.updated_at = datetime.now(UTC)
+                product.updated_at = datetime.now(tz=UTC).replace(tzinfo=None)
             else:
                 return None
 
