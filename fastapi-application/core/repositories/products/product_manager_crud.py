@@ -9,6 +9,14 @@ class ProductManagerCrud:
 
     :session: - сессия для работы с БД.
     :product_db: - модель БД (Boat, Trailer и т.д.).
+
+    :methods:
+        - get_product_by_name - получает товар по name.
+        - get_product_by_id - получает товар по id.
+        - get_all_products - получает все товары.
+        - create_product - создает новый товар.
+        - update_product_data - обновляет товар, без обработки изображений.
+        - delete_product - удаляет товар.
     """
 
     def __init__(
