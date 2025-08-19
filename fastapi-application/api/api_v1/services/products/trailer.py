@@ -22,13 +22,13 @@ class TrailerService:
     :image_helper: - вспомогательный репозиторий (ImageHelper) для работы с изображениями.
 
     :methods:
-    - get_trailer_by_id - получение прицепа по id.
-    - get_trailer_by_name - получение прицепа по названию.
-    - get_trailers - получение всех прицепов.
-    - create_trailer - создание нового прицепа.
-    - update_trailer_data_by_id - обновление данных прицепа по id.
-    - update_trailer_images_by_id - обновление изображений прицепа по id.
-    - delete_trailer_by_id - удаление прицепа по id.
+        - get_trailer_by_id - получение прицепа по id.
+        - get_trailer_by_name - получение прицепа по названию.
+        - get_trailers - получение всех прицепов.
+        - create_trailer - создание нового прицепа.
+        - update_trailer_data_by_id - обновление данных прицепа по id.
+        - update_trailer_images_by_id - обновление изображений прицепа по id.
+        - delete_trailer_by_id - удаление прицепа по id.
     """
 
     def __init__(self, session: AsyncSession):
