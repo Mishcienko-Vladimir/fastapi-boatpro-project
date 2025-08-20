@@ -10,6 +10,7 @@ __all__ = (
     "BoatUpdate",
     "BoatRead",
     "BoatSummarySchema",
+    "EngineType",
     "OutboardMotorCreate",
     "OutboardMotorUpdate",
     "OutboardMotorRead",
@@ -41,6 +42,7 @@ from .boat import (
     BoatSummarySchema,
 )
 from .motor import (
+    EngineType,
     OutboardMotorCreate,
     OutboardMotorUpdate,
     OutboardMotorRead,

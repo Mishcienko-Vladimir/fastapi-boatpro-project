@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.services.products import ProductsService
 
 from core.config import settings
+from core.models import db_helper
 from core.models.products import Trailer
 from core.schemas.products import TrailerRead, TrailerUpdate, TrailerCreate
-from core.models import db_helper
 
 
 router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы"])
