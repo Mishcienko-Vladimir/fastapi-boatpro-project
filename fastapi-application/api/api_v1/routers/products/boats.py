@@ -181,3 +181,25 @@ async def update_boat_data_by_id(
     _service = ProductsService(session, Boat)
     boat = await _service.update_product_data_by_id(boat_id, boat_data)
     return BoatRead.model_validate(boat)
+
+
+@router.patch("/images/{trailer_id}", status_code=200, response_model=BoatRead)
+async def update_boat_images_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    boat_id: int,
+    remove_images: str | None = Form(
+        None,
+        description="Список id изображений для удаления (через запятую, без пробелов)",
+    ),
+    add_images: list[UploadFile] = File(
+        ...,
+        description="Новые изображения для товара",
+    ),
+) -> BoatRead:
+    _service = ProductsService(session, Boat)
+    boat = await _service.update_product_images_by_id(
+        boat_id,
+        remove_images,
+        add_images,
+    )
+    return BoatRead.model_validate(boat)
