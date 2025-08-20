@@ -2,9 +2,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, Form, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.services.products import TrailerService
+from api.api_v1.services.products import ProductsService
 
 from core.config import settings
+from core.models.products import Trailer
 from core.schemas.products import TrailerRead, TrailerUpdate, TrailerCreate
 from core.models import db_helper
 
@@ -87,17 +88,19 @@ async def create_trailer(
         "max_ship_length": max_ship_length,
     }
     trailer_data = TrailerCreate(**trailer_data_json)
-    _service = TrailerService(session)
-    return await _service.create_trailer(trailer_data, images)
+    _service = ProductsService(session, Trailer)
+    new_trailer = await _service.create_product(trailer_data, images)
+    return TrailerRead.model_validate(new_trailer)
 
 
 @router.get("/trailer-name/{name_trailer}", status_code=200, response_model=TrailerRead)
 async def get_trailer_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    name_trailer: str,
+    trailer_name: str,
 ) -> TrailerRead:
-    _service = TrailerService(session)
-    return await _service.get_trailer_by_name(name_trailer)
+    _service = ProductsService(session, Trailer)
+    trailer = await _service.get_product_by_name(trailer_name)
+    return TrailerRead.model_validate(trailer)
 
 
 @router.get("/trailer-id/{trailer_id}", status_code=200, response_model=TrailerRead)
@@ -105,16 +108,18 @@ async def get_trailer_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
 ) -> TrailerRead:
-    _service = TrailerService(session)
-    return await _service.get_trailer_by_id(trailer_id)
+    _service = ProductsService(session, Trailer)
+    trailer = await _service.get_product_by_id(trailer_id)
+    return TrailerRead.model_validate(trailer)
 
 
 @router.get("/", status_code=200, response_model=list[TrailerRead])
 async def get_trailers(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[TrailerRead]:
-    _service = TrailerService(session)
-    return await _service.get_trailers()
+    _service = ProductsService(session, Trailer)
+    all_trailers = await _service.get_products()
+    return [TrailerRead.model_validate(trailer) for trailer in all_trailers]
 
 
 @router.patch("/{trailer_id}", status_code=200, response_model=TrailerRead)
@@ -123,8 +128,9 @@ async def update_trailer_data_by_id(
     trailer_id: int,
     trailer_data: TrailerUpdate,
 ) -> TrailerRead:
-    _service = TrailerService(session)
-    return await _service.update_trailer_data_by_id(trailer_id, trailer_data)
+    _service = ProductsService(session, Trailer)
+    trailer = await _service.update_product_data_by_id(trailer_id, trailer_data)
+    return TrailerRead.model_validate(trailer)
 
 
 @router.patch("/images/{trailer_id}", status_code=200, response_model=TrailerRead)
@@ -140,10 +146,13 @@ async def update_trailer_images_by_id(
         description="Новые изображения для товара",
     ),
 ) -> TrailerRead:
-    _service = TrailerService(session)
-    return await _service.update_trailer_images_by_id(
-        trailer_id, remove_images, add_images
+    _service = ProductsService(session, Trailer)
+    trailer = await _service.update_product_images_by_id(
+        trailer_id,
+        remove_images,
+        add_images,
     )
+    return TrailerRead.model_validate(trailer)
 
 
 @router.delete("/{trailer_id}", status_code=204)
@@ -151,5 +160,5 @@ async def delete_trailer_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
 ) -> None:
-    _service = TrailerService(session)
-    return await _service.delete_trailer_by_id(trailer_id)
+    _service = ProductsService(session, Trailer)
+    return await _service.delete_product_by_id(trailer_id)
