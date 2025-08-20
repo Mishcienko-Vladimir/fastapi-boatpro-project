@@ -148,3 +148,29 @@ async def update_outboard_motor_data_by_id(
         outboard_motor_id, outboard_motor_data
     )
     return OutboardMotorRead.model_validate(outboard_motor)
+
+
+@router.patch(
+    "/images/{outboard_motor_id}",
+    status_code=200,
+    response_model=OutboardMotorRead,
+)
+async def update_outboard_motor_images_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    outboard_motor_id: int,
+    remove_images: str | None = Form(
+        None,
+        description="Список id изображений для удаления (через запятую, без пробелов)",
+    ),
+    add_images: list[UploadFile] = File(
+        ...,
+        description="Новые изображения для товара",
+    ),
+) -> OutboardMotorRead:
+    _service = ProductsService(session, OutboardMotor)
+    outboard_motor = await _service.update_product_images_by_id(
+        outboard_motor_id,
+        remove_images,
+        add_images,
+    )
+    return OutboardMotorRead.model_validate(outboard_motor)
