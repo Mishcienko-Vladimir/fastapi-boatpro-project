@@ -161,3 +161,12 @@ async def get_boat_by_id(
     _service = ProductsService(session, Boat)
     boat = await _service.get_product_by_id(boat_id)
     return BoatRead.model_validate(boat)
+
+
+@router.get("/", status_code=200, response_model=list[BoatRead])
+async def get_boats(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[BoatRead]:
+    _service = ProductsService(session, Boat)
+    all_boats = await _service.get_products()
+    return [BoatRead.model_validate(boat) for boat in all_boats]
