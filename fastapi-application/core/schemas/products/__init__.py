@@ -41,7 +41,7 @@ from .boat import (
     BoatRead,
     BoatSummarySchema,
 )
-from .motor import (
+from .outboard_motor import (
     EngineType,
     OutboardMotorCreate,
     OutboardMotorUpdate,

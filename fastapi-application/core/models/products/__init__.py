@@ -13,7 +13,7 @@ from .product_base import (
 )
 from .category import Category
 from .boat import Boat
-from .motor import OutboardMotor
+from .outboard_motor import OutboardMotor
 from .trailer import Trailer
 from .image_path import ImagePath
 from .product_images_association import ProductImagesAssociation

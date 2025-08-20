@@ -4,9 +4,9 @@ from pydantic import Field
 from core.schemas.base_model import BaseSchemaModel
 
 if TYPE_CHECKING:
-    from .boat import BoatSummarySchema
-    from .motor import OutboardMotorSummarySchema
-    from .trailer import TrailerSummarySchema
+    from .boat import BoatSummarySchema  # noqa
+    from .outboard_motor import OutboardMotorSummarySchema  # noqa
+    from .trailer import TrailerSummarySchema  # noqa
 
 
 class CategoryBaseModel(BaseSchemaModel):
