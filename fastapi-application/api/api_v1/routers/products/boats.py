@@ -141,3 +141,13 @@ async def create_boat(
     _service = ProductsService(session, Boat)
     new_boat = await _service.create_product(boat_data, images)
     return BoatRead.model_validate(new_boat)
+
+
+@router.get("/boat-name/{boat_name}", status_code=200, response_model=BoatRead)
+async def get_boat_by_name(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    boat_name: str,
+) -> BoatRead:
+    _service = ProductsService(session, Boat)
+    boat = await _service.get_product_by_name(boat_name)
+    return BoatRead.model_validate(boat)
