@@ -83,31 +83,37 @@ async def create_boat(
         description="Материал корпуса",
     ),
     thickness_side_sheet: int | None = Form(
+        0,
         ge=0,
         lt=1000,
         description="Толщина бортового листа в мм",
     ),
     bottom_sheet_thickness: int | None = Form(
+        0,
         ge=0,
         lt=1000,
         description="Толщина днищевой листа в мм",
     ),
     fuel_capacity: int | None = Form(
+        0,
         ge=0,
         lt=1000,
         description="Объём топливного бака в литрах",
     ),
     maximum_engine_power: int | None = Form(
+        0,
         ge=0,
         lt=10000,
         description="Максимальная мощность двигателя в л.с.",
     ),
     height_side_midship: int | None = Form(
+        0,
         ge=0,
         lt=10000,
         description="Высота борта на миделе в мм",
     ),
     transom_height: int | None = Form(
+        0,
         ge=0,
         lt=1000,
         description="Высота транца в мм",
