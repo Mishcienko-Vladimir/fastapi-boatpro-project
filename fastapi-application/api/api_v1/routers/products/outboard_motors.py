@@ -87,3 +87,17 @@ async def create_outboard_motor(
     _service = ProductsService(session, OutboardMotor)
     new_outboard_motor = await _service.create_product(outboard_motor_data, images)
     return OutboardMotorRead.model_validate(new_outboard_motor)
+
+
+@router.get(
+    "/outboard-motor-name/{name_outboard_motor}",
+    status_code=200,
+    response_model=OutboardMotorRead,
+)
+async def get_outboard_motor_by_name(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    outboard_motor_name: str,
+) -> OutboardMotorRead:
+    _service = ProductsService(session, OutboardMotor)
+    outboard_motor = await _service.get_product_by_name(outboard_motor_name)
+    return OutboardMotorRead.model_validate(outboard_motor)
