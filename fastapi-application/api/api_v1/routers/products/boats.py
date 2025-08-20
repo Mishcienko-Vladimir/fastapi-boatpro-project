@@ -203,3 +203,12 @@ async def update_boat_images_by_id(
         add_images,
     )
     return BoatRead.model_validate(boat)
+
+
+@router.delete("/{boat_id}", status_code=204)
+async def delete_boat_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    boat_id: int,
+) -> None:
+    _service = ProductsService(session, Boat)
+    return await _service.delete_product_by_id(boat_id)
