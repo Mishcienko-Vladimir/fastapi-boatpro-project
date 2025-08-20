@@ -115,3 +115,19 @@ async def get_outboard_motor_by_id(
     _service = ProductsService(session, OutboardMotor)
     outboard_motor = await _service.get_product_by_id(outboard_motor_id)
     return OutboardMotorRead.model_validate(outboard_motor)
+
+
+@router.get(
+    "/",
+    status_code=200,
+    response_model=list[OutboardMotorRead],
+)
+async def get_outboard_motors(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[OutboardMotorRead]:
+    _service = ProductsService(session, OutboardMotor)
+    all_outboard_motors = await _service.get_products()
+    return [
+        OutboardMotorRead.model_validate(outboard_motor)
+        for outboard_motor in all_outboard_motors
+    ]
