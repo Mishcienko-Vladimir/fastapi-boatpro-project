@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, Form, File
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
 
@@ -15,3 +16,74 @@ from core.schemas.products import (
 
 
 router = APIRouter(prefix=settings.api.v1.outboard_motors, tags=["Лодочные моторы"])
+
+
+@router.post("/", status_code=201, response_model=OutboardMotorRead)
+async def create_outboard_motor(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    category_id: int = Form(
+        ...,
+        description="ID категории товара",
+    ),
+    name: str = Form(
+        ...,
+        min_length=1,
+        max_length=255,
+        description="Название модели",
+    ),
+    price: int = Form(
+        ...,
+        gt=0,
+        description="Цена в рублях",
+    ),
+    company_name: str = Form(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Название производителя",
+    ),
+    description: str = Form(
+        ...,
+        min_length=0,
+        description="Описание",
+    ),
+    is_active: bool = Form(
+        ...,
+        description="Наличие товара",
+    ),
+    engine_power: int = Form(
+        ...,
+        gt=0,
+        lt=1000,
+        description="Мощность двигателя в л.с.",
+    ),
+    engine_type: EngineType = Form(
+        ...,
+        description="Тип двигателя",
+    ),
+    weight: int = Form(
+        ...,
+        gt=0,
+        lt=1000,
+        description="Вес мотора в кг",
+    ),
+    images: list[UploadFile] = File(
+        ...,
+        description="Изображения товара",
+    ),
+) -> OutboardMotorRead:
+    outboard_motor_data_json = {
+        "category_id": category_id,
+        "name": name,
+        "price": price,
+        "company_name": company_name,
+        "description": description,
+        "is_active": is_active,
+        "engine_power": engine_power,
+        "engine_type": engine_type,
+        "weight": weight,
+    }
+    outboard_motor_data = OutboardMotorCreate(**outboard_motor_data_json)
+    _service = ProductsService(session, OutboardMotor)
+    new_outboard_motor = await _service.create_product(outboard_motor_data, images)
+    return OutboardMotorRead.model_validate(new_outboard_motor)
