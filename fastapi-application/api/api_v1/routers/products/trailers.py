@@ -93,7 +93,7 @@ async def create_trailer(
     return TrailerRead.model_validate(new_trailer)
 
 
-@router.get("/trailer-name/{name_trailer}", status_code=200, response_model=TrailerRead)
+@router.get("/trailer-name/{trailer_name}", status_code=200, response_model=TrailerRead)
 async def get_trailer_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_name: str,

@@ -90,7 +90,7 @@ async def create_outboard_motor(
 
 
 @router.get(
-    "/outboard-motor-name/{name_outboard_motor}",
+    "/outboard-motor-name/{outboard_motor_name}",
     status_code=200,
     response_model=OutboardMotorRead,
 )
