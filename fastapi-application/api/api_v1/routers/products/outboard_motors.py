@@ -131,3 +131,20 @@ async def get_outboard_motors(
         OutboardMotorRead.model_validate(outboard_motor)
         for outboard_motor in all_outboard_motors
     ]
+
+
+@router.patch(
+    "/{outboard_motor_id}",
+    status_code=200,
+    response_model=OutboardMotorRead,
+)
+async def update_outboard_motor_data_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    outboard_motor_id: int,
+    outboard_motor_data: OutboardMotorUpdate,
+) -> OutboardMotorRead:
+    _service = ProductsService(session, OutboardMotor)
+    outboard_motor = await _service.update_product_data_by_id(
+        outboard_motor_id, outboard_motor_data
+    )
+    return OutboardMotorRead.model_validate(outboard_motor)
