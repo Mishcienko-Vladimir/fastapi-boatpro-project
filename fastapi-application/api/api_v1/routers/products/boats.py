@@ -170,3 +170,14 @@ async def get_boats(
     _service = ProductsService(session, Boat)
     all_boats = await _service.get_products()
     return [BoatRead.model_validate(boat) for boat in all_boats]
+
+
+@router.patch("/{boat_id}", status_code=200, response_model=BoatRead)
+async def update_boat_data_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    boat_id: int,
+    boat_data: BoatUpdate,
+) -> BoatRead:
+    _service = ProductsService(session, Boat)
+    boat = await _service.update_product_data_by_id(boat_id, boat_data)
+    return BoatRead.model_validate(boat)
