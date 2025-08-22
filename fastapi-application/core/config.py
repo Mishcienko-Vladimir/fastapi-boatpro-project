@@ -107,6 +107,12 @@ class WebhookConfig(BaseModel):
     webhook_url: str
 
 
+class AdminConfig(BaseModel):
+    """Конфигурация администратора"""
+
+    admin_email: str
+
+
 class PathImageUploadDir(BaseModel):
     """Путь до папки с изображениями"""
 
@@ -139,12 +145,13 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     gunicorn: GunicornConfig = GunicornConfig()
     logging: LoggingConfig = LoggingConfig()
+    image_upload_dir: PathImageUploadDir = PathImageUploadDir()
     api: ApiPrefix = ApiPrefix()
     view: ViewPrefix = ViewPrefix()
     db: DataBaseConfig
     access_token: AccessToken
     webhook: WebhookConfig
-    image_upload_dir: PathImageUploadDir = PathImageUploadDir()
+    admin: AdminConfig
 
 
 settings = Settings()
