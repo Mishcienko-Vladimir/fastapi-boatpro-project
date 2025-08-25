@@ -2,14 +2,19 @@ import logging
 from typing import Optional, TYPE_CHECKING
 
 from fastapi_users import BaseUserManager, IntegerIDMixin
+from fastapi_users.db import BaseUserDatabase
 
 from core.models.user import User
 from core.config import settings
 from core.types.user_id import UserIdType
-from utils.webhooks.user import send_new_user_notification
+
+from mailing import send_verification_email, send_email_confirmed
+from utils.webhooks.user import send_new_user_notification  # noqa
 
 if TYPE_CHECKING:
-    from fastapi import Request
+    from fastapi import Request, BackgroundTasks  # noqa
+    from fastapi_users.password import PasswordHelperProtocol  # noqa
+
 
 log = logging.getLogger(__name__)
 
@@ -18,21 +23,58 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
     reset_password_token_secret = settings.access_token.reset_password_token_secret
     verification_token_secret = settings.access_token.verification_token_secret
 
-    async def on_after_register(self, user: User, request: Optional["Request"] = None):
-        log.warning("User %r has registered.", user.id)
+    def __init__(
+        self,
+        user_db: BaseUserDatabase[User, UserIdType],
+        password_helper: Optional["PasswordHelperProtocol"] = None,
+        background_tasks: Optional["BackgroundTasks"] = None,
+    ):
+        super().__init__(user_db, password_helper)
+        self.background_tasks = background_tasks
+
+    async def on_after_register(
+        self,
+        user: User,
+        request: Optional["Request"] = None,
+    ):
+        log.warning(
+            "User %r has registered.",
+            user.id,
+        )
         # отправка сообщения на сторонний сервис и вывод информации о том, что пользователь создан
         # await send_new_user_notification(user)
 
     async def on_after_forgot_password(
-        self, user: User, token: str, request: Optional["Request"] = None
+        self,
+        user: User,
+        token: str,
+        request: Optional["Request"] = None,
     ):
         log.warning(
-            "User %r has forgot their password. Reset token: %r", user.id, token
+            "User %r has forgot their password. Reset token: %r",
+            user.id,
+            token,
         )
 
     async def on_after_request_verify(
-        self, user: User, token: str, request: Optional["Request"] = None
+        self,
+        user: User,
+        token: str,
+        request: Optional["Request"] = None,
     ):
         log.warning(
             "Verification requested for user %r. Verification token: %r", user.id, token
+            "Verification requested for user %r. Verification token: %r",
+            user.id,
+            token,
+        )
+        verification_link = (
+            "http://127.0.0.1:8000/docs#/Auth/verify_verify_api_v1_auth_verify_post"
+        )
+        self.background_tasks.add_task(
+            send_verification_email,
+            user=user,
+            verification_link=verification_link,
+            verification_token=token,
+        )
         )
