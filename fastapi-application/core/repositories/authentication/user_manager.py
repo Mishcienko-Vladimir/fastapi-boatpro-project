@@ -63,7 +63,6 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         request: Optional["Request"] = None,
     ):
         log.warning(
-            "Verification requested for user %r. Verification token: %r", user.id, token
             "Verification requested for user %r. Verification token: %r",
             user.id,
             token,
@@ -77,4 +76,18 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             verification_link=verification_link,
             verification_token=token,
         )
+
+    async def on_after_verify(
+        self,
+        user: User,
+        request: Optional["Request"] = None,
+    ):
+        log.warning(
+            "User %r has been verified",
+            user.id,
+        )
+
+        self.background_tasks.add_task(
+            send_email_confirmed,
+            user=user,
         )
