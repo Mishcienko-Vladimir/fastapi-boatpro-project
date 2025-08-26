@@ -74,6 +74,9 @@ class ApiPrefix(BaseModel):
     prefix: str = "/api"
     v1: ApiV1Prefix = ApiV1Prefix()
 
+    cookie_max_age: int = 3600  # время жизни куки в секундах
+    cookie_secure: bool = False  # True - только для HTTPS, False - для HTTP
+
     @property
     def bearer_token_url(self) -> str:
         # api/v1/auth/login
