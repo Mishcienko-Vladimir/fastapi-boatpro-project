@@ -1,20 +1,10 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 
-from utils.templates import templates
-from .users.views import router as users_router
+from .home import router as home_router
+from .verification import router as verification_router
 
 
 router = APIRouter()
 
-
-@router.get("/", name="home")
-def index_page(
-    request: Request,
-):
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-    )
-
-
-router.include_router(users_router)
+router.include_router(home_router)
+router.include_router(verification_router)
