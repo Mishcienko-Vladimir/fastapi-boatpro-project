@@ -53,6 +53,8 @@ class ViewPrefix(BaseModel):
     """Конфигурация префикса для страниц"""
 
     users: str = "/users"
+    home: str = "/home"
+    verify_email: str = "/verify-email"
 
 
 class ApiV1Prefix(BaseModel):
