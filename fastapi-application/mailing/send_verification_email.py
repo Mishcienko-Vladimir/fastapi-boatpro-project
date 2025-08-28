@@ -18,7 +18,7 @@ async def send_verification_email(
     """
 
     recipient = user.email
-    subject = f"Confirm your email for MFBoats.com"
+    subject = f"Confirm your email for BoatPro.ru"
 
     plain_content = dedent(
         f"""\
@@ -27,8 +27,8 @@ async def send_verification_email(
         Please follow the link to verify your email:
         {verification_link}
         
-        Thank you for using MFBoats.com!
-        © 2025 MFBoats.com
+        Thank you for using BoatPro.ru!
+        © 2025 BoatPro.ru
         """
     )
 

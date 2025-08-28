@@ -22,8 +22,8 @@ async def send_email_confirmed(user: User):
 
         Your email has been confirmed.
 
-        Thank you for using MFBoats.com!
-        © 2025 MFBoats.com
+        Thank you for using BoatPro.ru!
+        © 2025 BoatPro.ru
         """
     )
 

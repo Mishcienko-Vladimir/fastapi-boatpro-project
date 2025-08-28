@@ -40,10 +40,10 @@ class ImageHelper:
 
         for image in images:
             # Получение пути к файлу и генерация уникального имени:
-            # .../MFBoats/fastapi-application/static/images/ceb5bd3a25eb42a6a8e34cdf1ea8f5f8.jpg
+            # .../BoatPro/fastapi-application/static/images/ceb5bd3a25eb42a6a8e34cdf1ea8f5f8.jpg
             file_path = f"{settings.image_upload_dir.path}\\{uuid4().hex}.jpg"
 
-            # Сохранение изображений в папку .../MFBoats/fastapi-application/static/images
+            # Сохранение изображений в папку .../BoatPro/fastapi-application/static/images
             async with aiofiles.open(file_path, "wb") as file:
                 await file.write(image.file.read())
 

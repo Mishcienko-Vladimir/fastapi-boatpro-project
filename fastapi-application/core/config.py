@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 # Получаем путь до корневой директории проекта
-# ...\MFBoats\fastapi-application\
+# ...\BoatPro\fastapi-application\
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Формат логирования
@@ -121,10 +121,10 @@ class AdminConfig(BaseModel):
 class PathImageUploadDir(BaseModel):
     """Путь до папки с изображениями"""
 
-    # Путь до Sources root: ....\MFBoats\fastapi-application\static\images
+    # Путь до Sources root: ....\BoatPro\fastapi-application\static\images
     path: Path = BASE_DIR / "static" / "images"
 
-    # Путь до Sources root: ....\MFBoats\fastapi-application\
+    # Путь до Sources root: ....\BoatPro\fastapi-application\
     base_dir: Path = BASE_DIR
 
 
