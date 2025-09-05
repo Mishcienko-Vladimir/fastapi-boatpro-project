@@ -3,6 +3,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import ORJSONResponse
 from fastapi.openapi.docs import (
     get_redoc_html,
@@ -60,6 +61,8 @@ def create_app(
     )
     if create_custom_static_urls:
         register_static_docs_routes(app)
+
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
     register_errors_handlers(app)
     return app
