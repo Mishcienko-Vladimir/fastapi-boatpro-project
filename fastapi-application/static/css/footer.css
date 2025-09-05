@@ -1,0 +1,89 @@
+/* Стили для подвала сайта. */
+footer {
+    position: relative;
+    width: 100%;
+    padding: 20px 100px;
+    background-color: #162938;
+    border-top: 2px solid rgba(255, 255, 255, .5);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, .5);
+    color: #fff;
+}
+
+footer .footer-top{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: stretch; 
+}
+
+.container {
+    text-align: center;
+}
+
+.logo-2 {
+    width: 64px;
+    height: 64px;
+    transition: transform 0.2s;
+}
+
+.logo-2:hover {
+    transform: scale(1.2);
+}
+
+.icons-list {
+    display: flex;  
+    justify-content: center;
+    gap: 20px;                 
+    margin-top: 8px;
+    font-size: 22px;
+}
+
+.icons-list a {
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.5s, transform 0.2s;
+}
+
+.icons-list a:hover {
+    color: #f18930;
+    transform: scale(1.2);
+}
+
+.footer-href {
+    display: flex;  
+    flex-direction: column;
+}
+
+.footer-href a {
+    position: relative;
+    margin-top: 6px;
+    text-decoration: none;
+    color: #fff;  
+    transition: color 0.5s;
+}
+
+.footer-href a:hover {
+    color: #f18930;
+}
+
+.footer-href a::after {
+    content: '';
+    position: absolute;
+    left: 44px;
+    right: 44px;
+    bottom: -6px;
+    height: 2px;
+    background: #f18930;
+    transform: scaleX(0);
+    transition: transform 0.5s;
+}
+
+.footer-href a:hover::after {
+    transform: scaleX(1);
+}
+
+footer .footer-bottom {
+    display: flex;
+    justify-content: end;
+    font-size: 12px;
+}
