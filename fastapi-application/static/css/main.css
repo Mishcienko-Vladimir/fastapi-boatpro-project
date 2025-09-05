@@ -1,0 +1,51 @@
+/* Стили для основного контента. */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: url('../images/website/background-for-site.jpg') no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+main.content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+.block-content {
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, .5);
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    color: #162938;  
+    opacity: 1;
+    transition: all 0.4s ease;
+    width: calc(100% - 200px);
+    left: 100px;
+    right: 100px;
+    margin: 0 auto;
+}
+
+.block-content.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.block-content h2 {
+    margin-bottom: 20px;
+}
+
+.block-content p {
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
