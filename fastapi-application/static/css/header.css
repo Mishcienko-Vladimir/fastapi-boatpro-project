@@ -1,0 +1,100 @@
+/* Стили для шапки сайта. */
+header {
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    z-index: 99;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, .5);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+}
+
+.logo {
+    width: 130px;
+    height: 30px;
+    transition: transform 0.2s;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.nav-href {
+    position: relative;
+    font-size: 1.3em;
+    font-variant: small-caps;
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.nav-href::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: #000;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.nav-href:hover::after {
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.nav-right button {
+    position: relative;
+    cursor: pointer;
+    margin-left: 20px;
+    padding: 0;
+    border: none;
+    background: none;
+    transition: transform 0.2s;
+}
+
+.nav-right button:hover {
+    transform: scale(1.2); 
+}
+
+.nav-right .search-btn { 
+    margin-right: 8px;
+}
+
+.nav-right .search-btn:hover {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .3); 
+}
+
+.search-btn input {
+    width: 0;
+    height: 0;
+    outline: none;
+    border: none;
+    font-weight: 500;
+    transition: 0.9s;
+    background: transparent;
+}
+
+.search-btn:hover input{
+    width: 220px;
+    position: relative;
+    top: -10px;
+    padding: 10px 20px;
+} 
+
+.icon-header {
+    width: 32px;
+    height: 32px;
+}
