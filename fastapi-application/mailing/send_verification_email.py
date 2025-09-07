@@ -17,7 +17,7 @@ async def send_verification_email(
     :return:
     """
 
-    recipient = user.email
+    recipient = user.first_name
     subject = f"Confirm your email for BoatPro.ru"
 
     plain_content = dedent(

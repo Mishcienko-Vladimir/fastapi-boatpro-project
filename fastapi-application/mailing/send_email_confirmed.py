@@ -13,7 +13,7 @@ async def send_email_confirmed(user: User):
     :return:
     """
 
-    recipient = user.email
+    recipient = user.first_name
     subject = "Email confirmed"
 
     plain_content = dedent(
