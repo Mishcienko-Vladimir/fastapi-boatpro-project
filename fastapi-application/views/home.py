@@ -1,8 +1,11 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Request, Depends
 
-from core.repositories.authentication.fastapi_users import current_active_user
+from core.repositories.authentication.fastapi_users import (
+    current_active_user,
+    optional_user,
+)
 from core.config import settings
 from core.models import User
 from utils.templates import templates
@@ -14,13 +17,14 @@ router = APIRouter(
 
 
 @router.get(
-"/",
+    "/",
     name="home",
     include_in_schema=False,
+    response_model=None,
 )
 def home(
     request: Request,
-    user: Annotated[User, Depends(current_active_user)],
+    user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
         name="index.html",
