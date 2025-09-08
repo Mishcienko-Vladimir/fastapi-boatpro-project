@@ -33,7 +33,11 @@
                 <ion-icon name="bag-check-outline" class="icon-header"></ion-icon>
             </button>
             <button class="login-btn" aria-label="Вход">
-                <ion-icon name="person-circle" class="icon-header"></ion-icon>
+                {% if user %}
+                    <ion-icon name="person-circle" class="icon-header" style="color: red;"></ion-icon>
+                {% else %}
+                    <ion-icon name="person-circle" class="icon-header"></ion-icon>
+                {% endif %}
             </button>
         </nav>
     </header>
@@ -52,7 +56,7 @@
                 </span>
                 <div class="form-box login">
                     <h2>Вход</h2>
-                    <form action="#">
+                    <form action="{{ url_for('login') }}" method="post">
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="mail"></ion-icon>
@@ -85,7 +89,7 @@
 
                 <div class="form-box register">
                     <h2>Регистрация</h2>
-                    <form action="#">
+                    <form action="{{ url_for('register') }}" method="post">
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="person"></ion-icon>
