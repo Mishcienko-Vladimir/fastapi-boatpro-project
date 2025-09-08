@@ -13,16 +13,17 @@ async def send_email_confirmed(user: User):
     :return:
     """
 
-    recipient = user.first_name
-    subject = "Email confirmed"
+    recipient = user.email
+    recipient_name = user.first_name
+    subject = "Адрес электронной почты подтвержден"
 
     plain_content = dedent(
         f"""\
-        Dear {recipient},
+        Уважаемый {recipient_name},
 
-        Your email has been confirmed.
+        Ваш адрес электронной почты подтверждён.
 
-        Thank you for using BoatPro.ru!
+        Спасибо за использование BoatPro.ru!
         © 2025 BoatPro.ru
         """
     )

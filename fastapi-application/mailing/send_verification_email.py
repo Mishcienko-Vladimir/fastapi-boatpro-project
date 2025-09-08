@@ -17,17 +17,18 @@ async def send_verification_email(
     :return:
     """
 
-    recipient = user.first_name
-    subject = f"Confirm your email for BoatPro.ru"
+    recipient = user.email
+    recipient_name = user.first_name
+    subject = f"Подтвердите адрес электронной почты для BoatPro.ru"
 
     plain_content = dedent(
         f"""\
-        Dear {recipient},
+        Уважаемый {recipient_name},
         
-        Please follow the link to verify your email:
+        Для подтверждения email, пожалуйста, перейдите по ссылке:
         {verification_link}
         
-        Thank you for using BoatPro.ru!
+        Спасибо за регистрацию на BoatPro.ru!
         © 2025 BoatPro.ru
         """
     )
