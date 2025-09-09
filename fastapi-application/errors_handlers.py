@@ -4,6 +4,7 @@ import logging
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
+
 from pydantic import ValidationError
 from sqlalchemy.exc import DatabaseError
 
@@ -23,7 +24,7 @@ def register_errors_handlers(app: FastAPI) -> None:
         return ORJSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content={
-                "message": "Unhandled error",
+                "message": "Ошибка валидации данных",
                 "error": exc.errors(),
             },
         )
@@ -31,18 +32,18 @@ def register_errors_handlers(app: FastAPI) -> None:
     @app.exception_handler(DatabaseError)
     def handle_db_error(
         request: Request,
-        exc: ValidationError,
+        exc: DatabaseError,
     ) -> ORJSONResponse:
         """Обработчик ошибок базы данных"""
 
         log.error(
-            "Unhandled database error",
+            "Произошла ошибка базы данных",
             exc_info=exc,
         )
         return ORJSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
-                "message": "An unexpected error has occurred. "
-                "Our admins are already working on it."
+                "message": "Произошла непредвиденная ошибка. "
+                "Администраторы уже работают над решением."
             },
         )
