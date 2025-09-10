@@ -1,54 +1,75 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("login-form");
-    if (!form) return;
-
-    // Получаем URL из скрытого input
+    const usernameInput = form.elements["username"];
+    const passwordInput = form.elements["password"];
+    const rememberMeCheckbox = document.getElementById("remember-me");
     const loginUrl = document.getElementById("login-url").value;
 
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
+    // Загрузка сохранённых данных
+    if (localStorage.getItem("rememberMe") === "true") {
+        usernameInput.value = localStorage.getItem("username");
+        passwordInput.value = localStorage.getItem("password");
+        rememberMeCheckbox.checked = true;
+    }
 
-        const username = form.elements["username"].value;
-        const password = form.elements["password"].value;
+    // Обработка отправки формы
+    if (form) {
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-        const data = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+            const username = usernameInput.value;
+            const password = passwordInput.value;
 
-        try {
-            const response = await fetch(loginUrl, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: data
-            });
+            // Сохраняем данные, если пользователь выбрал "Запомнить меня"
+            if (rememberMeCheckbox.checked) {
+                localStorage.setItem("username", username);
+                localStorage.setItem("password", password);
+                localStorage.setItem("rememberMe", "true");
+            } else {
+                localStorage.removeItem("username");
+                localStorage.removeItem("password");
+                localStorage.removeItem("rememberMe");
+            }
 
-            if (!response.ok) {
-                const errorDetails = await response.json();
-                const errorDiv = document.getElementById("login-error");
+            const data = `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
 
-                if (errorDetails.detail === "LOGIN_BAD_CREDENTIALS") {
-                    errorDiv.innerText = "Неверный логин или пароль.";
+            try {
+                const response = await fetch(loginUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: data
+                });
+
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    const errorDiv = document.getElementById("login-error");
+
+                    if (errorDetails.detail === "LOGIN_BAD_CREDENTIALS") {
+                        errorDiv.innerText = "Неверный логин или пароль.";
+                    } else {
+                        errorDiv.innerText = "Ошибка при входе. Попробуйте еще раз.";
+                    }
+
+                    errorDiv.classList.add("show");
+
+                    setTimeout(() => {
+                        errorDiv.classList.remove("show");
+                    }, 5000);
                 } else {
-                    errorDiv.innerText = "Ошибка при входе. Попробуйте еще раз.";
+                    location.href = "/"; // Перенаправление после успешного входа
                 }
-
+            } catch (error) {
+                console.error("Ошибка сети:", error);
+                const errorDiv = document.getElementById("login-error");
+                errorDiv.innerText = "Ошибка сети. Попробуйте снова.";
                 errorDiv.classList.add("show");
 
                 setTimeout(() => {
                     errorDiv.classList.remove("show");
                 }, 5000);
-            } else {
-                location.href = "/"; // Перенаправление после успешного входа
             }
-        } catch (error) {
-            console.error("Ошибка сети:", error);
-            const errorDiv = document.getElementById("login-error");
-            errorDiv.innerText = "Ошибка сети. Попробуйте снова.";
-            errorDiv.classList.add("show");
-
-            setTimeout(() => {
-                errorDiv.classList.remove("show");
-            }, 5000);
-        }
-    });
+        });
+    }
 });
