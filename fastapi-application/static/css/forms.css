@@ -125,11 +125,44 @@
     line-height: 54px;
 }
 
+.error-message {
+    margin-top: -24px;
+    height: 16px;
+    color: red;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.error-message.show {
+    opacity: 1;
+    transform: translateY(0);
+    animation: errorBounce 0.4s ease;
+}
+
+@keyframes errorBounce {
+    0% {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(2px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .remember-forgot {
     font-size: .9em;
     color: #162938;
     font-weight: 500;
-    margin: -15px 0 15px;
+    margin: -8px 0 15px;
     display: flex;
     justify-content: space-between;
 }
@@ -159,6 +192,18 @@
     font-size: 1em;
     color: #fff;
     font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btnEntrance:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btnEntrance:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .login-register {
