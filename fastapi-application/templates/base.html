@@ -56,21 +56,22 @@
                 </span>
                 <div class="form-box login">
                     <h2>Вход</h2>
-                    <form action="{{ url_for('login') }}" method="post">
+                    <form id="login-form">
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="mail"></ion-icon>
                             </span>
-                            <input type="email" required>
+                            <input type="email" name="username" required>
                             <label>Email</label>
                         </div>
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="lock-closed"></ion-icon>
                             </span>
-                            <input type="password" required>
+                            <input type="password" name="password" required>
                             <label>Password</label>
                         </div>
+                        <div class="error-message" id="login-error"></div>
                         <div class="remember-forgot">
                             <label>
                                 <input type="checkbox">
@@ -89,7 +90,7 @@
 
                 <div class="form-box register">
                     <h2>Регистрация</h2>
-                    <form action="{{ url_for('register') }}" method="post">
+                    <form action="#" method="post">
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="person"></ion-icon>
@@ -166,7 +167,10 @@
         </div>
     </footer>
 
+    <input type="hidden" id="login-url" value="{{ url_for('auth:access-token-db.login') }}">
+
     <script src="/static/js/script.js"></script>
+    <script src="/static/js/login.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
