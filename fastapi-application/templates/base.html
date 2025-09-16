@@ -93,17 +93,31 @@
                             <span class="icon">
                                 <ion-icon name="person"></ion-icon>
                             </span>
-                            <label>{{ user.first_name }}</label>
+                            <code>{{ user.first_name }}</code>
                         </div>
                         <form id="email-verification-form">
                             <div class="profile-box">
                                 <span class="icon">
                                     <ion-icon name="mail"></ion-icon>
                                 </span>
-                                <label>{{ user.email }}</label>
+                                <code>{{ user.email }}</code>
                             </div>
                             {% if not user.is_verified %}
-                                <button type="submit" class="btnEmailVerify">Подтвердить почту</button>
+                                <button id="verify-button" type="submit" class="btnEmailVerify">Подтвердить почту</button>
+                                <div id="loading-indicator" class="spinner d-none"></div>
+                                <div id="verification-email-sent" class="alert-success d-none">
+                                    <h4>
+                                        Запрос отправлен.
+                                    </h4>
+                                    Проверьте электронную почту.
+                                </div>
+                                <div id="verification-request-error" class="alert-danger d-none">
+                                    <h4>
+                                        Не удалось отправить письмо.
+                                    </h4>
+                                    Повторите попытку позже.
+                                </div>
+
                             {% else %}
                                 <p class="p-confirmation">Почта подтверждена</p>
                             {% endif %}
@@ -202,6 +216,7 @@
     <input type="hidden" id="login-url" value="{{ url_for('auth:access-token-db.login') }}">
     <input type="hidden" id="logout-url" value="{{ url_for('auth:access-token-db.logout') }}">
     <input type="hidden" id="verify-url" value="{{ url_for('verify:request-token') }}">
+    <input type="hidden" id="user-email" value="{{ user.email }}">
 
     <script src="/static/js/script.js"></script>
     <script src="/static/js/login.js"></script>
