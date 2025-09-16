@@ -1,20 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const verifyUrl = document.getElementById("verify-url")?.value;
     const verifyForm = document.getElementById("email-verification-form");
+    const verifyBtn = verifyForm?.querySelector(".btnEmailVerify");
+    const verificationEmailSent = document.getElementById("verification-email-sent");
+    const verificationRequestError = document.getElementById("verification-request-error");
+    const loadingIndicator = document.getElementById("loading-indicator");
 
-    if (!verifyForm || !verifyUrl) return;
+    const userEmailInput = document.getElementById("user-email");
+    const verifyUrlInput = document.getElementById("verify-url");
 
-    const verifyBtn = verifyForm.querySelector(".btnEmailVerify");
-    if (!verifyBtn) return;
+    if (!verifyBtn || !loadingIndicator || !userEmailInput || !verifyUrlInput) return;
 
-    // Получаем email из шаблона
-    const userEmail = "{{ user.email }}";
+    const userEmail = userEmailInput.value.trim();
+    const requestVerificationURL = verifyUrlInput.value;
 
     verifyBtn.addEventListener("click", async (event) => {
         event.preventDefault();
 
+        if (verificationEmailSent) verificationEmailSent.classList.add("d-none");
+        if (verificationRequestError) verificationRequestError.classList.add("d-none");
+
+        loadingIndicator.classList.remove("d-none");
+        verifyBtn.style.display = "none";
+
         try {
-            const response = await fetch(verifyUrl, {
+            const response = await fetch(requestVerificationURL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -23,20 +32,26 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (response.ok) {
-                // Удаляем кнопку и добавляем сообщение о подтверждении
-                verifyBtn.remove();
-                const confirmation = document.createElement("p");
-                confirmation.className = "p-confirmation";
-                confirmation.innerText = "Почта подтверждена";
+                loadingIndicator.classList.add("d-none");
 
-                // Добавляем новое сообщение вместо кнопки
-                verifyForm.appendChild(confirmation);
+                if (verificationEmailSent) {
+                    verificationEmailSent.classList.remove("d-none");
+                }
             } else {
-                alert("Ошибка при отправке запроса на подтверждение. Попробуйте снова.");
+                loadingIndicator.classList.add("d-none");
+
+                if (verificationRequestError) {
+                    verificationRequestError.classList.remove("d-none");
+                }
             }
         } catch (error) {
             console.error("Ошибка сети:", error);
             alert("Ошибка сети. Попробуйте снова.");
+
+            loadingIndicator.classList.add("d-none");
+            if (verifyBtn) {
+                verifyBtn.style.display = "block";
+            }
         }
     });
 });
