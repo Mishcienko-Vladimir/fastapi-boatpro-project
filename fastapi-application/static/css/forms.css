@@ -133,7 +133,7 @@
     margin: 10px 0;
 }
 
-.profile-box label {
+.profile-box code {
     position: absolute;
     top: 50%;
     left: 30px;
@@ -152,9 +152,9 @@
 
 .btnEmailVerify {
     display: block;
-    margin: 6px auto 0 auto;
+    margin: 20px auto 0 auto;
     width: 50%;
-    height: 30px;
+    height: 32px;
     background: #B22222;
     border: none;
     outline: none;
@@ -167,11 +167,45 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+.d-none {
+    display: none !important;
+}
+
+.alert-success {
+    text-align: center;
+    font-size: 0.9em;
+    color: green;
+    font-weight: 500;
+}
+
+.alert-danger {
+    text-align: center;
+    font-size: 0.9em;
+    color: #B22222;
+    font-weight: 500;
+}
+
+.spinner {
+    width: 33px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-left-color: #B22222db;
+    border-right-color: #B22222db;
+    border-bottom-color: #B22222db;
+    animation: spin 1s linear infinite;
+    margin: 20px auto 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 .p-confirmation {
     text-align: center;
     font-size: 1em;
     color: green;
-    font-weight: 500;
+    font-weight: 650;
     pointer-events: none;
 }
 
