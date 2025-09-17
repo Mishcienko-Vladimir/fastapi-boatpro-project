@@ -1,13 +1,11 @@
-from typing import Annotated, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Request, Depends
 
-from core.repositories.authentication.fastapi_users import (
-    current_active_user,
-    optional_user,
-)
+from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
 from core.models import User
+
 from utils.templates import templates
 
 
