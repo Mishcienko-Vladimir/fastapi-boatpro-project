@@ -1,16 +1,19 @@
 {% extends "mailing/mailing_base.html" %}
 
 {% block title %}
-    Email verification request
+    Подтвердите вашу электронную почту.
 {% endblock %}
 
 {% block main %}
     <p>
-        Dear {{ user.email }},
+        Здравствуйте {{ user.first_name }},
     </p>
     <p>
-        To verify your email address, please follow the link:
+        Пожалуйста, подтвердите ваш e-mail для того, чтобы воспользоваться всеми сервисами BoatPro.
+    </p>
+    <p>
+        Чтобы подтвердить адрес электронной почты, перейдите по ссылке:
         <br>
-        <a href="{{ verification_link }}">Confirm email</a>
+        <a href="{{ verification_link }}">Подтвердить</a>
     </p>
 {% endblock %}
