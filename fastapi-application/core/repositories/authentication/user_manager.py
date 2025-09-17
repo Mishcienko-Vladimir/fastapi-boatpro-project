@@ -21,8 +21,17 @@ log = logging.getLogger(__name__)
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
     """
-    Класс для работы с пользователями. Делает определенные действия если произошло какое-то событие.
-    Например: при регистрации, сбросе пароля и подтверждении почты.
+    Класс для управления жизненным циклом пользователя: регистрация, сброс пароля, подтверждение почты и т.д.
+    Добавляет пользовательские действия после ключевых событий.
+
+    :reset_password_token_secret: Секретный токен для создания токена сброса пароля.
+    :verification_token_secret: Секретный токен для создания токена подтверждения почты.
+
+    :methods:
+        - on_after_register: Вызывается после успешной регистрации пользователя.
+        - on_after_forgot_password: Вызывается после запроса на сброс пароля.
+        - on_after_request_verify: Вызывается после запроса на подтверждение почты.
+        - on_after_verify: Вызывается после успешного подтверждения почты.
     """
 
     reset_password_token_secret = settings.access_token.reset_password_token_secret
@@ -34,6 +43,14 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         password_helper: Optional["PasswordHelperProtocol"] = None,
         background_tasks: Optional["BackgroundTasks"] = None,
     ):
+        """
+        Инициализация UserManager.
+
+        :param user_db: База данных пользователей.
+        :param password_helper: Вспомогательный инструмент для работы с паролями.
+        :param background_tasks: Объект для выполнения фоновых задач (например, отправка писем).
+        """
+
         super().__init__(user_db, password_helper)
         self.background_tasks = background_tasks
 
@@ -42,6 +59,13 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         user: User,
         request: Optional["Request"] = None,
     ):
+        """
+        Вызывается после успешной регистрации пользователя.
+
+        :param user: Объект пользователя, который зарегистрировался.
+        :param request: HTTP-запрос, который инициировал регистрацию (опционально).
+        """
+
         log.warning(
             "User %r has registered.",
             user.id,
@@ -55,6 +79,14 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         token: str,
         request: Optional["Request"] = None,
     ):
+        """
+        Вызывается после запроса на сброс пароля.
+
+        :param user: Объект пользователя, который запрашивает сброс пароля.
+        :param token: Токен для сброса пароля.
+        :param request: HTTP-запрос, который инициировал сброс (опционально).
+        """
+
         log.warning(
             "User %r has forgot their password. Reset token: %r",
             user.id,
@@ -67,6 +99,17 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         token: str,
         request: Optional["Request"] = None,
     ):
+        """
+        Вызывается после запроса на подтверждение почты.
+
+        Формирует ссылку для подтверждения и запускает фоновую задачу на отправку письма.
+
+        :param user: Объект пользователя, который запрашивает подтверждение почты.
+        :param token: Токен для подтверждения почты.
+        :param request: HTTP-запрос, который инициировал подтверждение (опционально).
+        :return: Отправляет письмо со ссылкой для подтверждения почты.
+        """
+
         log.warning(
             "Verification requested for user %r. Verification token: %r",
             user.id,
@@ -87,6 +130,16 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         user: User,
         request: Optional["Request"] = None,
     ):
+        """
+        Вызывается после успешного подтверждения почты.
+
+        Логирует событие и запускает фоновую задачу на отправку уведомления о подтверждении.
+
+        :param user: Объект пользователя, чья почта была подтверждена.
+        :param request: HTTP-запрос, который инициировал подтверждение (опционально).
+        :return: Отправляет письмо, о том что почта подтверждена.
+        """
+
         log.warning(
             "User %r has been verified",
             user.id,
