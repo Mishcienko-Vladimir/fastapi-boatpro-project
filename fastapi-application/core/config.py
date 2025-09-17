@@ -52,7 +52,6 @@ class LoggingConfig(BaseModel):
 class ViewPrefix(BaseModel):
     """Конфигурация префикса для страниц"""
 
-    users: str = "/users"
     home: str = ""
     verify_email: str = "/verify-email"
 
