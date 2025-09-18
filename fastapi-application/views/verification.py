@@ -21,14 +21,12 @@ router = APIRouter(
 )
 def verify_email(
     request: Request,
-    token: str,
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
         name="verification.html",
         context={
             "request": request,
-            "token": token,
             "user": user,
         },
     )
