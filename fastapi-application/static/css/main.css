@@ -29,10 +29,10 @@ main.content {
     color: #162938;  
     opacity: 1;
     transition: all 0.4s ease;
+    width: calc(100% - 80px);
     left: 70px;
     right: 70px;
     margin: 0 auto;
-    width: calc(100% - 80px);
 }
 
 .block-content.hidden {
