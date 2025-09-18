@@ -54,6 +54,7 @@ class ViewPrefix(BaseModel):
 
     home: str = ""
     verify_email: str = "/verify-email"
+    password_reset: str = "/password-reset"
 
 
 class ApiV1Prefix(BaseModel):
