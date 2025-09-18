@@ -127,7 +127,15 @@
                                 <span class="icon">
                                     <ion-icon name="lock-closed"></ion-icon>
                                 </span>
-                                <button type="submit" class="btnResetPassword">Сбросить пароль</button>
+                                <button id="reset-password-btn" type="submit" class="btnResetPassword">
+                                    Сбросить пароль
+                                </button>
+                                <div id="password-reset-sent" class="alert-success d-none">
+                                    <h4>Письмо отправлено! Проверьте email.</h4>
+                                </div>
+                                <div id="password-reset-error" class="alert-danger d-none">
+                                    <h4>Ошибка! Не удалось отправить запрос.</h4>
+                                </div>
                             </div>
                         </form>
                         <button type="submit" class="btnExit">Выйти</button>
@@ -216,12 +224,15 @@
     <input type="hidden" id="login-url" value="{{ url_for('auth:access-token-db.login') }}">
     <input type="hidden" id="logout-url" value="{{ url_for('auth:access-token-db.logout') }}">
     <input type="hidden" id="verify-url" value="{{ url_for('verify:request-token') }}">
+    <input type="hidden" id="reset-password-url" value="{{ url_for('reset:forgot_password') }}">
     <input type="hidden" id="user-email" value="{{ user.email }}">
+    <input type="hidden" id="password-reset" value="{{ url_for('reset:reset_password') }}">
 
     <script src="/static/js/script.js"></script>
     <script src="/static/js/login.js"></script>
     <script src="/static/js/profile.js"></script>
     <script src="/static/js/verification.js"></script>
+    <script src="/static/js/send_reset_password.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
