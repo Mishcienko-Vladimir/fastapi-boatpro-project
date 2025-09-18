@@ -8,7 +8,11 @@ from core.models.user import User
 from core.config import settings
 from core.types.user_id import UserIdType
 
-from mailing import send_verification_email, send_email_confirmed
+from mailing import (
+    send_verification_email,
+    send_email_confirmed,
+    send_reset_password,
+)
 from utils.webhooks.user import send_new_user_notification  # noqa
 
 if TYPE_CHECKING:
@@ -85,12 +89,23 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         :param user: Объект пользователя, который запрашивает сброс пароля.
         :param token: Токен для сброса пароля.
         :param request: HTTP-запрос, который инициировал сброс (опционально).
+        :return: Отправляет письмо со ссылкой для сброса пароля.
         """
 
         log.warning(
             "User %r has forgot their password. Reset token: %r",
             user.id,
             token,
+        )
+
+        reset_password_link = request.url_for("password_reset").replace_query_params(
+            token=token
+        )
+
+        self.background_tasks.add_task(
+            send_reset_password,
+            user=user,
+            reset_password_link=str(reset_password_link),
         )
 
     async def on_after_request_verify(
