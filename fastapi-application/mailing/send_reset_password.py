@@ -33,7 +33,7 @@ async def send_reset_password(
         """
     )
 
-    template = templates.get_template("mailing/reset_password.html")
+    template = templates.get_template("mailing/email_reset_password.html")
     context = {
         "user": user,
         "reset_password_link": reset_password_link,

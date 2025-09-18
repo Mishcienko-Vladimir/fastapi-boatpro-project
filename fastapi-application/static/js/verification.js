@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!verifyBtn || !loadingIndicator || !userEmailInput || !verifyUrlInput) return;
 
-    const userEmail = userEmailInput.value.trim();
+    const   = userEmailInput.value.trim();
     const requestVerificationURL = verifyUrlInput.value;
 
     verifyBtn.addEventListener("click", async (event) => {
