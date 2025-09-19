@@ -139,25 +139,30 @@
                 <div class="form-box register">
                     <h2>Регистрация</h2>
                     <form action="#" method="post">
+                        <div id="register-request-error" class="alert-danger d-none">
+                            <h4>
+                                Ошибка! Не удалось зарегистрироваться.
+                            </h4>
+                        </div>
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="person"></ion-icon>
                             </span>
-                            <input type="text" required>
+                            <input type="text" id="register-first-name" required>
                             <label>Name</label>
                         </div>
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="mail"></ion-icon>
                             </span>
-                            <input type="email" required>
+                            <input type="email" id="register-email" required>
                             <label>Email</label>
                         </div>
                         <div class="input-box">
                             <span class="icon">
                                 <ion-icon name="lock-closed"></ion-icon>
                             </span>
-                            <input type="password" required>
+                            <input type="password" id="register-password" required>
                             <label>Password</label>
                         </div>
                         <div class="remember-forgot">
@@ -166,7 +171,8 @@
                                 Я согласен с условиями использования
                             </label>
                         </div>
-                        <button type="submit" class="btnEntrance">Зарегистрироваться</button>
+                        <button id="btn-register" type="submit" class="btnEntrance">Зарегистрироваться</button>
+                        <div id="register-loading-indicator" class="spinner d-none"></div>
                         <div class="login-register">
                             <p>Уже есть учетная запись?
                                 <a  href="#" class="login-link">Войти</a>
@@ -215,6 +221,7 @@
         </div>
     </footer>
 
+    <input type="hidden" id="register-url" value="{{ url_for('register:register') }}">
     <input type="hidden" id="login-url" value="{{ url_for('auth:access-token-db.login') }}">
     <input type="hidden" id="logout-url" value="{{ url_for('auth:access-token-db.logout') }}">
     <input type="hidden" id="verify-url" value="{{ url_for('verify:request-token') }}">
@@ -223,6 +230,7 @@
     <input type="hidden" id="password-reset" value="{{ url_for('reset:reset_password') }}">
 
     <script src="/static/js/script.js"></script>
+    <script src="/static/js/registration.js"></script>
     <script src="/static/js/login.js"></script>
     <script src="/static/js/profile.js"></script>
     <script src="/static/js/verification.js"></script>
