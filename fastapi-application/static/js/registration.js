@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const verifyUrlInput = document.getElementById("verify-url");
     const registerUrlInput = document.getElementById("register-url");
     const btnRegister = document.getElementById("btn-register");
+
     const registerRequestError = document.getElementById("register-request-error");
     const registerLoadingIndicator = document.getElementById("register-loading-indicator");
 
@@ -9,7 +10,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerEmailInput = document.getElementById("register-email");
     const registerPasswordInput = document.getElementById("register-password");
 
-    if (!registerUrlInput || !registerFirstNameInput || !registerEmailInput || !registerPasswordInput) return;
+    if (
+        !verifyUrlInput ||
+        !registerUrlInput ||
+        !btnRegister ||
+        !registerEmailInput ||
+        !registerPasswordInput ||
+        !registerFirstNameInput
+    ) return;
 
     const requestVerificationURL = verifyUrlInput.value;
     const requestRegisterURL = registerUrlInput.value;
