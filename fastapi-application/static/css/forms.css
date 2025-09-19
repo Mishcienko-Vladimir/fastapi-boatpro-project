@@ -133,6 +133,21 @@
     margin: 10px 0;
 }
 
+.profile-box .a-change-password {
+    color: #B22222;
+    text-decoration: none;
+    position: absolute;
+    top: 46%;
+    left: 30px;
+    font-size: 1.2em;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+.profile-box .a-change-password:hover {
+    transform: scale(1.1);
+}
+
 .profile-box code {
     position: absolute;
     top: 50%;
@@ -207,18 +222,6 @@
     color: green;
     font-weight: 650;
     pointer-events: none;
-}
-
-.profile-box .btnResetPassword {
-    position: absolute;
-    top: 48%;
-    left: 30px;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 1.2em;
-    color: #B22222;
-    font-weight: 500;
 }
 
 .error-message {
