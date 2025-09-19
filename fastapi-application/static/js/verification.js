@@ -10,11 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!verifyBtn || !loadingIndicator || !userEmailInput || !verifyUrlInput) return;
 
-    const   = userEmailInput.value.trim();
     const requestVerificationURL = verifyUrlInput.value;
 
     verifyBtn.addEventListener("click", async (event) => {
         event.preventDefault();
+
+        const userEmailVerify = userEmailInput.value.trim();
 
         if (verificationEmailSent) verificationEmailSent.classList.add("d-none");
         if (verificationRequestError) verificationRequestError.classList.add("d-none");
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email: userEmail })
+                body: JSON.stringify({ email: userEmailVerify })
             });
 
             if (response.ok) {
