@@ -54,6 +54,7 @@ class ViewPrefix(BaseModel):
 
     home: str = ""
     verify_email: str = "/verify-email"
+    change_password: str = "/change-password"
     password_reset: str = "/password-reset"
 
 
