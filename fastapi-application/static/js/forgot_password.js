@@ -1,18 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const resetBtn = document.getElementById("reset-password-btn");
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const BtnRecoveryEmail = document.getElementById("btn-recovery-email");
     const successMessage = document.getElementById("password-reset-sent");
     const errorMessage = document.getElementById("password-reset-error");
 
-    const userEmailInput = document.getElementById("user-email");
+    const userEmailInput = document.getElementById("recovery-email");
     const resetPasswordInput = document.getElementById("reset-password-url");
 
-    if (!resetBtn || !userEmailInput || !resetPasswordInput) return;
+    if (!BtnRecoveryEmail || !userEmailInput || !resetPasswordInput) return;
 
-    const userEmail = userEmailInput.value.trim();
     const resetPasswordURL = resetPasswordInput.value;
 
-    resetBtn.addEventListener("click", async (event) => {
+    BtnRecoveryEmail.addEventListener("click", async (event) => {
         event.preventDefault();
+
+        const userEmail = userEmailInput.value.trim();
+
+        BtnRecoveryEmail.classList.add("d-none");
+        loadingIndicator.classList.remove("d-none");
 
         if (successMessage) successMessage.classList.add("d-none");
         if (errorMessage) errorMessage.classList.add("d-none");
@@ -26,13 +31,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 body: JSON.stringify({ email: userEmail })
             });
 
+            loadingIndicator.classList.add("d-none");
+            BtnRecoveryEmail.classList.remove("d-none");
+
             if (response.ok) {
                 if (successMessage) {
                     successMessage.classList.remove("d-none");
                 }
                 // Меняем текст кнопки
-                resetBtn.textContent = "Проверьте почту";
-                resetBtn.disabled = true;
+                BtnRecoveryEmail.textContent = "Проверьте почту";
+                BtnRecoveryEmail.disabled = true;
             } else {
                 // Ошибка от сервера
                 if (errorMessage) {
@@ -41,9 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Ошибка сети:", error);
-            if (errorMessage) {
-                errorMessage.classList.remove("d-none");
-            }
+            alert("Произошла ошибка. Попробуйте снова.");
+            loadingIndicator.classList.add("d-none");
+            BtnRecoveryEmail.classList.remove("d-none");
         }
     });
 });
