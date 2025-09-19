@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const logoutUrl = document.getElementById("logout-url").value;
-    const logoutBtn = document.querySelector(".btnExit");
+    const logoutBtn = document.getElementById("btn-exit");
 
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async (event) => {
