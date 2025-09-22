@@ -57,6 +57,7 @@ class ViewPrefix(BaseModel):
     change_password: str = "/change-password"
     password_reset: str = "/password-reset"
     page_missing: str = "/page-missing"
+    catalog: str = "/catalog"
 
 
 class ApiV1Prefix(BaseModel):
