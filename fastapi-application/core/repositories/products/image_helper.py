@@ -92,7 +92,7 @@ class ImageHelper:
                 file_path = f"{settings.image_upload_dir.base_dir}{image_record.path}"
 
                 # Удаляем запись из таблицы ImagePath и из таблицы ассоциации
-                product.images.clear(image_record.path)
+                product.images.remove(image_record)
                 await self.session.delete(image_record)
 
                 # Удаляем файл с папки images
