@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+    Каталог
+{% endblock %}
+
+{% block main %}
+    <h1>Каталог</h1>
+    <div class="bloc-products">
+
+        <div class="category">
+            <a href="#" title="Катера">
+                <img src="/static/images/website/categories/motorboat.jpg" alt="Катера">
+                <div class="category-title">Катера</div>
+            </a>
+        </div>
+
+        <div class="category">
+            <a href="#" title="Лодочные моторы">
+                <img src="/static/images/website/categories/boat-motor.png" alt="Лодочные моторы">
+                <div class="category-title">Лодочные моторы</div>
+            </a>
+        </div>
+
+        <div class="category">
+            <a href="#" title="Прицепы">
+                <img src="/static/images/website/categories/trailer.jpg" alt="Прицепы">
+                <div class="category-title">Прицепы</div>
+            </a>
+        </div>
+    </div>
+{% endblock %}
