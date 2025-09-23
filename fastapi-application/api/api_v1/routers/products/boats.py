@@ -7,7 +7,12 @@ from api.api_v1.services.products import ProductsService
 from core.config import settings
 from core.models import db_helper
 from core.models.products import Boat
-from core.schemas.products import BoatCreate, BoatUpdate, BoatRead
+from core.schemas.products import (
+    BoatCreate,
+    BoatUpdate,
+    BoatRead,
+    BoatSummarySchema,
+)
 
 
 router = APIRouter(prefix=settings.api.v1.boats, tags=["Катера"])
@@ -176,6 +181,28 @@ async def get_boats(
     _service = ProductsService(session, Boat)
     all_boats = await _service.get_products()
     return [BoatRead.model_validate(boat) for boat in all_boats]
+
+
+@router.get("/summary", status_code=200, response_model=list[BoatSummarySchema])
+async def get_boats_summary(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[BoatSummarySchema]:
+    """
+    Получает краткую информацию о всех катерах.
+    В данных только одно изображение для каждого катера.
+    """
+
+    _service = ProductsService(session, Boat)
+    all_boats = await _service.get_products()
+    return [
+        BoatSummarySchema.model_validate(
+            {
+                **boat.__dict__,
+                "image": boat.images[0] if boat.images else None,
+            }
+        )
+        for boat in all_boats
+    ]
 
 
 @router.patch("/{boat_id}", status_code=200, response_model=BoatRead)
