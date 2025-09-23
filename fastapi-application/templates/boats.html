@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}
+    Катера
+{% endblock %}
+
+{% block main %}
+    <h1>Катера</h1>
+    <div class="bloc-products">
+        {% for boat in boats_list %}
+            <div class="product">
+                <a href="#" title="Катер" class="product-link" data-product-id="{{ boat.id }}">
+                    <img class="product-img" src="{{ boat.image.path }}" alt="Катера">
+                </a>
+                <div class="product-desc">
+                    <div class="product-title">{{ boat.name }}</div>
+                    <div class="product-price">Цена: {{ boat.price }} руб.</div>
+                    <ul>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Длинна корпуса"></ion-icon>
+                            {{ boat.length_hull }} см
+                        </li>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Ширина корпуса"></ion-icon>
+                            {{ boat.width_hull }} см
+                        </li>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Вес катера"></ion-icon>
+                            {{ boat.weight }} кг
+                        </li>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Вместимость"></ion-icon>
+                            {{ boat.capacity }} чело
+                        </li>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Объем топливного бака"></ion-icon>
+                            {{ boat.fuel_capacity if boat.fuel_capacity else '-' }} л
+                        </li>
+                        <li>
+                            <ion-icon name="navigate-circle" alt="Макс. мощность двигателя"></ion-icon>
+                            {{ boat.maximum_engine_power if boat.maximum_engine_power else '-' }} л.с.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
