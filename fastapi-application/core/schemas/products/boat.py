@@ -173,6 +173,16 @@ class BoatSummarySchema(BaseSchemaModel):
         lt=100,
         description="Количество мест",
     )
-    image: ImagePathRead = Field(
-        description="Главное изображение",
+    fuel_capacity: int | None = Field(
+        None,
+        ge=0,
+        lt=1000,
+        description="Объём топливного бака в литрах",
     )
+    maximum_engine_power: int | None = Field(
+        None,
+        ge=0,
+        lt=10000,
+        description="Максимальная мощность двигателя в л.с.",
+    )
+    image: Optional[ImagePathRead] = None
