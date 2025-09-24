@@ -3,7 +3,7 @@ from typing import Optional, Annotated
 from fastapi import APIRouter, Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.routers.products.boats import get_boats_summary
+from api.api_v1.routers.products.boats import get_boats_summary, get_boat_by_name
 
 from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
@@ -34,6 +34,29 @@ async def boats(
         context={
             "request": request,
             "boats_list": boats_list,
+            "user": user,
+        },
+    )
+
+
+@router.get(
+    path=f"{settings.view.catalog}{settings.view.boats}/{{boat_name}}",
+    name="boat_detail",
+    include_in_schema=False,
+    response_model=None,
+)
+async def boat_detail(
+    request: Request,
+    boat_name: str,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Optional[User] = Depends(optional_user),
+):
+    boat = await get_boat_by_name(session=session, boat_name=boat_name)
+    return templates.TemplateResponse(
+        name="boat_detail.html",
+        context={
+            "request": request,
+            "boat": boat,
             "user": user,
         },
     )
