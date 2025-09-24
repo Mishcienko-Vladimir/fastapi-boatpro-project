@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ boat.name }}
+{% endblock %}
+
+{% block main %}
+    <div class="basic-bloc">
+        <h1>{{ boat.name }}</h1>
+
+        <div class="bloc-product-images">
+            <div class="main-image">
+                <img id="main-img" src="{{ boat.images[0].path }}" alt="Главное изображение катера">
+            </div>
+            <div class="thumbnails">
+                {% for image in boat.images %}
+                    <img
+                        src="{{ image.path }}"
+                        alt="Миниатюра"
+                        onclick="changeMainImage(this)"
+                        class="{% if loop.first %} active {% endif %}">
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <div class="bloc-price-info">
+            <p>Цена: {{ boat.price }} руб.</p>
+            <button id="btnBuy" class="btn-buy">Купить</button>
+        </div>
+
+        <div class="bloc-product-info">
+            <ul class="product-nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-tab="description">Описание</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-tab="features">Характеристики</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="description" class="tab-pane active">
+                    <p>{{ boat.description or 'Нет описания' }}</p>
+                </div>
+                <div id="features" class="tab-pane">
+                    <table>
+                        <tr>
+                            <td>Производитель</td>
+                            <td> {{ boat.company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Длина корпуса</td>
+                            <td> {{ boat.length_hull }} см</td>
+                        </tr>
+                        <tr>
+                            <td>Ширина корпуса</td>
+                            <td> {{ boat.width_hull }} см</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/image-swithcer.js"></script>
+    <script>
+        const tabs = document.querySelectorAll('.nav-link');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Убираем активный класс у всех вкладок
+                tabs.forEach(t => t.classList.remove('active'));
+
+                // Добавляем активный класс только выбранной вкладке
+                this.classList.add('active');
+
+                // Получаем ID соответствующей панели
+                const tabId = this.getAttribute('data-tab');
+                const tabPanes = document.querySelectorAll('.tab-pane');
+
+                // Скрываем все панели
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                // Показываем нужную панель
+                const activePane = document.getElementById(tabId);
+                if (activePane) {
+                    activePane.classList.add('active');
+                }
+            });
+        });
+    </script>
+{% endblock %}
