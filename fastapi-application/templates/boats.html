@@ -8,7 +8,10 @@
     <div class="bloc-products">
         {% for boat in boats_list %}
             <div class="product">
-                <a href="#" title="Катер" class="product-link" data-product-id="{{ boat.id }}">
+                <a href="{{ url_for('boat_detail', boat_name=boat.name) }}"
+                   title="Катер"
+                   class="product-link"
+                   data-product-id="{{ boat.id }}">
                     <img class="product-img" src="{{ boat.image.path }}" alt="Катера">
                 </a>
                 <div class="product-desc">
