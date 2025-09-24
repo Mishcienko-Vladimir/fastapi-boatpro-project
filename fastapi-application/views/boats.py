@@ -18,7 +18,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
+    path=settings.view.catalog,
     name="boats",
     include_in_schema=False,
     response_model=None,
