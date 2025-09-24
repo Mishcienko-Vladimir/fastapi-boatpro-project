@@ -53,7 +53,7 @@ async def boat_detail(
 ):
     boat = await get_boat_by_name(session=session, boat_name=boat_name)
     return templates.TemplateResponse(
-        name="boat_detail.html",
+        name="boat-detail.html",
         context={
             "request": request,
             "boat": boat,
