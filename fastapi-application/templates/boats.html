@@ -8,7 +8,7 @@
     <div class="bloc-products">
         {% for boat in boats_list %}
             <div class="product">
-                <a href="{{ url_for('boat_detail', boat_name=boat.name) }}"
+                <a href="{{ url_for('boat_detail', boat_name=boat.name|replace(' ', '%20')) }}"
                    title="Катер"
                    class="product-link"
                    data-product-id="{{ boat.id }}">
