@@ -10,6 +10,10 @@
         <div class="bloc-product-images">
             <div class="main-image">
                 <img id="main-img" src="{{ boat.images[0].path }}" alt="Главное изображение катера">
+                <div class="image-navigation">
+                    <button class="nav-button prev" onclick="changeImage(-1)">&#10094;</button>
+                    <button class="nav-button next" onclick="changeImage(1)">&#10095;</button>
+                </div>
             </div>
             <div class="thumbnails">
                 {% for image in boat.images %}
@@ -26,6 +30,7 @@
         <div class="bloc-price-info">
             <p>Цена: {{ boat.price }} руб.</p>
             <button id="btnBuy" class="btn-buy">Купить</button>
+            <button id="btnAddFavorites" class="btn-favorites">В избранное</button>
         </div>
 
         <div class="bloc-product-info">
@@ -44,16 +49,56 @@
                 <div id="features" class="tab-pane">
                     <table>
                         <tr>
-                            <td>Производитель</td>
-                            <td> {{ boat.company_name }}</td>
+                            <td class="td-label">Производитель</td>
+                            <td class="td-value"> {{ boat.company_name }}</td>
                         </tr>
                         <tr>
-                            <td>Длина корпуса</td>
-                            <td> {{ boat.length_hull }} см</td>
+                            <td class="td-label">Длина корпуса</td>
+                            <td class="td-value"> {{ boat.length_hull }} см</td>
                         </tr>
                         <tr>
-                            <td>Ширина корпуса</td>
-                            <td> {{ boat.width_hull }} см</td>
+                            <td class="td-label">Ширина корпуса</td>
+                            <td class="td-value">{{ boat.width_hull }} см</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Вес</td>
+                            <td class="td-value"> {{ boat.weight }} кг</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Максимальная нагрузка</td>
+                            <td class="td-value"> {{ boat.maximum_load }} кг</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Вместимость</td>
+                            <td class="td-value"> {{ boat.capacity }} чел</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Материал корпуса</td>
+                            <td class="td-value"> {{ boat.hull_material }} </td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Толщина бортового листа</td>
+                            <td class="td-value"> {{ boat.thickness_side_sheet if boat.thickness_side_sheet else '-' }} мм</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Толщина днищевой листа</td>
+                            <td class="td-value"> {{ boat.bottom_sheet_thickness if boat.bottom_sheet_thickness else '-' }} мм</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Объём топливного бака</td>
+                            <td class="td-value"> {{ boat.fuel_capacity if boat.fuel_capacity else '-' }} л</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Максимальная мощность двигателя</td>
+                            <td class="td-value"> {{ boat.maximum_engine_power if boat.maximum_engine_power else '-' }} л.с.</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Высота борта на миделе</td>
+                            <td class="td-value"> {{ boat.height_side_midship if boat.height_side_midship else '-' }} мм</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Высота транца</td>
+                            <td class="td-value"> {{ boat.transom_height if boat.transom_height else '-' }} мм</td>
                         </tr>
                     </table>
                 </div>
@@ -61,8 +106,20 @@
         </div>
     </div>
 
-    <script src="/static/js/image-swithcer.js"></script>
     <script>
+        function changeMainImage(element) {
+            const mainImg = document.getElementById('main-img');
+            mainImg.src = element.src;
+
+            // Убираем активный класс у всех миниатюр
+            const thumbnails = document.querySelectorAll('.thumbnails img');
+            thumbnails.forEach(img => img.classList.remove('active'));
+
+            // Добавляем активный класс только к выбранной миниатюре
+            element.classList.add('active');
+        }
+
+
         const tabs = document.querySelectorAll('.nav-link');
 
         tabs.forEach(tab => {
@@ -89,5 +146,50 @@
                 }
             });
         });
+        let currentIndex = 0;
+
+        // Функция для переключения между изображениями
+        function changeImage(direction) {
+            const images = document.querySelectorAll('.thumbnails img');
+            if (images.length === 0) return;
+
+            currentIndex += direction;
+
+            // Циклическое переключение
+            if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            } else if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
+
+            const selectedImage = images[currentIndex];
+            changeMainImage(selectedImage);
+        }
+
+        // Получаем кнопку "В избранное"
+        const btnAddFavorites = document.getElementById('btnAddFavorites');
+
+        // Получаем иконку "сердце" в шапке
+        const favoritesIcon = document.querySelector('.nav-right .favorites-btn ion-icon');
+
+        if (btnAddFavorites && favoritesIcon) {
+            btnAddFavorites.addEventListener('click', function () {
+                // Временно меняем иконку на полное сердце
+                favoritesIcon.setAttribute('name', 'heart');
+
+                // Меняем цвет на красный
+                favoritesIcon.style.color = '#ff0000';
+
+                // Увеличиваем иконку
+                favoritesIcon.style.transform = 'scale(1.5)';
+                favoritesIcon.style.transition = 'transform 0.3s ease, color 0.3s ease';
+
+                setTimeout(() => {
+                    favoritesIcon.setAttribute('name', 'heart-outline');
+                    favoritesIcon.style.color = '';
+                    favoritesIcon.style.transform = 'scale(1)';
+                }, 1000);
+            });
+        }
     </script>
 {% endblock %}
