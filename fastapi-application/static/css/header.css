@@ -98,3 +98,7 @@ header {
     width: 32px;
     height: 32px;
 }
+
+.nav-right .favorites-btn ion-icon {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
