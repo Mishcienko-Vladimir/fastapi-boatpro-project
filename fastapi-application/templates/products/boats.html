@@ -19,28 +19,40 @@
                     <div class="product-price">Цена: {{ boat.price }} руб.</div>
                     <ul>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Длинна корпуса"></ion-icon>
-                            {{ boat.length_hull }} см
+                            <span title="Длинна корпуса">
+                                <ion-icon name="swap-vertical" alt="Длинна корпуса" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.length_hull }} см
                         </li>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Ширина корпуса"></ion-icon>
-                            {{ boat.width_hull }} см
+                            <span title="Ширина корпуса">
+                                <ion-icon name="swap-horizontal" alt="Ширина корпуса" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.width_hull }} см
                         </li>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Вес катера"></ion-icon>
-                            {{ boat.weight }} кг
+                            <span title="Вес катера">
+                                <ion-icon name="barbell" alt="Вес катера" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.weight }} кг
                         </li>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Вместимость"></ion-icon>
-                            {{ boat.capacity }} чело
+                            <span title="Вместимость">
+                                <ion-icon name="man" alt="Вместимость" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.capacity }} чел
                         </li>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Объем топливного бака"></ion-icon>
-                            {{ boat.fuel_capacity if boat.fuel_capacity else '-' }} л
+                            <span title="Объем топливного бака">
+                                <ion-icon name="water" alt="Объем топливного бака" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.fuel_capacity if boat.fuel_capacity else '-' }} л
                         </li>
                         <li>
-                            <ion-icon name="navigate-circle" alt="Макс. мощность двигателя"></ion-icon>
-                            {{ boat.maximum_engine_power if boat.maximum_engine_power else '-' }} л.с.
+                            <span title="Макс. мощность двигателя">
+                                <ion-icon name="flash" alt="Макс. мощность двигателя" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ boat.maximum_engine_power if boat.maximum_engine_power else '-' }} л.с.
                         </li>
                     </ul>
                 </div>
