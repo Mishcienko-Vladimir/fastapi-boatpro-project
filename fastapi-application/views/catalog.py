@@ -25,7 +25,7 @@ def catalog(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
-        name="catalog.html",
+        name="products/catalog.html",
         context={
             "request": request,
             "user": user,

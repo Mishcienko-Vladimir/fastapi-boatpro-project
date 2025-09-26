@@ -24,7 +24,7 @@ def verify_email(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
-        name="verification.html",
+        name="auth/verification.html",
         context={
             "request": request,
             "user": user,

@@ -24,7 +24,7 @@ def password_reset(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
-        name="reset-password.html",
+        name="auth/reset-password.html",
         context={
             "request": request,
             "user": user,

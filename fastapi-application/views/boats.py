@@ -30,7 +30,7 @@ async def boats(
 ):
     boats_list = await get_boats_summary(session=session)
     return templates.TemplateResponse(
-        name="boats.html",
+        name="products/boats.html",
         context={
             "request": request,
             "boats_list": boats_list,
@@ -53,7 +53,7 @@ async def boat_detail(
 ):
     boat = await get_boat_by_name(session=session, boat_name=boat_name)
     return templates.TemplateResponse(
-        name="boat-detail.html",
+        name="products/boat-detail.html",
         context={
             "request": request,
             "boat": boat,
