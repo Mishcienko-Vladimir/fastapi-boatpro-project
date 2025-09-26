@@ -2,6 +2,7 @@ from fastapi_users import schemas
 from pydantic import BaseModel, Field
 
 from core.types.user_id import UserIdType
+from .favorite import FavoriteModel
 
 
 class UserRead(schemas.BaseUser[UserIdType]):
@@ -34,3 +35,13 @@ class UserUpdate(schemas.BaseUserUpdate):
 class UserRegisteredNotification(BaseModel):
     user: UserRead
     ts: int
+
+
+class UserFavorites(UserRead):
+    """
+    Список избранных товаров пользователя
+    """
+
+    favorites: list[FavoriteModel] = Field(
+        description="Список избранных товаров",
+    )
