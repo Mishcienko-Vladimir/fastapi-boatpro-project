@@ -9,6 +9,7 @@ from core.models.mixins import IntIdPkMixin, CreatedAtMixin, UpdatedAtMixin
 if TYPE_CHECKING:
     from core.models.products import Category  # noqa
     from core.models.products import ImagePath  # noqa
+    from core.models.favorite import Favorite  # noqa
 
 
 class Product(
@@ -65,4 +66,9 @@ class Product(
     # Обратная ссылка на категорию
     category: Mapped["Category"] = relationship(
         back_populates="products",
+    )
+
+    # Обратная связь с избранным
+    favorites: Mapped[list["Favorite"]] = relationship(
+        back_populates="product",
     )
