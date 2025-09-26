@@ -1,35 +1,56 @@
-document.addEventListener('DOMContentLoaded', function () {
+function changeMainImage(element) {
+    const mainImg = document.getElementById('main-img');
+    if (!mainImg) return;
+    mainImg.src = element.src;
+
+    const thumbnails = document.querySelectorAll('.thumbnails img');
+    thumbnails.forEach(img => img.classList.remove('active'));
+    element.classList.add('active');
+}
+
+function changeImage(direction) {
+    const images = document.querySelectorAll('.thumbnails img');
+    if (images.length === 0) return;
+
     let currentIndex = 0;
-
-    function changeMainImage(element) {
-        const mainImg = document.getElementById('main-img');
-        if (!mainImg) return;
-        mainImg.src = element.src;
-
-        const thumbnails = document.querySelectorAll('.thumbnails img');
-        thumbnails.forEach(img => img.classList.remove('active'));
-        element.classList.add('active');
+    if (localStorage.getItem('currentIndex')) {
+        currentIndex = parseInt(localStorage.getItem('currentIndex'), 10);
     }
 
-    function changeImage(direction) {
-        const images = document.querySelectorAll('.thumbnails img');
-        if (images.length === 0) return;
+    currentIndex += direction;
 
-        currentIndex += direction;
-
-        if (currentIndex < 0) {
-            currentIndex = images.length - 1;
-        } else if (currentIndex >= images.length) {
-            currentIndex = 0;
-        }
-
-        const selectedImage = images[currentIndex];
-        changeMainImage(selectedImage);
+    if (currentIndex < 0) {
+        currentIndex = images.length - 1;
+    } else if (currentIndex >= images.length) {
+        currentIndex = 0;
     }
 
-    // Делаем changeImage глобальной
-    window.changeImage = changeImage;
+    localStorage.setItem('currentIndex', currentIndex);
 
+    const selectedImage = images[currentIndex];
+    changeMainImage(selectedImage);
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Обработка .product-link
+    if (document.querySelector('.product-link') && document.querySelector('.product')) {
+        document.querySelectorAll('.product-link').forEach(link => {
+            const product = link.closest('.product');
+
+            if (product) {
+                link.addEventListener('mouseenter', () => {
+                    product.classList.add('active');
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    product.classList.remove('active');
+                });
+            }
+        });
+    }
+
+    // Обработка миниатюр
     const thumbnails = document.querySelectorAll('.thumbnails img');
     if (thumbnails.length > 0) {
         thumbnails.forEach(img => {
@@ -39,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Обработка вкладок
     const tabs = document.querySelectorAll('.nav-link');
     if (tabs.length > 0) {
         tabs.forEach(tab => {
@@ -62,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Кнопки "предыдущее/следующее"
     const prevButton = document.querySelector('.nav-button.prev');
     const nextButton = document.querySelector('.nav-button.next');
 
@@ -73,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
         nextButton.addEventListener('click', () => changeImage(1));
     }
 
+    // Кнопка "Добавить в избранное"
     const btnAddFavorites = document.getElementById('btnAddFavorites');
     if (btnAddFavorites) {
         const favoritesIcon = document.querySelector('.nav-right .favorites-btn ion-icon');
