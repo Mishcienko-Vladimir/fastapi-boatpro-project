@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from .home import router as home_router
-from .verification import router as verification_router
-from .reset_password import router as reset_password_router
-from .change_password import router as change_password_router
+from views.auth.verification import router as verification_router
+from views.auth.reset_password import router as reset_password_router
+from views.auth.change_password import router as change_password_router
 from .page_missing import router as page_missing_router
 from views.products.catalog import router as catalog_router
 from views.products.boats import router as boats_router
