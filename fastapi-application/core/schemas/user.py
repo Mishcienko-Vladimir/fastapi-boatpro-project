@@ -2,7 +2,7 @@ from fastapi_users import schemas
 from pydantic import BaseModel, Field
 
 from core.types.user_id import UserIdType
-from .favorite import FavoriteModel
+from .favorite import FavoriteRead
 
 
 class UserRead(schemas.BaseUser[UserIdType]):
@@ -42,6 +42,6 @@ class UserFavorites(UserRead):
     Список избранных товаров пользователя
     """
 
-    favorites: list[FavoriteModel] = Field(
+    favorites: list[FavoriteRead] = Field(
         description="Список избранных товаров",
     )
