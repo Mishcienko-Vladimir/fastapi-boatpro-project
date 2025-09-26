@@ -5,16 +5,37 @@ from core.schemas.base_model import BaseSchemaModel
 from core.schemas.products.product_base_model import ProductBaseModel
 
 
-class FavoriteModel(BaseSchemaModel):
+class FavoriteBaseModel(BaseSchemaModel):
     """
-    Схема избранного товара
+    Базовая схема избранного товара
+    """
+
+    user_id: int = Field(
+        description="ID пользователя",
+    )
+    product_id: int = Field(
+        description="ID товара",
+    )
+
+
+class FavoriteCreate(FavoriteBaseModel):
+    """
+    Схема для создания избранного товара
+    """
+
+    pass
+
+
+class FavoriteRead(FavoriteBaseModel):
+    """
+    Схема для чтения избранного товара
     """
 
     id: int = Field(
         description="ID избранного",
     )
     product: ProductBaseModel = Field(
-        description="Продукт",
+        description="Товар",
     )
     created_at: datetime = Field(
         description="Дата добавления в избранное",
