@@ -5,8 +5,8 @@ from .verification import router as verification_router
 from .reset_password import router as reset_password_router
 from .change_password import router as change_password_router
 from .page_missing import router as page_missing_router
-from .catalog import router as catalog_router
-from .boats import router as boats_router
+from views.products.catalog import router as catalog_router
+from views.products.boats import router as boats_router
 
 
 router = APIRouter()
