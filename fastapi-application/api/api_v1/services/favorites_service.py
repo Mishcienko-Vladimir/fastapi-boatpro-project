@@ -39,17 +39,16 @@ class FavoritesService:
         :return: Модель FavoriteRead с данными о добавленном товаре или ошибки 404, 400.
         """
 
-        user = await self.repo_user.get_user_by_id(favorite_data.user_id)
-        if not user:
+        if not await self.repo_user.get_user_by_id(favorite_data.user_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"User with id not found",
             )
 
-        product = await self.repo_product.get_product_by_id(
-            favorite_data.product_id, options=True
-        )
-        if not product:
+        if not await self.repo_product.get_product_by_id(
+            favorite_data.product_id,
+            options=True,
+        ):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Product with id {favorite_data.product_id} not found",
