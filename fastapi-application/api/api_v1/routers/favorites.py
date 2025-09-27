@@ -6,7 +6,7 @@ from api.api_v1.services.favorites_service import FavoritesService
 
 from core.config import settings
 from core.models import db_helper
-from core.models.favorite import Favorite
+from core.schemas.user import UserFavorites
 from core.schemas.favorite import FavoriteCreate, FavoriteRead
 
 
@@ -23,3 +23,15 @@ async def add_to_favorites(
     """
     _service = FavoritesService(session)
     return await _service.create_favorite(favorite_data)
+
+
+@router.get("/", status_code=201, response_model=UserFavorites)
+async def get_favorites(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user_id: int,
+) -> UserFavorites:
+    """
+    Получение всех избранных товаров пользователя.
+    """
+    _service = FavoritesService(session)
+    return await _service.get_favorites(user_id)
