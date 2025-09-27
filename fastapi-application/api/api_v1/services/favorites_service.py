@@ -4,7 +4,10 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import Product
+
+from core.schemas.user import UserFavorites
 from core.schemas.favorite import FavoriteRead, FavoriteCreate
+
 from core.repositories.products import ProductManagerCrud
 from core.repositories.user_manager_crud import UserManagerCrud
 from core.repositories.favorite_manager_crud import FavoriteManagerCrud
@@ -70,3 +73,25 @@ class FavoritesService:
         log.info("Created favorite with id: %r", favorite.id)
 
         return FavoriteRead.model_validate(favorite_with_relations)
+
+    async def get_favorites(self, user_id: int) -> UserFavorites:
+        """
+        Получение всех избранных товаров пользователя.
+        :param user_id: ID пользователя.
+        :return: Все избранные товары пользователя или ошибку 404.
+        """
+
+        if not await self.repo_user.get_user_by_id(user_id):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with id not found",
+            )
+
+        favorites = await self.repo_favorite.get_favorites_user(user_id)
+        if not favorites:
+            return UserFavorites(favorites=[])
+
+        favorite_models = [
+            FavoriteRead.model_validate(favorite) for favorite in favorites
+        ]
+        return UserFavorites(favorites=favorite_models)
