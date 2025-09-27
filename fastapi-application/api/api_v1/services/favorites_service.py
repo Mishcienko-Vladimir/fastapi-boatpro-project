@@ -95,3 +95,19 @@ class FavoritesService:
             FavoriteRead.model_validate(favorite) for favorite in favorites
         ]
         return UserFavorites(favorites=favorite_models)
+
+    async def delete_favorite_by_id(self, favorite_id: int) -> None:
+        """
+        Удаляет запись из избранного по id.
+
+        :param favorite_id: ID записи избранного.
+        :return: None, если удаление прошло успешно. Ошибка 404, если запись не найдена.
+        """
+
+        favorite = await self.repo_favorite.delete_favorite_by_id(favorite_id)
+        if not favorite:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Favorite with id {favorite_id} not found",
+            )
+        return None
