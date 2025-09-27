@@ -37,7 +37,7 @@ class UserRegisteredNotification(BaseModel):
     ts: int
 
 
-class UserFavorites(UserRead):
+class UserFavorites(BaseModel):
     """
     Список избранных товаров пользователя
     """
