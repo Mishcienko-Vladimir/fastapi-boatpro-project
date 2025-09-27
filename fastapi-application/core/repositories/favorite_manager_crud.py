@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,6 +50,22 @@ class FavoriteManagerCrud:
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
+
+    async def get_favorites_user(self, user_id: int) -> Sequence[Favorite]:
+        """
+        Получает все избранные товары пользователя.
+
+        :param user_id: ID пользователя.
+        :return: Список записей Favorite.
+        """
+        stmt = (
+            select(Favorite)
+            .options(joinedload(Favorite.product))
+            .where(Favorite.user_id == user_id)
+        )
+
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
 
     async def is_favorite_exists(self, user_id: int, product_id: int) -> bool:
         """
