@@ -82,3 +82,22 @@ class FavoriteManagerCrud:
         )
         result = await self.session.execute(stmt)
         return result.scalars().first() is not None
+
+    async def delete_favorite_by_id(self, favorite_id: int) -> bool:
+        """
+        Удаляет запись из избранного по id.
+
+        :param favorite_id: ID запись избранного.
+        :return: True, если удаление прошло успешно. False если избранное не найдено.
+        """
+
+        stmt = select(Favorite).where(Favorite.id == favorite_id)
+        result = await self.session.execute(stmt)
+        favorite = result.scalars().first()
+
+        if not favorite:
+            return False
+
+        await self.session.delete(favorite)
+        await self.session.commit()
+        return True
