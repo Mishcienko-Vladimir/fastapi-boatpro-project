@@ -35,3 +35,15 @@ async def get_favorites(
     """
     _service = FavoritesService(session)
     return await _service.get_favorites(user_id)
+
+
+@router.delete("/", status_code=204)
+async def delete_favorite_by_id(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    favorite_id: int,
+) -> None:
+    """
+    Удаление товара из избранного.
+    """
+    _service = FavoritesService(session)
+    return await _service.delete_favorite_by_id(favorite_id)
