@@ -59,6 +59,7 @@ class ViewPrefix(BaseModel):
     page_missing: str = "/page-missing"
     catalog: str = "/catalog"
     boats: str = "/boats"
+    favorites: str = "/favorites"
 
 
 class ApiV1Prefix(BaseModel):
