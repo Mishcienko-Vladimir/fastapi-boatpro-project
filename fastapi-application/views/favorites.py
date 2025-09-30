@@ -1,10 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from fastapi import APIRouter, Request, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.favorites import get_favorites
 
-from core.repositories.authentication.fastapi_users import current_active_user
+from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
 from core.models import User, db_helper
 
@@ -24,17 +24,20 @@ router = APIRouter(
 async def favorites(
     request: Request,
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    user: User = Depends(current_active_user),
+    user: Optional[User] = Depends(optional_user),
 ):
-    if not user.is_verified:
+    if not user:
         return templates.TemplateResponse(
-            name="please-log.html",
-            context={"request": request, "user": user},
+            name="favorites_and_orders/please-log.html",
+            context={
+                "request": request,
+                "user": user,
+            },
         )
 
     favorites_list = await get_favorites(session=session, user_id=user.id)
     return templates.TemplateResponse(
-        name="favorites.html",
+        name="favorites_and_orders/favorites.html",
         context={
             "request": request,
             "user": user,
