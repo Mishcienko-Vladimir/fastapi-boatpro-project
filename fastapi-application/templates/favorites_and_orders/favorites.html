@@ -1,12 +1,26 @@
 {% extends "base.html" %}
 {% block title %}
-    BoatPro - продажа катеров, лодочных моторов и прицепов
+    Избранное
 {% endblock %}
 
 {% block main %}
-<h2>О сайте</h2>
-<p>
-    BoatPro — ваш надежный партнер в мире лодок и водного отдыха.
-</p>
+    <h2>Избранное</h2>
+    {% if favorites_list.favorites|length == 0 %}
+        <h3>В избранном пока пусто...</h3>
+        <p>
+            Добавляйте товары с помощью кнопки<button class="btn-favorites-icon">В избранное</button> ,
+            чтобы не потерять их и купить позже
+        </p>
+    {% else %}
+        {% for favorite in favorites_list.favorites %}
+            <div class="bloc-favorite">
+                <p>Название модели: {{ favorite.product.name }}</p>
+                <p>Производитель: {{ favorite.product.company_name }}</p>
+                <p>Цена: {{ favorite.product.price }} ₽</p>
+                <p>Дата добавления: {{ favorite.created_at }}</p>
+                <p>Наличие: {{ "В наличии" if favorite.product.is_active else "Нет в наличии" }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}
