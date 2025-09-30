@@ -26,7 +26,10 @@
                 <input type="search" placeholder="Поиск...">
                 <ion-icon name="search-outline" class="icon-header"></ion-icon>
             </button>
-            <button class="favorites-btn" aria-label="Избранное">
+            <button
+                class="favorites-btn"
+                aria-label="Избранное"
+                onclick="window.location.href='{{ url_for('favorites') }}'">
                 <ion-icon name="heart-outline" class="icon-header"></ion-icon>
             </button>
             <button class="orders-btn" aria-label="Заказы">
