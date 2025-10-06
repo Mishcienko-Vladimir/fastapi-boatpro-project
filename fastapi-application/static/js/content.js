@@ -95,25 +95,4 @@ document.addEventListener('DOMContentLoaded', function () {
     if (nextButton) {
         nextButton.addEventListener('click', () => changeImage(1));
     }
-
-    // Кнопка "Добавить в избранное"
-    const btnAddFavorites = document.getElementById('btnAddFavorites');
-    if (btnAddFavorites) {
-        const favoritesIcon = document.querySelector('.nav-right .favorites-btn ion-icon');
-
-        if (favoritesIcon) {
-            btnAddFavorites.addEventListener('click', function () {
-                favoritesIcon.setAttribute('name', 'heart');
-                favoritesIcon.style.color = '#ff0000';
-                favoritesIcon.style.transform = 'scale(1.5)';
-                favoritesIcon.style.transition = 'transform 0.3s ease, color 0.3s ease';
-
-                setTimeout(() => {
-                    favoritesIcon.setAttribute('name', 'heart-outline');
-                    favoritesIcon.style.color = '';
-                    favoritesIcon.style.transform = 'scale(1)';
-                }, 1000);
-            });
-        }
-    }
 });
