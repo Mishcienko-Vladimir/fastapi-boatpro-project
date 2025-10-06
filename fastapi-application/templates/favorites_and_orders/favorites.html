@@ -14,13 +14,35 @@
     {% else %}
         {% for favorite in favorites_list.favorites %}
             <div class="bloc-favorite">
-                <p>Название модели: {{ favorite.product.name }}</p>
-                <p>Производитель: {{ favorite.product.company_name }}</p>
-                <p>Цена: {{ favorite.product.price }} ₽</p>
-                <p>Дата добавления: {{ favorite.created_at }}</p>
-                <p>Наличие: {{ "В наличии" if favorite.product.is_active else "Нет в наличии" }}</p>
+                <div class="favorite-item">
+                    <img src="/static/images/website/image-missing.png" alt="Изображение товара">
+                </div>
+                <div class="favorite-item">
+                    <h3>{{ favorite.product.name }}</h3>
+                    <p>Производитель: {{ favorite.product.company_name }}</p>
+                    <p>
+                        Наличие:
+                        {% if favorite.product.is_active %}
+                            <span style="color: #006400; font-weight: 600;">В наличии</span>
+                        {% else %}
+                            <span style="color: #B22222; font-weight: 600;">Нет в наличии</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="favorite-item">
+                    <p>Цена: {{ favorite.product.price }} ₽</p>
+                    <button id="btnBuy" class="btn-buy">Купить</button>
+                </div>
+                <div class="favorite-item">
+                    <p>Дата добавления:</p>
+                    <p>{{ favorite.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                <div class="favorite-item">
+                    <button class="btn-delete" aria-label="Удалить" data-favorite-id="{{ favorite.id }}">>
+                        <ion-icon name="trash" class="icon-header"></ion-icon>
+                    </button>
+                </div>
             </div>
         {% endfor %}
     {% endif %}
-
 {% endblock %}
