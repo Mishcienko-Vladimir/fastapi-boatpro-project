@@ -15,7 +15,11 @@
         {% for favorite in favorites_list.favorites %}
             <div class="bloc-favorite">
                 <div class="favorite-item">
-                    <img src="/static/images/website/image-missing.png" alt="Изображение товара">
+                    {% if favorite.product.image %}
+                        <img src="{{ favorite.product.image.path }}" alt="Изображение товара">
+                    {% else %}
+                        <img src="/static/images/website/image-missing.png" alt="Изображение товара">
+                    {% endif %}
                 </div>
                 <div class="favorite-item">
                     <h3>{{ favorite.product.name }}</h3>
