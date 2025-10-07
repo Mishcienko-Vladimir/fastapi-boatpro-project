@@ -109,6 +109,16 @@ main.content {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
+.status-available {
+    color: #006400;
+    font-weight: 600;
+}
+
+.status-unavailable {
+    color: #B22222;
+    font-weight: 600;
+}
+
 .product-img {
     width: 100%;
     min-height: 160px;
