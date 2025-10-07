@@ -1,6 +1,8 @@
+from typing import Optional
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
+from .image_path import ImagePathRead
 
 
 class ProductBaseModel(BaseSchemaModel):
@@ -29,3 +31,11 @@ class ProductBaseModel(BaseSchemaModel):
     is_active: bool = Field(
         description="Наличие товара",
     )
+
+
+class ProductBaseModelRead(ProductBaseModel):
+    """
+    Базовая модель для чтения товаров.
+    """
+
+    image: Optional[ImagePathRead] = None

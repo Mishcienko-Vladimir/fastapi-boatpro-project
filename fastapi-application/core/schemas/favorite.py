@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
-from core.schemas.products.product_base_model import ProductBaseModel
+from core.schemas.products.product_base_model import ProductBaseModelRead
 
 
 class FavoriteBaseModel(BaseSchemaModel):
@@ -34,7 +34,7 @@ class FavoriteRead(FavoriteBaseModel):
     id: int = Field(
         description="ID избранного",
     )
-    product: ProductBaseModel = Field(
+    product: ProductBaseModelRead = Field(
         description="Товар",
     )
     created_at: datetime = Field(
