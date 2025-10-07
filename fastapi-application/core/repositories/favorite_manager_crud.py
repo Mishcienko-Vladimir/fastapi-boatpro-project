@@ -5,6 +5,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.favorite import Favorite
+from core.models.products.product_base import Product
 from core.schemas.favorite import FavoriteCreate
 
 
@@ -45,7 +46,9 @@ class FavoriteManagerCrud:
         """
         stmt = (
             select(Favorite)
-            .options(joinedload(Favorite.product))
+            .options(
+                joinedload(Favorite.product).joinedload(Product.images),
+            )
             .where(Favorite.product_id == product_id)
         )
         result = await self.session.execute(stmt)
@@ -60,12 +63,14 @@ class FavoriteManagerCrud:
         """
         stmt = (
             select(Favorite)
-            .options(joinedload(Favorite.product))
+            .options(
+                joinedload(Favorite.product).joinedload(Product.images),
+            )
             .where(Favorite.user_id == user_id)
         )
 
         result = await self.session.execute(stmt)
-        return result.scalars().all()
+        return result.unique().scalars().all()
 
     async def is_favorite_exists(self, user_id: int, product_id: int) -> bool:
         """
