@@ -115,6 +115,9 @@ class TrailerSummarySchema(BaseSchemaModel):
         lt=32767,
         description="Максимальная длина перевозимого судна в см",
     )
+    is_active: bool = Field(
+        description="Наличие товара",
+    )
     image: ImagePathRead = Field(
         description="Главное изображение",
     )

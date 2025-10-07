@@ -117,6 +117,9 @@ class OutboardMotorSummarySchema(BaseSchemaModel):
         lt=1000,
         description="Вес мотора в кг",
     )
+    is_active: bool = Field(
+        description="Наличие товара",
+    )
     image: ImagePathRead = Field(
         description="Главное изображение",
     )
