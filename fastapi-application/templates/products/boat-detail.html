@@ -28,6 +28,11 @@
         </div>
 
         <div class="bloc-price-info">
+            {% if boat.is_active %}
+                <span class="status-available">В наличии</span>
+            {% else %}
+                <span class="status-unavailable">Нет в наличии</span>
+            {% endif %}
             <p>Цена: {{ boat.price }} ₽</p>
             <button id="btnBuy" class="btn-buy">Купить</button>
             <button id="btnAddFavorites" class="btn-favorites">В избранное</button>
