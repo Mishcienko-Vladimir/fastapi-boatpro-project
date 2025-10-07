@@ -92,7 +92,20 @@ class FavoritesService:
             return UserFavorites(favorites=[])
 
         favorite_models = [
-            FavoriteRead.model_validate(favorite) for favorite in favorites
+            FavoriteRead.model_validate(
+                {
+                    **favorite.__dict__,
+                    "product": {
+                        **favorite.product.__dict__,
+                        "image": (
+                            favorite.product.images[0]
+                            if favorite.product.images
+                            else None
+                        ),
+                    },
+                }
+            )
+            for favorite in favorites
         ]
         return UserFavorites(favorites=favorite_models)
 
