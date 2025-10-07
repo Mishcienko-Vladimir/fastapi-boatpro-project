@@ -23,9 +23,9 @@
                     <p>
                         Наличие:
                         {% if favorite.product.is_active %}
-                            <span style="color: #006400; font-weight: 600;">В наличии</span>
+                            <span class="status-available">В наличии</span>
                         {% else %}
-                            <span style="color: #B22222; font-weight: 600;">Нет в наличии</span>
+                            <span class="status-unavailable">Нет в наличии</span>
                         {% endif %}
                     </p>
                 </div>
