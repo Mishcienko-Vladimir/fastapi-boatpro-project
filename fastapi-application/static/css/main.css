@@ -216,7 +216,7 @@ main.content {
     width: 135px;
     height: 135px;
     border-radius: 10px;
-    margin-right: 10px
+    margin-right: 10px;
     object-fit: cover;
     aspect-ratio: 1 / 1;
     cursor: pointer;
@@ -408,7 +408,7 @@ main.content {
     width: 80px;
     height: 80px;
     border-radius: 10px;
-    margin-right: 10px
+    margin-right: 10px;
     object-fit: cover;
     aspect-ratio: 1 / 1;
     cursor: pointer;
