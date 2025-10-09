@@ -7,7 +7,12 @@ from api.api_v1.services.products import ProductsService
 from core.config import settings
 from core.models import db_helper
 from core.models.products import Trailer
-from core.schemas.products import TrailerRead, TrailerUpdate, TrailerCreate
+from core.schemas.products import (
+    TrailerRead,
+    TrailerUpdate,
+    TrailerCreate,
+    TrailerSummarySchema,
+)
 
 
 router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы"])
@@ -120,6 +125,28 @@ async def get_trailers(
     _service = ProductsService(session, Trailer)
     all_trailers = await _service.get_products()
     return [TrailerRead.model_validate(trailer) for trailer in all_trailers]
+
+
+@router.get("/summary", status_code=200, response_model=list[TrailerSummarySchema])
+async def get_trailers_summary(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[TrailerSummarySchema]:
+    """
+    Получает краткую информацию о всех прицепах.
+    В данных только одно изображение для каждого прицепа.
+    """
+
+    _service = ProductsService(session, Trailer)
+    all_trailers = await _service.get_products()
+    return [
+        TrailerSummarySchema.model_validate(
+            {
+                **trailer.__dict__,
+                "image": trailer.images[0] if trailer.images else None,
+            }
+        )
+        for trailer in all_trailers
+    ]
 
 
 @router.patch("/{trailer_id}", status_code=200, response_model=TrailerRead)
