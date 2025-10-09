@@ -73,6 +73,9 @@ async def create_outboard_motor(
         description="Изображения товара",
     ),
 ) -> OutboardMotorRead:
+    """
+    Создание нового лодочного мотора.
+    """
     outboard_motor_data_json = {
         "category_id": category_id,
         "name": name,
@@ -99,6 +102,9 @@ async def get_outboard_motor_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     outboard_motor_name: str,
 ) -> OutboardMotorRead:
+    """
+    Получение лодочного мотора по названию.
+    """
     _service = ProductsService(session, OutboardMotor)
     outboard_motor = await _service.get_product_by_name(outboard_motor_name)
     return OutboardMotorRead.model_validate(outboard_motor)
@@ -113,6 +119,9 @@ async def get_outboard_motor_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     outboard_motor_id: int,
 ) -> OutboardMotorRead:
+    """
+    Получение лодочного мотора по id.
+    """
     _service = ProductsService(session, OutboardMotor)
     outboard_motor = await _service.get_product_by_id(outboard_motor_id)
     return OutboardMotorRead.model_validate(outboard_motor)
@@ -126,6 +135,9 @@ async def get_outboard_motor_by_id(
 async def get_outboard_motors(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[OutboardMotorRead]:
+    """
+    Получение всех лодочных моторов.
+    """
     _service = ProductsService(session, OutboardMotor)
     all_outboard_motors = await _service.get_products()
     return [
@@ -170,6 +182,9 @@ async def update_outboard_motor_data_by_id(
     outboard_motor_id: int,
     outboard_motor_data: OutboardMotorUpdate,
 ) -> OutboardMotorRead:
+    """
+    Обновление данных лодочного мотора по id (кроме изображений).
+    """
     _service = ProductsService(session, OutboardMotor)
     outboard_motor = await _service.update_product_data_by_id(
         outboard_motor_id, outboard_motor_data
@@ -194,6 +209,9 @@ async def update_outboard_motor_images_by_id(
         description="Новые изображения для товара",
     ),
 ) -> OutboardMotorRead:
+    """
+    Обновление изображений лодочного мотора по id.
+    """
     _service = ProductsService(session, OutboardMotor)
     outboard_motor = await _service.update_product_images_by_id(
         outboard_motor_id,
@@ -208,5 +226,8 @@ async def delete_outboard_motor_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     outboard_motor_id: int,
 ) -> None:
+    """
+    Удаление лодочного мотора по id.
+    """
     _service = ProductsService(session, OutboardMotor)
     return await _service.delete_product_by_id(outboard_motor_id)
