@@ -128,6 +128,9 @@ async def create_boat(
         description="Изображения товара",
     ),
 ) -> BoatRead:
+    """
+    Создание катера.
+    """
     boat_data_json = {
         "category_id": category_id,
         "name": name,
@@ -159,6 +162,9 @@ async def get_boat_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     boat_name: str,
 ) -> BoatRead:
+    """
+    Получение катера по имени.
+    """
     _service = ProductsService(session, Boat)
     boat = await _service.get_product_by_name(boat_name)
     return BoatRead.model_validate(boat)
@@ -169,6 +175,9 @@ async def get_boat_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     boat_id: int,
 ) -> BoatRead:
+    """
+    Получение катера по id.
+    """
     _service = ProductsService(session, Boat)
     boat = await _service.get_product_by_id(boat_id)
     return BoatRead.model_validate(boat)
@@ -178,6 +187,9 @@ async def get_boat_by_id(
 async def get_boats(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[BoatRead]:
+    """
+    Получает все катера.
+    """
     _service = ProductsService(session, Boat)
     all_boats = await _service.get_products()
     return [BoatRead.model_validate(boat) for boat in all_boats]
@@ -211,6 +223,9 @@ async def update_boat_data_by_id(
     boat_id: int,
     boat_data: BoatUpdate,
 ) -> BoatRead:
+    """
+    Обновление данных катера по id (кроме изображений).
+    """
     _service = ProductsService(session, Boat)
     boat = await _service.update_product_data_by_id(boat_id, boat_data)
     return BoatRead.model_validate(boat)
@@ -229,6 +244,9 @@ async def update_boat_images_by_id(
         description="Новые изображения для товара",
     ),
 ) -> BoatRead:
+    """
+    Обновление изображений катера по id.
+    """
     _service = ProductsService(session, Boat)
     boat = await _service.update_product_images_by_id(
         boat_id,
@@ -243,5 +261,8 @@ async def delete_boat_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     boat_id: int,
 ) -> None:
+    """
+    Удаление катера по id.
+    """
     _service = ProductsService(session, Boat)
     return await _service.delete_product_by_id(boat_id)
