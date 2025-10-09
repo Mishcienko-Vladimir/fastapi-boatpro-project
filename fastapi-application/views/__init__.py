@@ -10,6 +10,8 @@ from views.auth.change_password import router as change_password_router
 
 from views.products.catalog import router as catalog_router
 from views.products.boats import router as boats_router
+from views.products.outboard_motors import router as outboard_motors_router
+from views.products.trailers import router as trailers_router
 
 
 router = APIRouter()
@@ -22,3 +24,5 @@ router.include_router(reset_password_router)
 router.include_router(change_password_router)
 router.include_router(catalog_router)
 router.include_router(boats_router)
+router.include_router(outboard_motors_router)
+router.include_router(trailers_router)
