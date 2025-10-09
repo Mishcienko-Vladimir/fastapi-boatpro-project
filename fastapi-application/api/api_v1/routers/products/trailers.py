@@ -80,6 +80,9 @@ async def create_trailer(
         description="Изображения товара",
     ),
 ) -> TrailerRead:
+    """
+    Создание нового прицепа.
+    """
     trailer_data_json = {
         "category_id": category_id,
         "name": name,
@@ -103,6 +106,9 @@ async def get_trailer_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_name: str,
 ) -> TrailerRead:
+    """
+    Получение прицепа по названию.
+    """
     _service = ProductsService(session, Trailer)
     trailer = await _service.get_product_by_name(trailer_name)
     return TrailerRead.model_validate(trailer)
@@ -113,6 +119,9 @@ async def get_trailer_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
 ) -> TrailerRead:
+    """
+    Получение прицепа по id.
+    """
     _service = ProductsService(session, Trailer)
     trailer = await _service.get_product_by_id(trailer_id)
     return TrailerRead.model_validate(trailer)
@@ -122,6 +131,9 @@ async def get_trailer_by_id(
 async def get_trailers(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[TrailerRead]:
+    """
+    Получение всех прицепов.
+    """
     _service = ProductsService(session, Trailer)
     all_trailers = await _service.get_products()
     return [TrailerRead.model_validate(trailer) for trailer in all_trailers]
@@ -155,6 +167,9 @@ async def update_trailer_data_by_id(
     trailer_id: int,
     trailer_data: TrailerUpdate,
 ) -> TrailerRead:
+    """
+    Обновление данных прицепа по id (кроме изображений).
+    """
     _service = ProductsService(session, Trailer)
     trailer = await _service.update_product_data_by_id(trailer_id, trailer_data)
     return TrailerRead.model_validate(trailer)
@@ -173,6 +188,9 @@ async def update_trailer_images_by_id(
         description="Новые изображения для товара",
     ),
 ) -> TrailerRead:
+    """
+    Обновление изображений прицепа по id.
+    """
     _service = ProductsService(session, Trailer)
     trailer = await _service.update_product_images_by_id(
         trailer_id,
@@ -187,5 +205,8 @@ async def delete_trailer_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
 ) -> None:
+    """
+    Удаление прицепа по id.
+    """
     _service = ProductsService(session, Trailer)
     return await _service.delete_product_by_id(trailer_id)
