@@ -11,8 +11,8 @@
             <div class="main-image">
                 <img id="main-img" src="{{ boat.images[0].path }}" alt="Главное изображение катера">
                 <div class="image-navigation">
-                    <button class="nav-button prev" onclick="changeImage(-1)">&#10094;</button>
-                    <button class="nav-button next" onclick="changeImage(1)">&#10095;</button>
+                    <button class="nav-button prev">&#10094;</button>
+                    <button class="nav-button next">&#10095;</button>
                 </div>
             </div>
             <div class="thumbnails">
@@ -20,11 +20,9 @@
                     <img
                         src="{{ image.path }}"
                         alt="Миниатюра"
-                        onclick="if (typeof changeMainImage === 'function') changeMainImage(this);"
                         class="{% if loop.first %} active {% endif %}">
                 {% endfor %}
             </div>
-
         </div>
 
         <div class="bloc-price-info">
