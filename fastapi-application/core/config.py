@@ -59,6 +59,8 @@ class ViewPrefix(BaseModel):
     page_missing: str = "/page-missing"
     catalog: str = "/catalog"
     boats: str = "/boats"
+    outboard_motors: str = "/outboard-motors"
+    trailers: str = "/trailers"
     favorites: str = "/favorites"
 
 
