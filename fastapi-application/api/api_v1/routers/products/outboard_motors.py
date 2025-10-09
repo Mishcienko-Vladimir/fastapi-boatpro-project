@@ -12,6 +12,7 @@ from core.schemas.products import (
     OutboardMotorRead,
     OutboardMotorUpdate,
     OutboardMotorCreate,
+    OutboardMotorSummarySchema,
 )
 
 
@@ -129,6 +130,32 @@ async def get_outboard_motors(
     all_outboard_motors = await _service.get_products()
     return [
         OutboardMotorRead.model_validate(outboard_motor)
+        for outboard_motor in all_outboard_motors
+    ]
+
+
+@router.get(
+    "/summary",
+    status_code=200,
+    response_model=list[OutboardMotorSummarySchema],
+)
+async def get_outboard_motors_summary(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[OutboardMotorSummarySchema]:
+    """
+    Получает краткую информацию о всех лодочных моторов.
+    В данных только одно изображение для каждого мотора.
+    """
+
+    _service = ProductsService(session, OutboardMotor)
+    all_outboard_motors = await _service.get_products()
+    return [
+        OutboardMotorSummarySchema.model_validate(
+            {
+                **outboard_motor.__dict__,
+                "image": outboard_motor.images[0] if outboard_motor.images else None,
+            }
+        )
         for outboard_motor in all_outboard_motors
     ]
 
