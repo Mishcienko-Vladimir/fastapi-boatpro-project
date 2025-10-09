@@ -118,6 +118,7 @@ class TrailerSummarySchema(BaseSchemaModel):
     is_active: bool = Field(
         description="Наличие товара",
     )
-    image: ImagePathRead = Field(
+    image: Optional[ImagePathRead] = Field(
+        None,
         description="Главное изображение",
     )

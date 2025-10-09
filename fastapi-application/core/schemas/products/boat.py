@@ -173,9 +173,6 @@ class BoatSummarySchema(BaseSchemaModel):
         lt=100,
         description="Количество мест",
     )
-    is_active: bool = Field(
-        description="Наличие товара",
-    )
     fuel_capacity: int | None = Field(
         None,
         ge=0,
@@ -188,4 +185,10 @@ class BoatSummarySchema(BaseSchemaModel):
         lt=10000,
         description="Максимальная мощность двигателя в л.с.",
     )
-    image: Optional[ImagePathRead] = None
+    is_active: bool = Field(
+        description="Наличие товара",
+    )
+    image: Optional[ImagePathRead] = Field(
+        None,
+        description="Главное изображение",
+    )
