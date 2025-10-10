@@ -30,6 +30,22 @@ class OutboardMotor(Product):
         SmallInteger,
         comment="Вес мотора в кг",
     )
+    number_cylinders: Mapped[int] = mapped_column(
+        SmallInteger,
+        comment="Количество цилиндров в двигателе",
+    )
+    engine_displacement: Mapped[int] = mapped_column(
+        SmallInteger,
+        comment="Объем двигателя в куб.см",
+    )
+    control_type: Mapped[str] = mapped_column(
+        String(20),
+        comment="Тип управления",
+    )
+    starter_type: Mapped[str] = mapped_column(
+        String(20),
+        comment="Тип стартера",
+    )
 
     def __str__(self):
         return (
@@ -44,6 +60,10 @@ class OutboardMotor(Product):
             f"engine_power={self.engine_power!r}, "
             f"engine_type={self.engine_type!r}, "
             f"weight={self.weight!r}, "
+            f"number_cylinders={self.number_cylinders!r}, "
+            f"engine_displacement={self.engine_displacement!r}, "
+            f"control_type={self.control_type!r}, "
+            f"starter_type={self.starter_type!r}, "
             f"category_id={self.category_id!r}, "
             f"type_product={self.type_product!r}, "
             f"created_at={self.created_at!r}, "
