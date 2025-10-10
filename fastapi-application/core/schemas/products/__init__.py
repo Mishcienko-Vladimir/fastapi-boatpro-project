@@ -12,6 +12,8 @@ __all__ = (
     "BoatRead",
     "BoatSummarySchema",
     "EngineType",
+    "ControlType",
+    "StarterType",
     "OutboardMotorCreate",
     "OutboardMotorUpdate",
     "OutboardMotorRead",
@@ -42,6 +44,8 @@ from .boat import (
 )
 from .outboard_motor import (
     EngineType,
+    ControlType,
+    StarterType,
     OutboardMotorCreate,
     OutboardMotorUpdate,
     OutboardMotorRead,
