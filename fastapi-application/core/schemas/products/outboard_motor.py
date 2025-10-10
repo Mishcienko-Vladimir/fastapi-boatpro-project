@@ -11,11 +11,29 @@ from .category import CategoryRead
 
 class EngineType(str, Enum):
     """
-    Типы двигателей
+    Типы двигателей.
     """
 
     two_stroke = "двухтактный"
     four_stroke = "четырехтактный"
+
+
+class ControlType(str, Enum):
+    """
+    Типы управления.
+    """
+
+    tiller_control = "румпельное"
+    remote_control = "дистанционное"
+
+
+class StarterType(str, Enum):
+    """
+    Типы стартера.
+    """
+
+    manual_starter = "ручной"
+    electric_starter = "электрический"
 
 
 class OutboardMotorBaseModel(ProductBaseModel):
@@ -35,6 +53,22 @@ class OutboardMotorBaseModel(ProductBaseModel):
         gt=0,
         lt=1000,
         description="Вес мотора в кг",
+    )
+    number_cylinders: int = Field(
+        gt=0,
+        lt=100,
+        description="Количество цилиндров в двигателе",
+    )
+    engine_displacement: int = Field(
+        gt=0,
+        lt=10000,
+        description="Объем двигателя в куб.см",
+    )
+    control_type: ControlType = Field(
+        description="Тип управления",
+    )
+    starter_type: StarterType = Field(
+        description="Тип стартера",
     )
 
 
@@ -61,6 +95,10 @@ class OutboardMotorUpdate(OutboardMotorBaseModel):
     engine_power: Optional[int] = None
     engine_type: Optional[EngineType] = None
     weight: Optional[int] = None
+    number_cylinders: Optional[int] = None
+    engine_displacement: Optional[int] = None
+    control_type: Optional[ControlType] = None
+    starter_type: Optional[StarterType] = None
 
 
 class OutboardMotorRead(OutboardMotorBaseModel):
@@ -116,6 +154,20 @@ class OutboardMotorSummarySchema(BaseSchemaModel):
         gt=0,
         lt=1000,
         description="Вес мотора в кг",
+    )
+    engine_type: EngineType = Field(
+        description="Тип двигателя",
+    )
+    engine_displacement: int = Field(
+        gt=0,
+        lt=10000,
+        description="Объем двигателя в куб.см",
+    )
+    control_type: ControlType = Field(
+        description="Тип управления",
+    )
+    starter_type: StarterType = Field(
+        description="Тип стартера",
     )
     is_active: bool = Field(
         description="Наличие товара",
