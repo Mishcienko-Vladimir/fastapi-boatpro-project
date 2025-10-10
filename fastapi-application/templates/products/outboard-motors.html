@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}
+    Лодочные моторы
+{% endblock %}
+
+{% block main %}
+    <h1>Лодочные моторы</h1>
+    <div class="bloc-products">
+        {% for outboard_motor in outboard_motors_list %}
+            <div class="product">
+                <a href="{{ url_for('outboard_motor_detail', outboard_motor_name=outboard_motor.name|replace(' ', '%20')) }}"
+                   title="Лодочный мотор"
+                   class="product-link"
+                   data-product-id="{{ outboard_motor.id }}">
+                    <img class="product-img" src="{{ outboard_motor.image.path }}" alt="Лодочный мотор">
+                </a>
+                <div class="product-desc">
+                    <div class="product-title">{{ outboard_motor.name }}</div>
+                    <div class="product-price">Цена: {{ outboard_motor.price }} ₽</div>
+                    <ul>
+                        <li>
+                            <span title="Мощность двигателя">
+                                <ion-icon name="flash" alt="Мощность двигателя" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.engine_power }} л.с.
+                        </li>
+                        <li>
+                            <span title="Вес мотора">
+                                <ion-icon name="barbell" alt="Вес мотора" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.weight }} кг
+                        </li>
+                        <li>
+                            <span title="Тип двигателя">
+                                <ion-icon name="pulse" alt="Тип двигателя" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.engine_type.value }}
+                        </li>
+                        <li>
+                            <span title="Объем двигателя">
+                                <ion-icon name="speedometer" alt="Объем двигателя" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.engine_displacement}} куб.см
+                        </li>
+                        <li>
+                            <span title="Тип управления">
+                                <ion-icon name="nuclear-outline" alt="Тип управления" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.control_type.value }}
+                        </li>
+                        <li>
+                            <span title="Тип стартера">
+                                <ion-icon name="rocket" alt="Тип стартера" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ outboard_motor.starter_type.value }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
