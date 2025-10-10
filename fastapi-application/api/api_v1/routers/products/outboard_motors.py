@@ -9,6 +9,8 @@ from core.models import db_helper
 from core.models.products import OutboardMotor
 from core.schemas.products import (
     EngineType,
+    ControlType,
+    StarterType,
     OutboardMotorRead,
     OutboardMotorUpdate,
     OutboardMotorCreate,
@@ -68,6 +70,26 @@ async def create_outboard_motor(
         lt=1000,
         description="Вес мотора в кг",
     ),
+    number_cylinders: int = Form(
+        ...,
+        gt=0,
+        lt=100,
+        description="Количество цилиндров в двигателе",
+    ),
+    engine_displacement: int = Form(
+        ...,
+        gt=0,
+        lt=10000,
+        description="Объем двигателя в куб.см",
+    ),
+    control_type: ControlType = Form(
+        ...,
+        description="Тип управления",
+    ),
+    starter_type: StarterType = Form(
+        ...,
+        description="Тип стартера",
+    ),
     images: list[UploadFile] = File(
         ...,
         description="Изображения товара",
@@ -86,6 +108,10 @@ async def create_outboard_motor(
         "engine_power": engine_power,
         "engine_type": engine_type,
         "weight": weight,
+        "number_cylinders": number_cylinders,
+        "engine_displacement": engine_displacement,
+        "control_type": control_type,
+        "starter_type": starter_type,
     }
     outboard_motor_data = OutboardMotorCreate(**outboard_motor_data_json)
     _service = ProductsService(session, OutboardMotor)
