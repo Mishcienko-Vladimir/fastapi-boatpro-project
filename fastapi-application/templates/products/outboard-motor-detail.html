@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ outboard_motor.name }}
+{% endblock %}
+
+{% block main %}
+    <div class="basic-bloc">
+        <h1>{{ outboard_motor.name }}</h1>
+
+        <div class="bloc-product-images">
+            <div class="main-image">
+                <img id="main-img" src="{{ outboard_motor.images[0].path }}" alt="Главное изображение лодочного мотора">
+                <div class="image-navigation">
+                    <button class="nav-button prev">&#10094;</button>
+                    <button class="nav-button next">&#10095;</button>
+                </div>
+            </div>
+            <div class="thumbnails">
+                {% for image in outboard_motor.images %}
+                    <img
+                        src="{{ image.path }}"
+                        alt="Миниатюра"
+                        class="{% if loop.first %} active {% endif %}">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bloc-price-info">
+            {% if outboard_motor.is_active %}
+                <span class="status-available">В наличии</span>
+            {% else %}
+                <span class="status-unavailable">Нет в наличии</span>
+            {% endif %}
+            <p>Цена: {{ outboard_motor.price }} ₽</p>
+            <button id="btnBuy" class="btn-buy">Купить</button>
+            <button id="btnAddFavorites" class="btn-favorites">В избранное</button>
+        </div>
+
+        <div class="bloc-product-info">
+            <ul class="product-nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-tab="description">Описание</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-tab="features">Характеристики</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="description" class="tab-pane active">
+                    <p>{{ outboard_motor.description or 'Нет описания' }}</p>
+                </div>
+                <div id="features" class="tab-pane">
+                    <table>
+                        <tr>
+                            <td class="td-label">Производитель</td>
+                            <td class="td-value"> {{ outboard_motor.company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Мощность двигателя</td>
+                            <td class="td-value"> {{ outboard_motor.engine_power }} л.с.</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Тип двигателя</td>
+                            <td class="td-value">{{ outboard_motor.engine_type.value }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Вес мотора</td>
+                            <td class="td-value"> {{ outboard_motor.weight }} кг</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Количество цилиндров в двигателе</td>
+                            <td class="td-value"> {{ outboard_motor.number_cylinders }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Объем двигателя</td>
+                            <td class="td-value"> {{ outboard_motor.engine_displacement }} куб.см</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Тип управления</td>
+                            <td class="td-value"> {{ outboard_motor.control_type.value }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Тип стартера</td>
+                            <td class="td-value"> {{ outboard_motor.starter_type.value }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="user-id" value="{{ user.id }}">
+    <input type="hidden" id="product-id" value="{{ outboard_motor.id }}">
+
+{% endblock %}
