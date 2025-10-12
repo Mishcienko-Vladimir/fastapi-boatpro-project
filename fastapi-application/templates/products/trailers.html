@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}
+    Прицепы для катеров и гидроциклов
+{% endblock %}
+
+{% block main %}
+    <h1>Прицепы</h1>
+    <div class="bloc-products">
+        {% for trailer in trailers_list %}
+            <div class="product">
+                <a href="{{ url_for('trailer_detail', trailer_name=trailer.name|replace(' ', '%20')) }}"
+                   title="Прицеп"
+                   class="product-link"
+                   data-product-id="{{ trailer.id }}">
+                    <img class="product-img" src="{{ trailer.image.path }}" alt="Прицеп">
+                </a>
+                <div class="product-desc">
+                    <div class="product-title">{{ trailer.name }}</div>
+                    <div class="product-price">Цена: {{ trailer.price }} ₽</div>
+                    <ul>
+                        <li>
+                            <span title="Длина прицепа">
+                                <ion-icon name="swap-vertical" alt="Длина прицепа" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ trailer.trailer_length }} см
+                        </li>
+                        <li>
+                            <span title="Максимальная длина перевозимого судна">
+                                <ion-icon name="boat" alt="Макс длина судна" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ trailer.max_ship_length }} см
+                        </li>
+                        <li>
+                            <span title="Полный вес прицепа">
+                                <ion-icon name="barbell" alt="Полный вес прицепа" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ trailer.full_mass }} кг
+                        </li>
+                        <li>
+                            <span title="Грузоподъемность ">
+                                <ion-icon name="speedometer" alt="Грузоподъемность" style="pointer-events: none;"></ion-icon>
+                            </span>
+                            &nbsp;{{ trailer.load_capacity}} кг
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
