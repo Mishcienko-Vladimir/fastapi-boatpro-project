@@ -110,6 +110,16 @@ class TrailerSummarySchema(BaseSchemaModel):
         lt=32767,
         description="Полный вес прицепа в кг",
     )
+    load_capacity: int = Field(
+        gt=0,
+        lt=32767,
+        description="Грузоподъемность в кг",
+    )
+    trailer_length: int = Field(
+        gt=0,
+        lt=32767,
+        description="Длина прицепа в см",
+    )
     max_ship_length: int = Field(
         gt=0,
         lt=32767,
