@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ trailer.name }}
+{% endblock %}
+
+{% block main %}
+    <div class="basic-bloc">
+        <h1>{{ trailer.name }}</h1>
+
+        <div class="bloc-product-images">
+            <div class="main-image">
+                <img id="main-img" src="{{ trailer.images[0].path }}" alt="Главное изображение прицепа">
+                <div class="image-navigation">
+                    <button class="nav-button prev">&#10094;</button>
+                    <button class="nav-button next">&#10095;</button>
+                </div>
+            </div>
+            <div class="thumbnails">
+                {% for image in trailer.images %}
+                    <img
+                        src="{{ image.path }}"
+                        alt="Миниатюра"
+                        class="{% if loop.first %} active {% endif %}">
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bloc-price-info">
+            {% if trailer.is_active %}
+                <span class="status-available">В наличии</span>
+            {% else %}
+                <span class="status-unavailable">Нет в наличии</span>
+            {% endif %}
+            <p>Цена: {{ trailer.price }} ₽</p>
+            <button id="btnBuy" class="btn-buy">Купить</button>
+            <button id="btnAddFavorites" class="btn-favorites">В избранное</button>
+        </div>
+
+        <div class="bloc-product-info">
+            <ul class="product-nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-tab="description">Описание</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-tab="features">Характеристики</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="description" class="tab-pane active">
+                    <p>{{ trailer.description or 'Нет описания' }}</p>
+                </div>
+                <div id="features" class="tab-pane">
+                    <table>
+                        <tr>
+                            <td class="td-label">Производитель</td>
+                            <td class="td-value"> {{ trailer.company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Длина прицепа</td>
+                            <td class="td-value"> {{ trailer.trailer_length}} см</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Макс длина перевозимого судна</td>
+                            <td class="td-value">{{ trailer.max_ship_length }} см</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Полный вес прицепа</td>
+                            <td class="td-value"> {{ trailer.full_mass }} кг</td>
+                        </tr>
+                        <tr>
+                            <td class="td-label">Грузоподъемность</td>
+                            <td class="td-value"> {{ trailer.load_capacity }} кг</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="user-id" value="{{ user.id }}">
+    <input type="hidden" id="product-id" value="{{ trailer.id }}">
+
+{% endblock %}
