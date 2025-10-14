@@ -405,13 +405,18 @@ main.content {
 }
 
 .favorite-item img {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 10px;
     margin-right: 10px;
     object-fit: cover;
     aspect-ratio: 1 / 1;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.favorite-item img:hover {
+    transform: scale(1.1);
 }
 
 .btn-delete {
