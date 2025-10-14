@@ -38,4 +38,7 @@ class ProductBaseModelRead(ProductBaseModel):
     Базовая модель для чтения товаров.
     """
 
+    type_product: str = Field(
+        description="Тип товара",
+    )
     image: Optional[ImagePathRead] = None
