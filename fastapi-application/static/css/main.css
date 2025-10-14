@@ -438,6 +438,7 @@ main.content {
     main.content {
         padding-top: 180px;
     }
+}
 
 @media (max-width: 800px) {
     .td-label {
@@ -447,11 +448,13 @@ main.content {
     .td-value {
         padding: 12px 0px;
     }
+}
 
 @media (max-width: 600px) {
     main.content {
         padding-top: 220px;
     }
+}
 
 @media (max-width: 480px) {
     main.content {
