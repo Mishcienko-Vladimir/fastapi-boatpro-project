@@ -15,11 +15,20 @@
         {% for favorite in favorites_list.favorites %}
             <div class="bloc-favorite">
                 <div class="favorite-item">
-                    {% if favorite.product.image %}
-                        <img src="{{ favorite.product.image.path }}" alt="Изображение товара">
-                    {% else %}
-                        <img src="/static/images/website/image-missing.png" alt="Изображение товара">
-                    {% endif %}
+                    <a href="{% if favorite.product.type_product == 'boat' %}
+                        {{ url_for('boat_detail', boat_name=favorite.product.name|replace(' ', '%20')) }}
+                      {% elif favorite.product.type_product == 'outboard_motor' %}
+                        {{ url_for('outboard_motor_detail', outboard_motor_name=favorite.product.name|replace(' ', '%20')) }}
+                      {% elif favorite.product.type_product == 'trailer' %}
+                        {{ url_for('trailer_detail', trailer_name=favorite.product.name|replace(' ', '%20')) }}
+                      {% endif %}">
+                        {% if favorite.product.image %}
+                            <img src="{{ favorite.product.image.path }}" alt="Изображение товара">
+                        {% else %}
+                            <img src="/static/images/website/image-missing.png" alt="Изображение товара">
+                        {% endif %}
+                    </a>
+
                 </div>
                 <div class="favorite-item">
                     <h3>{{ favorite.product.name }}</h3>
