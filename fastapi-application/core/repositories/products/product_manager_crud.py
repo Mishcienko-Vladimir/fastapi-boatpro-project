@@ -14,6 +14,7 @@ class ProductManagerCrud:
         - get_product_by_name - получает товар по name.
         - get_product_by_id - получает товар по id.
         - get_all_products - получает все товары.
+        - get_search_products - получает товары по ключевому слову.
         - create_product - создает новый товар.
         - update_product_data - обновляет товар, без обработки изображений.
         - delete_product - удаляет товар.
@@ -77,6 +78,29 @@ class ProductManagerCrud:
                 joinedload(self.product_db.category),
                 joinedload(self.product_db.images),
             )
+        result = await self.session.execute(stmt)
+        return result.scalars().unique().all()
+
+    async def get_search_products(self, query: str):
+        """
+        Получение товаров по ключевому слову (название, производитель, описание).
+
+        :param query: - ключевое слово для поиска.
+        :return: - список товаров или None.
+        """
+
+        stmt = (
+            select(self.product_db)
+            .where(
+                (self.product_db.name.ilike(f"%{query}%"))
+                | (self.product_db.company_name.ilike(f"%{query}%"))
+                | (self.product_db.description.ilike(f"%{query}%")),
+            )
+            .options(
+                joinedload(self.product_db.category),
+                joinedload(self.product_db.images),
+            )
+        )
         result = await self.session.execute(stmt)
         return result.scalars().unique().all()
 
