@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}
+    Результаты поиска: {{ query }}
+{% endblock %}
+
+{% block main %}
+    <h3>Результаты поиска:  {{ query }}</h3>
+    {% if not products_list %}
+        <p>
+            Ничего не найдено...
+        </p>
+    {% else %}
+        {% for product in products_list %}
+            <div class="bloc-favorite">
+                <div class="favorite-item">
+                    <a href="{% if product.type_product == 'boat' %}
+                        {{ url_for('boat_detail', boat_name=product.name|replace(' ', '%20')) }}
+                      {% elif product.type_product == 'outboard_motor' %}
+                        {{ url_for('outboard_motor_detail', outboard_motor_name=product.name|replace(' ', '%20')) }}
+                      {% elif product.type_product == 'trailer' %}
+                        {{ url_for('trailer_detail', trailer_name=product.name|replace(' ', '%20')) }}
+                      {% endif %}">
+                        {% if product.image %}
+                            <img src="{{ product.image.path }}" alt="Изображение товара">
+                        {% else %}
+                            <img src="/static/images/website/image-missing.png" alt="Изображение товара">
+                        {% endif %}
+                    </a>
+
+                </div>
+                <div class="favorite-item">
+                    <h3>{{ product.name }}</h3>
+                    <p>Тип товара:
+                        {% if product.type_product == 'boat' %}Катер
+                        {% elif product.type_product == 'outboard_motor' %}Лодочный мотор
+                        {% elif product.type_product == 'trailer' %}Прицеп
+                        {% endif %}
+                    </p>
+                    <p>Производитель: {{ product.company_name }}</p>
+                    <p>
+                        Наличие:
+                        {% if product.is_active %}
+                            <span class="status-available">В наличии</span>
+                        {% else %}
+                            <span class="status-unavailable">Нет в наличии</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="favorite-item">
+                    <p>Цена: {{ product.price }} ₽</p>
+                    <button id="btnBuy" class="btn-buy">Купить</button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
