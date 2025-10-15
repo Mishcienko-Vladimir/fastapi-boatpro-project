@@ -90,16 +90,10 @@ class ProductsService:
         Получение товаров по ключевому слову (название, производитель, описание).
 
         :param query: - строка для поиска.
-        :return: - список товаров (объектов модели SQLAlchemy) или ошибка 404.
+        :return: - список товаров (объектов модели SQLAlchemy).
         """
 
         products = await self.repo.get_search_products(query)
-
-        if not products:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Products not found",
-            )
         return products
 
     async def create_product(
