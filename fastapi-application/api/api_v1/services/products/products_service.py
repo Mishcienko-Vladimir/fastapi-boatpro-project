@@ -15,7 +15,7 @@ class ProductsService:
     Общий сервис для управления операциями с товарами (Boat, OutboardMotor, Trailer).
 
     :param session: - сессия для работы с БД.
-    :param:product_db: - модели таблицы SQLAlchemy (Boat, OutboardMotor, Trailer).
+    :param:product_db: - модели таблицы SQLAlchemy (Boat, OutboardMotor, Trailer, Product).
 
     :repo: - репозиторий (ProductManagerCrud), для работы с моделями таблицы БД (Boat, OutboardMotor, Trailer).
     :image_helper: - вспомогательный репозиторий (ImageHelper) для работы с изображениями.
@@ -25,6 +25,7 @@ class ProductsService:
         - get_product_by_id - получение товара по id.
         - get_product_by_name - получение товара по названию.
         - get_products - получение всех товаров.
+        - get_search_products - получает товары по ключевому слову.
         - create_product - создание нового товара.
         - update_product_data_by_id - обновление данных товара по id.
         - update_product_images_by_id - обновление изображений товара по id.
@@ -81,6 +82,23 @@ class ProductsService:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Products in {self.product_db.__name__} are missing",
+            )
+        return products
+
+    async def get_search_products(self, query: str):
+        """
+        Получение товаров по ключевому слову (название, производитель, описание).
+
+        :param query: - строка для поиска.
+        :return: - список товаров (объектов модели SQLAlchemy) или ошибка 404.
+        """
+
+        products = await self.repo.get_search_products(query)
+
+        if not products:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Products not found",
             )
         return products
 
