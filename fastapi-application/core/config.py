@@ -62,6 +62,7 @@ class ViewPrefix(BaseModel):
     outboard_motors: str = "/outboard-motors"
     trailers: str = "/trailers"
     favorites: str = "/favorites"
+    search: str = "/search"
 
 
 class ApiV1Prefix(BaseModel):
