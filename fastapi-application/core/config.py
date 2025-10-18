@@ -63,6 +63,7 @@ class ViewPrefix(BaseModel):
     trailers: str = "/trailers"
     favorites: str = "/favorites"
     search: str = "/search"
+    admin: str = "/admin"
 
 
 class ApiV1Prefix(BaseModel):
