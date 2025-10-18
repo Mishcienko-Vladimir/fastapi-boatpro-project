@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from .admin import router as admin_router
 from .home import router as home_router
 from .page_missing import router as page_missing_router
 from .favorites import router as favorites_router
@@ -17,6 +18,7 @@ from views.products.trailers import router as trailers_router
 
 router = APIRouter()
 
+router.include_router(admin_router)
 router.include_router(home_router)
 router.include_router(page_missing_router)
 router.include_router(favorites_router)
