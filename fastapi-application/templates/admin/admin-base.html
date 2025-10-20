@@ -1,11 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <title>Админка</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}
+        Admin Panel
+    {% endblock %}</title>
+    <link rel="icon" href="/static/images/website/favicon-1.png">
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
-<body>
-    <h1>Админка</h1>
 
+<body>
+    <header>
+        <nav class="navigation">
+            <span>
+                <ion-icon name="logo-angular" alt="Лого"></ion-icon>
+                &nbsp;Админка
+            </span>
+            <a href="#">
+                <ion-icon name="home" alt="Главная"></ion-icon>
+                &nbsp; Главная
+            </a>
+            <a href="#">
+                <ion-icon name="person" alt="Пользователи"></ion-icon>
+                &nbsp; Пользователи
+            </a>
+            <a href="#">
+                <ion-icon name="id-card" alt="Заказы"></ion-icon>
+                &nbsp; Заказы
+            </a>
+            <a href="#">
+                <ion-icon name="boat" alt="Катера"></ion-icon>
+                &nbsp; Катера
+            </a>
+            <a href="#">
+                <ion-icon name="flash" alt="Моторы"></ion-icon>
+                &nbsp; Моторы
+            </a>
+            <a href="#">
+                <ion-icon name="car" alt="Прицепы"></ion-icon>
+                &nbsp; Прицепы
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        {% block main %}
+
+        {% endblock %}
+    </main>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
