@@ -1,12 +1,14 @@
 # Обработчик ошибок
 import logging
+from typing import Optional
 
 from fastapi import FastAPI, Request, status, HTTPException
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import ORJSONResponse, HTMLResponse
 
 from pydantic import ValidationError
 from sqlalchemy.exc import DatabaseError
 
+from core.models import User
 from utils.templates import templates
 
 
@@ -50,11 +52,18 @@ def register_errors_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(HTTPException)
-    def http_exception_handler(request: Request):
+    async def http_exception_handler(
+        request: Request,
+        exc: HTTPException,
+    ) -> HTMLResponse:
+        """Обработчик HTTPException для отображения шаблонов"""
+
+        user: Optional[User] = None
+
         return templates.TemplateResponse(
             name="page-missing.html",
             context={
                 "request": request,
-                "user": None,
+                "user": user,
             },
         )
