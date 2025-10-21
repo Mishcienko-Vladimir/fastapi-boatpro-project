@@ -99,7 +99,7 @@ main h2 {
     position: relative;
     display: block;
     max-width: 1300px;
-    max-height: 400px;
+    max-height: 440px;
     overflow-y: scroll;
     margin: 0 auto 40px;
     background: rgba(220,220,220,0.5);
@@ -215,6 +215,51 @@ main h2 {
 }
 .details_content p:first-child {
     margin-top: 0;
+}
+
+.details_content form label {
+    font-weight: 600;
+}
+
+.details_content form input {
+    width: 110px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid rgba(22, 41, 56, 1);
+    margin-top: 10px;
+}
+
+.btn-delete-product {
+    background-color: #B22222;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.btn-delete-product:hover {
+    transform: scale(1.06);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #B22222;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
 @media (max-width: 480px) {
