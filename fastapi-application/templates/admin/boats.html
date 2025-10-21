@@ -9,13 +9,13 @@
         {% for boat in boats_list %}
         <div class="data_content">
             <h3>{{ boat.name }}</h3>
-            <p>Id товара: {{ boat.id }}</p>
+            <p>ID товара: {{ boat.id }}</p>
             <p>Производитель: {{ boat.company_name }}</p>
             <p>Наличие: {{ 'В наличие' if boat.is_active else 'Нет в наличие' }}</p>
             <p>Цена: {{ boat.price }} ₽</p>
             <p>Описание: {{ boat.description }}</p>
             <p>Категория: {{ boat.category.name }}</p>
-            <p>Id категории: {{ boat.category.id }}</p>
+            <p>ID категории: {{ boat.category.id }}</p>
             <p>Длина корпуса: {{ boat.length_hull }} см</p>
             <p>Ширина корпуса: {{ boat.width_hull }} см</p>
             <p>Вес: {{ boat.weight }} кг</p>
@@ -30,7 +30,7 @@
             <p>Высота транца: {{ boat.transom_height if boat.transom_height else '-' }} мм</p>
             <h4>Изображения:</h4>
             {% for image in boat.images %}
-                <p> - id: {{ image.id }}  path: {{ image.path }}</p>
+                <p> - ID: {{ image.id }}  path: {{ image.path }}</p>
             {% endfor %}
             <p>Дата создания: {{ boat.created_at }}</p>
             <p>Дата обновления: {{ boat.updated_at }}</p>
@@ -48,19 +48,40 @@
         </div>
     </details>
 
-    <details class="details" name="faq">
-        <summary class="details_title">Question 2</summary>
+    <details class="details">
+        <summary class="details_title">Обновление Данных</summary>
         <div class="details_content">
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
         </div>
     </details>
 
-    <details class="details" name="faq">
-        <summary class="details_title">Question 3</summary>
+    <details class="details">
+        <summary class="details_title">Обновление Фото</summary>
         <div class="details_content">
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Удаление Катера</summary>
+        <div class="details_content">
+            <h3>Удаление катера по ID.</h3>
+            <p>Укажите ID катера, который хотите удалить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% else %}
+                <p> </p>
+            {% endif %}
+
+            <form action="{{ url_for('admin_delete_boat') }}" method="post">
+                <label for="boat_id">ID катера:</label>
+                <input type="number" name="boat_id" id="boat_id" required>
+                <button type="submit" class="btn-delete-product">Удалить</button>
+            </form>
         </div>
     </details>
 {% endblock %}
