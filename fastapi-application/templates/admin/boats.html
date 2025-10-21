@@ -5,8 +5,41 @@
 
 {% block main %}
     <h2>Панель управления катерами</h2>
-    <details class="details" name="faq">
-        <summary class="details_title">Question 1</summary>
+    <div class="window_content">
+        {% for boat in boats_list %}
+        <div class="data_content">
+            <h3>{{ boat.name }}</h3>
+            <p>Id товара: {{ boat.id }}</p>
+            <p>Производитель: {{ boat.company_name }}</p>
+            <p>Наличие: {{ 'В наличие' if boat.is_active else 'Нет в наличие' }}</p>
+            <p>Цена: {{ boat.price }} ₽</p>
+            <p>Описание: {{ boat.description }}</p>
+            <p>Категория: {{ boat.category.name }}</p>
+            <p>Id категории: {{ boat.category.id }}</p>
+            <p>Длина корпуса: {{ boat.length_hull }} см</p>
+            <p>Ширина корпуса: {{ boat.width_hull }} см</p>
+            <p>Вес: {{ boat.weight }} кг</p>
+            <p>Максимальная нагрузка: {{ boat.maximum_load }} кг</p>
+            <p>Вместимость: {{ boat.capacity }} чел</p>
+            <p>Материал корпуса: {{ boat.hull_material }}</p>
+            <p>Толщина бортового листа: {{ boat.thickness_side_sheet if boat.thickness_side_sheet else '-' }} мм</p>
+            <p>Толщина днищевой листа: {{ boat.bottom_sheet_thickness if boat.bottom_sheet_thickness else '-' }} мм</p>
+            <p>Объём топливного бака: {{ boat.fuel_capacity if boat.fuel_capacity else '-' }} л</p>
+            <p>Максимальная мощность двигателя: {{ boat.maximum_engine_power if boat.maximum_engine_power else '-' }} л.с.</p>
+            <p>Высота борта на миделе: {{ boat.height_side_midship if boat.height_side_midship else '-' }} мм</p>
+            <p>Высота транца: {{ boat.transom_height if boat.transom_height else '-' }} мм</p>
+            <h4>Изображения:</h4>
+            {% for image in boat.images %}
+                <p> - id: {{ image.id }}  path: {{ image.path }}</p>
+            {% endfor %}
+            <p>Дата создания: {{ boat.created_at }}</p>
+            <p>Дата обновления: {{ boat.updated_at }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Добавление Катера</summary>
         <div class="details_content">
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
