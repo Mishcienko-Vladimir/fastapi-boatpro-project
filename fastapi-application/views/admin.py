@@ -1,5 +1,8 @@
 from typing import Annotated
+
+from fastapi import Form, HTTPException
 from fastapi import APIRouter, Request, Depends
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.products.boats import (
@@ -65,5 +68,37 @@ async def admin_boats(
             "request": request,
             "user": user,
             "boats_list": boats_list,
+        },
+    )
+
+
+@router.post(
+    path=f"{settings.view.boats}/delete-boat",
+    name="admin_delete_boat",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_delete_boat(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    boat_id: int = Form(...),
+):
+    try:
+        await delete_boat_by_id(session=session, boat_id=boat_id)
+        message = f"Катер с ID {boat_id} успешно удален"
+    except HTTPException as exc:
+        message = exc.detail
+
+    return templates.TemplateResponse(
+        name="admin/boats.html",
+        context={
+            "request": request,
+            "user": user,
+            "boats_list": await get_boats(session=session),
+            "message": message,
         },
     )
