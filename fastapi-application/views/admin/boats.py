@@ -21,35 +21,11 @@ from core.schemas.products.boat import BoatUpdate
 from utils.templates import templates
 
 
-router = APIRouter(
-    prefix=settings.view.admin,
-)
+router = APIRouter(prefix=settings.view.boats)
 
 
 @router.get(
-    "/",
-    name="admin",
-    include_in_schema=False,
-    response_model=None,
-)
-def admin(
-    request: Request,
-    user: Annotated[
-        User,
-        Depends(current_active_superuser),
-    ],
-):
-    return templates.TemplateResponse(
-        name="admin/admin-base.html",
-        context={
-            "request": request,
-            "user": user,
-        },
-    )
-
-
-@router.get(
-    path=settings.view.boats,
+    path="/",
     name="admin_boats",
     include_in_schema=False,
     response_model=None,
@@ -74,7 +50,7 @@ async def admin_boats(
 
 
 @router.post(
-    path=f"{settings.view.boats}/delete-boat",
+    path="/delete-boat",
     name="admin_delete_boat",
     include_in_schema=False,
     response_model=None,
@@ -106,7 +82,7 @@ async def admin_delete_boat(
 
 
 @router.post(
-    path=f"{settings.view.boats}/create-boat",
+    path="/create-boat",
     name="admin_create_boat",
     include_in_schema=False,
     response_model=None,
@@ -179,7 +155,7 @@ async def admin_create_boat(
 
 
 @router.post(
-    path=f"{settings.view.boats}/update-boat",
+    path="/update-boat",
     name="admin_update_boat",
     include_in_schema=False,
     response_model=None,
@@ -254,7 +230,7 @@ async def admin_update_boat(
 
 
 @router.post(
-    path=f"{settings.view.boats}/update-images",
+    path="/update-images",
     name="admin_update_boat_images",
     include_in_schema=False,
     response_model=None,
