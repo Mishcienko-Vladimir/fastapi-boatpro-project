@@ -1,15 +1,11 @@
 # Обработчик ошибок
 import logging
-from typing import Optional
 
-from fastapi import FastAPI, Request, status, HTTPException
-from fastapi.responses import ORJSONResponse, HTMLResponse
+from fastapi import FastAPI, Request, status
+from fastapi.responses import ORJSONResponse
 
 from pydantic import ValidationError
 from sqlalchemy.exc import DatabaseError
-
-from core.models import User
-from utils.templates import templates
 
 
 log = logging.getLogger(__name__)
@@ -48,22 +44,5 @@ def register_errors_handlers(app: FastAPI) -> None:
             content={
                 "message": "Произошла непредвиденная ошибка. "
                 "Администраторы уже работают над решением."
-            },
-        )
-
-    @app.exception_handler(HTTPException)
-    async def http_exception_handler(
-        request: Request,
-        exc: HTTPException,
-    ) -> HTMLResponse:
-        """Обработчик HTTPException для отображения шаблонов"""
-
-        user: Optional[User] = None
-
-        return templates.TemplateResponse(
-            name="page-missing.html",
-            context={
-                "request": request,
-                "user": user,
             },
         )
