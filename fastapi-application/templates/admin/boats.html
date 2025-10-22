@@ -192,8 +192,27 @@
     <details class="details">
         <summary class="details_title">Обновление Фото</summary>
         <div class="details_content">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
+            <h3>Обновление фотографий катера</h3>
+            <p>Укажите ID катера, у которого хотите изменить фото. Укажите через запятую, без пробелов, ID изображений этого катера которые хотите удалить.</p>
+            <p>Добавьте новые фото, зажимая "Shift", выберите нужные изображения.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_update_boat_images') }}" method="post" enctype="multipart/form-data">
+                <label for="boat_id_img">ID катера, у которого нужно обновить фото:</label>
+                <input type="number" name="boat_id_img" id="boat_id_img" required><br>
+
+                <label for="remove_images">ID изображений для удаления (через запятую, без пробелов):</label>
+                <input type="text" name="remove_images" id="remove_images"><br>
+
+                <label for="add_images">Новые изображения (Зажимая "Shift", выберите несколько):</label>
+                <input type="file" name="add_images" id="add_images" multiple accept="image/*"><br>
+
+                <button type="submit" class="btn-details">Обновить фото</button>
+            </form>
         </div>
     </details>
 
