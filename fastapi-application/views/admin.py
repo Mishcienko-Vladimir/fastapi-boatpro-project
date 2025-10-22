@@ -251,3 +251,44 @@ async def admin_update_boat(
             "message": message,
         },
     )
+
+
+@router.post(
+    path=f"{settings.view.boats}/update-images",
+    name="admin_update_boat_images",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_update_boat_images(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    boat_id_img: int = Form(...),
+    remove_images: str | None = Form(None),
+    add_images: list[UploadFile] = File(...),
+):
+    try:
+        await update_boat_images_by_id(
+            session=session,
+            boat_id=boat_id_img,
+            remove_images=remove_images,
+            add_images=add_images,
+        )
+        message = f"Фото катера с ID {boat_id_img} успешно обновлены"
+    except HTTPException as exc:
+        message = exc.detail
+    except Exception as exc:
+        message = "Ошибка при обновлении фото"
+
+    return templates.TemplateResponse(
+        name="admin/boats.html",
+        context={
+            "request": request,
+            "user": user,
+            "boats_list": await get_boats(session=session),
+            "message": message,
+        },
+    )
