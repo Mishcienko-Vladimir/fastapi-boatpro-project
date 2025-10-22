@@ -41,10 +41,77 @@
     <details class="details">
         <summary class="details_title">Добавление Катера</summary>
         <div class="details_content">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
+            <h3>Добавление Катера.</h3>
+            <p>Заполните все поля, чтобы добавить катер. Поле "Название" должно быть уникальным.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_create_boat') }}" method="post" enctype="multipart/form-data">
+                <label for="category_id">ID категории:</label>
+                <input type="number" name="category_id" id="category_id" required><br>
+
+                <label for="name">Название:</label>
+                <input type="text" name="name" id="name" required><br>
+
+                <label for="price">Цена (руб):</label>
+                <input type="number" name="price" id="price" required><br>
+
+                <label for="company_name">Производитель:</label>
+                <input type="text" name="company_name" id="company_name" required><br>
+
+                <label for="description">Описание:</label>
+                <textarea name="description" id="description"></textarea><br>
+
+                <label for="is_active">Наличие:</label>
+                <select name="is_active" id="is_active">
+                    <option value="true">В наличии</option>
+                    <option value="false">Нет в наличии</option>
+                </select><br>
+
+                <label for="length_hull">Длина корпуса (см):</label>
+                <input type="number" name="length_hull" id="length_hull" required><br>
+
+                <label for="width_hull">Ширина корпуса (см):</label>
+                <input type="number" name="width_hull" id="width_hull" required><br>
+
+                <label for="weight">Вес (кг):</label>
+                <input type="number" name="weight" id="weight" required><br>
+
+                <label for="capacity">Вместимость (чел):</label>
+                <input type="number" name="capacity" id="capacity" required><br>
+
+                <label for="maximum_load">Максимальная нагрузка (кг):</label>
+                <input type="number" name="maximum_load" id="maximum_load" required><br>
+
+                <label for="hull_material">Материал корпуса:</label>
+                <input type="text" name="hull_material" id="hull_material" required><br>
+
+                <label for="thickness_side_sheet">Толщина бортового листа (мм):</label>
+                <input type="number" name="thickness_side_sheet" id="thickness_side_sheet"><br>
+
+                <label for="bottom_sheet_thickness">Толщина днищевой листа (мм):</label>
+                <input type="number" name="bottom_sheet_thickness" id="bottom_sheet_thickness"><br>
+
+                <label for="fuel_capacity">Объём топливного бака (л), необязательно:</label>
+                <input type="number" name="fuel_capacity" id="fuel_capacity"><br>
+
+                <label for="maximum_engine_power">Мощность двигателя (л.с.), необязательно:</label>
+                <input type="number" name="maximum_engine_power" id="maximum_engine_power" required><br>
+
+                <label for="height_side_midship">Высота борта на миделе (мм), необязательно:</label>
+                <input type="number" name="height_side_midship" id="height_side_midship"><br>
+
+                <label for="transom_height">Высота транца (мм), необязательно:</label>
+                <input type="number" name="transom_height" id="transom_height"><br>
+
+                <label for="images">Изображения (Зажимая "Shift", выберите изображения):</label>
+                <input type="file" name="images" id="images" multiple accept="image/*"><br>
+
+                <button type="submit" class="btn-details">Создать катер</button>
+            </form>
         </div>
     </details>
 
@@ -73,14 +140,12 @@
                 <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
                     <p>{{ message }}</p>
                 </div>
-            {% else %}
-                <p> </p>
             {% endif %}
 
             <form action="{{ url_for('admin_delete_boat') }}" method="post">
                 <label for="boat_id">ID катера:</label>
                 <input type="number" name="boat_id" id="boat_id" required>
-                <button type="submit" class="btn-delete-product">Удалить</button>
+                <button type="submit" class="btn-details">Удалить</button>
             </form>
         </div>
     </details>
