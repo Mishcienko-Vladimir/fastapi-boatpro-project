@@ -89,17 +89,17 @@
                 <label for="hull_material">Материал корпуса:</label>
                 <input type="text" name="hull_material" id="hull_material" required><br>
 
-                <label for="thickness_side_sheet">Толщина бортового листа (мм):</label>
+                <label for="thickness_side_sheet">Толщина бортового листа (мм), необязательно:</label>
                 <input type="number" name="thickness_side_sheet" id="thickness_side_sheet"><br>
 
-                <label for="bottom_sheet_thickness">Толщина днищевой листа (мм):</label>
+                <label for="bottom_sheet_thickness">Толщина днищевой листа (мм), необязательно:</label>
                 <input type="number" name="bottom_sheet_thickness" id="bottom_sheet_thickness"><br>
 
                 <label for="fuel_capacity">Объём топливного бака (л), необязательно:</label>
                 <input type="number" name="fuel_capacity" id="fuel_capacity"><br>
 
                 <label for="maximum_engine_power">Мощность двигателя (л.с.), необязательно:</label>
-                <input type="number" name="maximum_engine_power" id="maximum_engine_power" required><br>
+                <input type="number" name="maximum_engine_power" id="maximum_engine_power"><br>
 
                 <label for="height_side_midship">Высота борта на миделе (мм), необязательно:</label>
                 <input type="number" name="height_side_midship" id="height_side_midship"><br>
@@ -118,8 +118,74 @@
     <details class="details">
         <summary class="details_title">Обновление Данных</summary>
         <div class="details_content">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum omnis beatae itaque! Maxime consequuntur architecto, voluptatibus iste aliquid quaerat dolores, culpa repellendus optio omnis rem saepe quisquam incidunt, numquam molestias?</p>
+            <h3>Обновление информации о катере.</h3>
+            <p>Укажите ID катера и заполните поля, которые хотите изменить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_update_boat') }}" method="post">
+                <label for="boat_id_up">ID катера, который нужно обновить:</label>
+                <input type="number" name="boat_id_up" id="boat_id_up" required><br>
+
+                <label for="name">Название:</label>
+                <input type="text" name="name"><br>
+
+                <label for="price">Цена (руб):</label>
+                <input type="number" name="price"><br>
+
+                <label for="company_name">Производитель:</label>
+                <input type="text" name="company_name"><br>
+
+                <label for="description">Описание:</label>
+                <textarea name="description"></textarea><br>
+
+                <label for="is_active">Наличие:</label>
+                <select name="is_active">
+                    <option value="true">В наличии</option>
+                    <option value="false">Нет в наличии</option>
+                </select><br>
+
+                <label for="length_hull">Длина корпуса (см):</label>
+                <input type="number" name="length_hull"><br>
+
+                <label for="width_hull">Ширина корпуса (см):</label>
+                <input type="number" name="width_hull"><br>
+
+                <label for="weight">Вес (кг):</label>
+                <input type="number" name="weight"><br>
+
+                <label for="capacity">Вместимость (чел):</label>
+                <input type="number" name="capacity"><br>
+
+                <label for="maximum_load">Максимальная нагрузка (кг):</label>
+                <input type="number" name="maximum_load"><br>
+
+                <label for="hull_material">Материал корпуса:</label>
+                <input type="text" name="hull_material"><br>
+
+                <label for="thickness_side_sheet">Толщина бортового листа (мм):</label>
+                <input type="number" name="thickness_side_sheet"><br>
+
+                <label for="bottom_sheet_thickness">Толщина днищевой листа (мм):</label>
+                <input type="number" name="bottom_sheet_thickness"><br>
+
+                <label for="fuel_capacity">Объём топливного бака (л):</label>
+                <input type="number" name="fuel_capacity"><br>
+
+                <label for="maximum_engine_power">Мощность двигателя (л.с.):</label>
+                <input type="number" name="maximum_engine_power"><br>
+
+                <label for="height_side_midship">Высота борта на миделе (мм):</label>
+                <input type="number" name="height_side_midship"><br>
+
+                <label for="transom_height">Высота транца (мм):</label>
+                <input type="number" name="transom_height"><br>
+
+                <button type="submit" class="btn-details">Обновить данные</button>
+            </form>
         </div>
     </details>
 
@@ -143,8 +209,8 @@
             {% endif %}
 
             <form action="{{ url_for('admin_delete_boat') }}" method="post">
-                <label for="boat_id">ID катера:</label>
-                <input type="number" name="boat_id" id="boat_id" required>
+                <label for="boat_id_del">ID катера:</label>
+                <input type="number" name="boat_id_del" id="boat_id_del" required>
                 <button type="submit" class="btn-details">Удалить</button>
             </form>
         </div>
