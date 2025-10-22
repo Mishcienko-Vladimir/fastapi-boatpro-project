@@ -229,7 +229,15 @@ main h2 {
     margin-top: 10px;
 }
 
-.btn-delete-product {
+.details_content form textarea {
+    width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    border: 2px solid rgba(22, 41, 56, 1);
+    margin-top: 10px;
+}
+
+.btn-details {
     background-color: #B22222;
     color: white;
     padding: 8px 16px;
@@ -242,7 +250,7 @@ main h2 {
     transition: transform 0.2s;
 }
 
-.btn-delete-product:hover {
+.btn-details:hover {
     transform: scale(1.06);
 }
 
