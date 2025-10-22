@@ -21,7 +21,7 @@ router = APIRouter(
 
 
 @router.get(
-    path=settings.view.catalog,
+    path="/",
     name="trailers",
     include_in_schema=False,
     response_model=None,
@@ -43,7 +43,7 @@ async def trailers(
 
 
 @router.get(
-    path=f"{settings.view.catalog}{settings.view.trailers}/{{trailer_name}}",
+    path=f"/{{trailer_name}}",
     name="trailer_detail",
     include_in_schema=False,
     response_model=None,

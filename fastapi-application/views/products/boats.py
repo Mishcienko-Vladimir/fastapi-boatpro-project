@@ -18,7 +18,7 @@ router = APIRouter(
 
 
 @router.get(
-    path=settings.view.catalog,
+    path="/",
     name="boats",
     include_in_schema=False,
     response_model=None,
@@ -40,7 +40,7 @@ async def boats(
 
 
 @router.get(
-    path=f"{settings.view.catalog}{settings.view.boats}/{{boat_name}}",
+    path=f"/{{boat_name}}",
     name="boat_detail",
     include_in_schema=False,
     response_model=None,

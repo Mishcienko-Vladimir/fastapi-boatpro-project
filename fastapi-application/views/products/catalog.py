@@ -10,7 +10,7 @@ from utils.templates import templates
 
 
 router = APIRouter(
-    prefix=settings.view.catalog,
+    prefix=settings.view.home,
 )
 
 
