@@ -5,15 +5,11 @@ from .home import router as home_router
 from .page_missing import router as page_missing_router
 from .favorites import router as favorites_router
 from .search import router as search_router
+from .products import router as catalog_router
 
 from views.auth.verification import router as verification_router
 from views.auth.reset_password import router as reset_password_router
 from views.auth.change_password import router as change_password_router
-
-from views.products.catalog import router as catalog_router
-from views.products.boats import router as boats_router
-from views.products.outboard_motors import router as outboard_motors_router
-from views.products.trailers import router as trailers_router
 
 
 router = APIRouter()
@@ -23,10 +19,7 @@ router.include_router(home_router)
 router.include_router(page_missing_router)
 router.include_router(favorites_router)
 router.include_router(search_router)
+router.include_router(catalog_router)
 router.include_router(verification_router)
 router.include_router(reset_password_router)
 router.include_router(change_password_router)
-router.include_router(catalog_router)
-router.include_router(boats_router)
-router.include_router(outboard_motors_router)
-router.include_router(trailers_router)
