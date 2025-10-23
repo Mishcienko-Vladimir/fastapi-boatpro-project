@@ -46,3 +46,44 @@ async def admin_categories(
             "categories_list": categories_list,
         },
     )
+
+
+@router.post(
+    path="/create-category",
+    name="admin_create_category",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_create_category(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    category_name: str = Form(...),
+    category_description: Optional[str] = Form(None),
+):
+    try:
+        category_data = CategoryCreate(
+            name=category_name, description=category_description
+        )
+        new_category = await create_category(
+            session=session, category_data=category_data
+        )
+        message = f"Категория '{new_category.name}' успешно создана."
+    except HTTPException as exc:
+        message = f"Категория с именем '{category_name}' уже существует."
+    except Exception as e:
+        message = f"Ошибка при создании категории: {str(e)}"
+
+    return templates.TemplateResponse(
+        "admin/categories.html",
+        {
+            "request": request,
+            "user": user,
+            "categories_list": await get_categories(session=session),
+            "message": message,
+        },
+    )
+
