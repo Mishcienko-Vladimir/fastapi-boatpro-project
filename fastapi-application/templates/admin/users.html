@@ -1,0 +1,51 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}
+    Admin Panel - Пользователи
+{% endblock %}
+
+{% block main %}
+    <h2>Панель управления пользователями</h2>
+    <div class="window_info">
+        <div class="data_content">
+            <p><strong>Всего пользователей:</strong> {{ users_list|length }}</p>
+        </div>
+        <div class="data_content">
+            <p><strong>Верифицированных:</strong> {{ number_verified }}</p>
+        </div>
+        <div class="data_content">
+            <p><strong>Супер-пользователей:</strong> {{ number_superuser }}</p>
+        </div>
+    </div>
+
+    <div class="window_content">
+        {% for user in users_list %}
+        <div class="data_content">
+            <h3>{{ user.email }}</h3>
+            <p><strong>ID:</strong> {{ user.id }}</p>
+            <p><strong>Имя:</strong> {{ user.first_name }}</p>
+            <p><strong>Зарегистрирован:</strong> {{ 'Да' if user.is_active else 'Нет' }}</p>
+            <p><strong>Верифицирован:</strong> {{ 'Да' if user.is_verified else 'Нет' }}</p>
+            <p><strong>Супер-пользователей:</strong> {{ 'Да' if user.is_superuser else 'Нет' }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Удаление Пользователя</summary>
+        <div class="details_content">
+            <h3>Удаление пользователя по ID.</h3>
+            <p>Укажите ID пользователя, которого хотите удалить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_delete_user') }}" method="post">
+                <label for="user_id_del">ID пользователя:</label>
+                <input type="number" name="user_id_del" id="user_id_del" required>
+                <button type="submit" class="btn-details">Удалить</button>
+            </form>
+        </div>
+    </details>
+{% endblock %}
