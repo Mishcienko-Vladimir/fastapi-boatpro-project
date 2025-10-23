@@ -1,6 +1,6 @@
 from typing import Annotated, Optional
 
-from fastapi import Form, HTTPException, File, UploadFile
+from fastapi import Form, HTTPException
 from fastapi import APIRouter, Request, Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +15,7 @@ from api.api_v1.routers.products.categories import (
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
 from core.models import User, db_helper
-from core.schemas.products.category import CategoryRead
+from core.schemas.products.category import CategoryUpdate, CategoryCreate
 
 from utils.templates import templates
 
@@ -136,3 +136,34 @@ async def admin_update_category(
         },
     )
 
+
+@router.post(
+    path="/delete-category",
+    name="admin_delete_category",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_delete_category(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    category_id_del: int = Form(...),
+):
+    try:
+        await delete_category_by_id(session=session, category_id=category_id_del)
+        message = f"Категория с ID {category_id_del} успешно удалена."
+    except Exception as exc:
+        message = f"Ошибка при удалении категории: {str(exc)}"
+
+    return templates.TemplateResponse(
+        "admin/categories.html",
+        {
+            "request": request,
+            "user": user,
+            "categories_list": await get_categories(session=session),
+            "message": message,
+        },
+    )
