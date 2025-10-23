@@ -136,3 +136,68 @@ async def admin_create_trailer(
             "message": message,
         },
     )
+
+
+@router.post(
+    path="/update-trailer",
+    name="admin_update_trailer",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_update_trailer(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    trailer_id_up: int = Form(...),
+    name: Optional[str] = Form(None),
+    price: Optional[str] = Form(None),
+    company_name: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
+    is_active: Optional[bool] = Form(None),
+    full_mass: Optional[str] = Form(None),
+    load_capacity: Optional[str] = Form(None),
+    trailer_length: Optional[str] = Form(None),
+    max_ship_length: Optional[str] = Form(None),
+):
+    try:
+        update_data = {}
+        for key, value in locals().items():
+            if (
+                key not in ["request", "session", "user", "trailer_id_up"]
+                and value is not None
+            ):
+                if isinstance(value, str) and value.strip() == "":
+                    continue
+                try:
+                    numeric_value = int(value)
+                    update_data[key] = numeric_value
+                except (ValueError, TypeError):
+                    update_data[key] = value
+
+        if not update_data:
+            message = "Нет данных для обновления"
+
+        trailer_update = TrailerUpdate(**update_data)
+        updated_trailer = await update_trailer_data_by_id(
+            session=session,
+            trailer_id=trailer_id_up,
+            trailer_data=trailer_update,
+        )
+        message = f"Прицеп с ID {trailer_id_up} успешно обновлен"
+    except HTTPException as exc:
+        message = f"Прицеп с ID {trailer_id_up} не найден"
+    except Exception as exc:
+        message = "Ошибка при обновлении прицепа"
+
+    return templates.TemplateResponse(
+        name="admin/trailers.html",
+        context={
+            "request": request,
+            "user": user,
+            "trailers_list": await get_trailers(session=session),
+            "message": message,
+        },
+    )
