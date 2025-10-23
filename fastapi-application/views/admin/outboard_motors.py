@@ -45,7 +45,7 @@ async def admin_outboard_motors(
 ):
     outboard_motors_list = await get_outboard_motors(session=session)
     return templates.TemplateResponse(
-        name="admin/outboard_motors.html",
+        name="admin/outboard-motors.html",
         context={
             "request": request,
             "user": user,
@@ -79,7 +79,7 @@ async def admin_delete_outboard_motor(
         message = exc.detail
 
     return templates.TemplateResponse(
-        name="admin/outboard_motors.html",
+        name="admin/outboard-motors.html",
         context={
             "request": request,
             "user": user,
@@ -142,7 +142,7 @@ async def admin_create_outboard_motor(
         message = "Ошибка при создании прицепа"
 
     return templates.TemplateResponse(
-        name="admin/outboard_motors.html",
+        name="admin/outboard-motors.html",
         context={
             "request": request,
             "user": user,
@@ -210,7 +210,7 @@ async def admin_update_outboard_motor(
         message = "Ошибка при обновлении лодочного мотора"
 
     return templates.TemplateResponse(
-        name="admin/outboard_motors.html",
+        name="admin/outboard-motors.html",
         context={
             "request": request,
             "user": user,
@@ -253,7 +253,7 @@ async def admin_update_outboard_motor_images(
         message = "Ошибка при обновлении фото"
 
     return templates.TemplateResponse(
-        name="admin/outboard_motors.html",
+        name="admin/outboard-motors.html",
         context={
             "request": request,
             "user": user,
