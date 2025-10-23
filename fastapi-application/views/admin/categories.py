@@ -87,3 +87,52 @@ async def admin_create_category(
         },
     )
 
+
+@router.post(
+    path="/update-category",
+    name="admin_update_category",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_update_category(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    category_id_up: int = Form(...),
+    new_name: Optional[str] = Form(None),
+    new_description: Optional[str] = Form(None),
+):
+    try:
+        update_data = {}
+        if new_name is not None and new_name.strip() != "":
+            update_data["name"] = new_name
+        if new_description is not None and new_description.strip() != "":
+            update_data["description"] = new_description
+
+        if not update_data:
+            message = "Нет данных для обновления."
+        else:
+            category_data = CategoryUpdate(**update_data)
+            await update_category_by_id(
+                session=session,
+                category_id=category_id_up,
+                category_data=category_data,
+            )
+            message = f"Категория с ID {category_id_up} успешно обновлена."
+
+    except Exception as exc:
+        message = f"Ошибка при обновлении категории: {str(exc)}"
+
+    return templates.TemplateResponse(
+        "admin/categories.html",
+        {
+            "request": request,
+            "user": user,
+            "categories_list": await get_categories(session=session),
+            "message": message,
+        },
+    )
+
