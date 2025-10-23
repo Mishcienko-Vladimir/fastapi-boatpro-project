@@ -139,7 +139,7 @@ async def admin_create_outboard_motor(
     except HTTPException as exc:
         message = f"Прицеп с именем {name} уже существует"
     except Exception as exc:
-        message = "Ошибка при создании прицепа"
+        message = f"Ошибка при создании прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/outboard-motors.html",
@@ -207,7 +207,7 @@ async def admin_update_outboard_motor(
     except HTTPException as exc:
         message = f"Лодочный мотор с ID {outboard_motor_id_up} не найден"
     except Exception as exc:
-        message = "Ошибка при обновлении лодочного мотора"
+        message = f"Ошибка при обновлении лодочного мотора: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/outboard-motors.html",
@@ -250,7 +250,7 @@ async def admin_update_outboard_motor_images(
     except HTTPException as exc:
         message = exc.detail
     except Exception as exc:
-        message = "Ошибка при обновлении фото"
+        message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/outboard-motors.html",

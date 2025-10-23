@@ -125,7 +125,7 @@ async def admin_create_trailer(
     except HTTPException as exc:
         message = f"Прицеп с именем {name} уже существует"
     except Exception as exc:
-        message = "Ошибка при создании прицепа"
+        message = f"Ошибка при создании прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/trailers.html",
@@ -190,7 +190,7 @@ async def admin_update_trailer(
     except HTTPException as exc:
         message = f"Прицеп с ID {trailer_id_up} не найден"
     except Exception as exc:
-        message = "Ошибка при обновлении прицепа"
+        message = f"Ошибка при обновлении прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/trailers.html",
@@ -231,7 +231,7 @@ async def admin_update_trailer_images(
     except HTTPException as exc:
         message = exc.detail
     except Exception as exc:
-        message = "Ошибка при обновлении фото"
+        message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/trailers.html",

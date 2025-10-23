@@ -141,7 +141,7 @@ async def admin_create_boat(
     except HTTPException as exc:
         message = f"Катер с именем {name} уже существует"
     except Exception as exc:
-        message = "Ошибка при создании катера"
+        message = f"Ошибка при создании катера: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/boats.html",
@@ -216,7 +216,7 @@ async def admin_update_boat(
     except HTTPException as exc:
         message = f"Катер с ID {boat_id_up} не найден"
     except Exception as exc:
-        message = "Ошибка при обновлении катера"
+        message = f"Ошибка при обновлении катера: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/boats.html",
@@ -257,7 +257,7 @@ async def admin_update_boat_images(
     except HTTPException as exc:
         message = exc.detail
     except Exception as exc:
-        message = "Ошибка при обновлении фото"
+        message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
         name="admin/boats.html",
