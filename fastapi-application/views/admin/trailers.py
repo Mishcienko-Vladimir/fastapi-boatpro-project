@@ -47,3 +47,35 @@ async def admin_trailers(
             "trailers_list": trailers_list,
         },
     )
+
+
+@router.post(
+    path="/delete-trailer",
+    name="admin_delete_trailer",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_delete_trailer(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    trailer_id_del: int = Form(...),
+):
+    try:
+        await delete_trailer_by_id(session=session, trailer_id=trailer_id_del)
+        message = f"Прицеп с ID {trailer_id_del} успешно удален"
+    except HTTPException as exc:
+        message = exc.detail
+
+    return templates.TemplateResponse(
+        name="admin/trailers.html",
+        context={
+            "request": request,
+            "user": user,
+            "trailers_list": await get_trailers(session=session),
+            "message": message,
+        },
+    )
