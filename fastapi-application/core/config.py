@@ -64,6 +64,7 @@ class ViewPrefix(BaseModel):
     favorites: str = "/favorites"
     search: str = "/search"
     admin: str = "/admin"
+    users: str = "/users"
 
 
 class ApiV1Prefix(BaseModel):
