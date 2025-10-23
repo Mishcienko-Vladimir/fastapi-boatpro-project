@@ -9,23 +9,23 @@
         {% for trailer in trailers_list %}
         <div class="data_content">
             <h3>{{ trailer.name }}</h3>
-            <p>ID товара: {{ trailer.id }}</p>
-            <p>Производитель: {{ trailer.company_name }}</p>
-            <p>Наличие: {{ 'В наличие' if trailer.is_active else 'Нет в наличие' }}</p>
-            <p>Цена: {{ trailer.price }} ₽</p>
-            <p>Описание: {{ trailer.description }}</p>
-            <p>Категория: {{ trailer.category.name }}</p>
-            <p>ID категории: {{ trailer.category.id }}</p>
-            <p>Длина прицепа: {{ trailer.trailer_length }} см</p>
-            <p>Макс. длина перевозимого судна: {{ trailer.max_ship_length }} см</p>
-            <p>Полный вес прицепа: {{ trailer.full_mass }} кг</p>
-            <p>Грузоподъемность: {{ trailer.load_capacity }} кг</p>
+            <p><strong>ID товара:</strong> {{ trailer.id }}</p>
+            <p><strong>Производитель:</strong> {{ trailer.company_name }}</p>
+            <p><strong>Наличие:</strong> {{ 'В наличие' if trailer.is_active else 'Нет в наличие' }}</p>
+            <p><strong>Цена:</strong> {{ trailer.price }} ₽</p>
+            <p><strong>Описание:</strong> {{ trailer.description }}</p>
+            <p><strong>Категория:</strong> {{ trailer.category.name }}</p>
+            <p><strong>ID категории:</strong> {{ trailer.category.id }}</p>
+            <p><strong>Длина прицепа:</strong> {{ trailer.trailer_length }} см</p>
+            <p><strong>Макс. длина перевозимого судна:</strong> {{ trailer.max_ship_length }} см</p>
+            <p><strong>Полный вес прицепа:</strong> {{ trailer.full_mass }} кг</p>
+            <p><strong>Грузоподъемность:</strong> {{ trailer.load_capacity }} кг</p>
             <h4>Изображения:</h4>
             {% for image in trailer.images %}
-                <p> - ID: {{ image.id }}  path: {{ image.path }}</p>
+                <p> <strong>- ID:</strong> {{ image.id }}  <strong>path:</strong> {{ image.path }}</p>
             {% endfor %}
-            <p>Дата создания: {{ trailer.created_at }}</p>
-            <p>Дата обновления: {{ trailer.updated_at }}</p>
+            <p><strong>Дата создания:</strong> {{ trailer.created_at }}</p>
+            <p><strong>Дата обновления:</strong> {{ trailer.updated_at }}</p>
         </div>
         {% endfor %}
     </div>

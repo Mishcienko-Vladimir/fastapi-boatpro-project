@@ -9,26 +9,26 @@
         {% for outboard_motor in outboard_motors_list %}
         <div class="data_content">
             <h3>{{ outboard_motor.name }}</h3>
-            <p>ID товара: {{ outboard_motor.id }}</p>
-            <p>Производитель: {{ outboard_motor.company_name }}</p>
-            <p>Наличие: {{ 'В наличие' if outboard_motor.is_active else 'Нет в наличие' }}</p>
-            <p>Цена: {{ outboard_motor.price }} ₽</p>
-            <p>Описание: {{ outboard_motor.description }}</p>
-            <p>Категория: {{ outboard_motor.category.name }}</p>
-            <p>ID категории: {{ outboard_motor.category.id }}</p>
-            <p>Мощность двигателя: {{ outboard_motor.engine_power }} л.с.</p>
-            <p>Тип двигателя: {{ outboard_motor.engine_type.value }}</p>
-            <p>Вес мотора: {{ outboard_motor.weight }} кг</p>
-            <p>Количество цилиндров в двигателе: {{ outboard_motor.number_cylinders }} шт.</p>
-            <p>Объем двигателя: {{ outboard_motor.engine_displacement }} куб.см</p>
-            <p>Тип управления: {{ outboard_motor.control_type.value }}</p>
-            <p>Тип стартера: {{ outboard_motor.starter_type.value }}</p>
+            <p><strong>ID товара:</strong> {{ outboard_motor.id }}</p>
+            <p><strong>Производитель:</strong> {{ outboard_motor.company_name }}</p>
+            <p><strong>Наличие:</strong> {{ 'В наличие' if outboard_motor.is_active else 'Нет в наличие' }}</p>
+            <p><strong>Цена:</strong> {{ outboard_motor.price }} ₽</p>
+            <p><strong>Описание:</strong> {{ outboard_motor.description }}</p>
+            <p><strong>Категория:</strong> {{ outboard_motor.category.name }}</p>
+            <p><strong>ID категории:</strong> {{ outboard_motor.category.id }}</p>
+            <p><strong>Мощность двигателя:</strong> {{ outboard_motor.engine_power }} л.с.</p>
+            <p><strong>Тип двигателя:</strong> {{ outboard_motor.engine_type.value }}</p>
+            <p><strong>Вес мотора:</strong> {{ outboard_motor.weight }} кг</p>
+            <p><strong>Количество цилиндров в двигателе:</strong> {{ outboard_motor.number_cylinders }} шт.</p>
+            <p><strong>Объем двигателя:</strong> {{ outboard_motor.engine_displacement }} куб.см</p>
+            <p><strong>Тип управления:</strong> {{ outboard_motor.control_type.value }}</p>
+            <p><strong>Тип стартера:</strong> {{ outboard_motor.starter_type.value }}</p>
             <h4>Изображения:</h4>
             {% for image in outboard_motor.images %}
-                <p> - ID: {{ image.id }}  path: {{ image.path }}</p>
+                <p> - <strong>ID:</strong> {{ image.id }}  <strong>path:</strong> {{ image.path }}</p>
             {% endfor %}
-            <p>Дата создания: {{ outboard_motor.created_at }}</p>
-            <p>Дата обновления: {{ outboard_motor.updated_at }}</p>
+            <p><strong>Дата создания:</strong> {{ outboard_motor.created_at }}</p>
+            <p><strong>Дата обновления:</strong> {{ outboard_motor.updated_at }}</p>
         </div>
         {% endfor %}
     </div>
