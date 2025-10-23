@@ -1,0 +1,84 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}
+    Admin Panel - Категории
+{% endblock %}
+
+{% block main %}
+    <h2>Панель управления категориями</h2>
+    <div class="window_content">
+        {% for category in categories_list %}
+        <div class="data_content">
+            <h3>{{ category.name }}</h3>
+            <p><strong>ID категории:</strong> {{ category.id }}</p>
+            <p><strong>Описание:</strong> {{ category.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Создание Категории</summary>
+        <div class="details_content">
+            <h3>Создание новой категории.</h3>
+            <p>Заполните все поля, чтобы добавить категорию. Поле "Название" должно быть уникальным.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_create_category') }}" method="post">
+                <label for="category_name">Название категории:</label>
+                <input type="text" name="category_name" id="category_name" required>
+
+                <label for="category_description">Описание:</label>
+                <textarea name="category_description" id="category_description"></textarea>
+
+                <button type="submit" class="btn-details">Создать категорию</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Обновление Категории</summary>
+        <div class="details_content">
+            <h3>Обновить категорию.</h3>
+            <p>Укажите ID категории и заполните поля, которые хотите изменить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+            <form action="{{ url_for('admin_update_category') }}" method="post">
+                <label for="category_id_up">ID пользователя:</label>
+                <input type="number" name="category_id_up" id="category_id_up" required><br>
+
+                <label for="new_name">Новое название:</label>
+                <input type="text" name="new_name" id="new_name"><br>
+
+                <label for="new_description">Новое описание:</label>
+                <textarea name="new_description" id="new_description"></textarea>
+
+                <button type="submit" class="btn-details">Обновить данные</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Удаление Категории</summary>
+        <div class="details_content">
+            <h3>Удаление категории по ID.</h3>
+            <p>Укажите ID категории, который хотите удалить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_delete_category') }}" method="post">
+                <label for="category_id_del">ID категории:</label>
+                <input type="number" name="category_id_del" id="category_id_del" required>
+                <button type="submit" class="btn-details">Удалить</button>
+            </form>
+        </div>
+    </details>
+{% endblock %}
