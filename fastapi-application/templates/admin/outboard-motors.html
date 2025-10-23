@@ -1,0 +1,220 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}
+    Admin Panel - Лодочные моторы
+{% endblock %}
+
+{% block main %}
+    <h2>Панель управления лодочными моторами</h2>
+    <div class="window_content">
+        {% for outboard_motor in outboard_motors_list %}
+        <div class="data_content">
+            <h3>{{ outboard_motor.name }}</h3>
+            <p>ID товара: {{ outboard_motor.id }}</p>
+            <p>Производитель: {{ outboard_motor.company_name }}</p>
+            <p>Наличие: {{ 'В наличие' if outboard_motor.is_active else 'Нет в наличие' }}</p>
+            <p>Цена: {{ outboard_motor.price }} ₽</p>
+            <p>Описание: {{ outboard_motor.description }}</p>
+            <p>Категория: {{ outboard_motor.category.name }}</p>
+            <p>ID категории: {{ outboard_motor.category.id }}</p>
+            <p>Мощность двигателя: {{ outboard_motor.engine_power }} л.с.</p>
+            <p>Тип двигателя: {{ outboard_motor.engine_type.value }}</p>
+            <p>Вес мотора: {{ outboard_motor.weight }} кг</p>
+            <p>Количество цилиндров в двигателе: {{ outboard_motor.number_cylinders }} шт.</p>
+            <p>Объем двигателя: {{ outboard_motor.engine_displacement }} куб.см</p>
+            <p>Тип управления: {{ outboard_motor.control_type.value }}</p>
+            <p>Тип стартера: {{ outboard_motor.starter_type.value }}</p>
+            <h4>Изображения:</h4>
+            {% for image in outboard_motor.images %}
+                <p> - ID: {{ image.id }}  path: {{ image.path }}</p>
+            {% endfor %}
+            <p>Дата создания: {{ outboard_motor.created_at }}</p>
+            <p>Дата обновления: {{ outboard_motor.updated_at }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Добавление Лодочного Мотора</summary>
+        <div class="details_content">
+            <h3>Добавление Лодочного Мотора.</h3>
+            <p>Заполните все поля, чтобы добавить лодочный мотор. Поле "Название" должно быть уникальным.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_create_outboard_motor') }}" method="post" enctype="multipart/form-data">
+                <label for="category_id">ID категории:</label>
+                <input type="number" name="category_id" id="category_id" required><br>
+
+                <label for="name">Название:</label>
+                <input type="text" name="name" id="name" required><br>
+
+                <label for="price">Цена (руб):</label>
+                <input type="number" name="price" id="price" required><br>
+
+                <label for="company_name">Производитель:</label>
+                <input type="text" name="company_name" id="company_name" required><br>
+
+                <label for="description">Описание:</label>
+                <textarea name="description" id="description"></textarea><br>
+
+                <label for="is_active">Наличие:</label>
+                <select name="is_active" id="is_active">
+                    <option value="true">В наличии</option>
+                    <option value="false">Нет в наличии</option>
+                </select><br>
+
+                <label for="engine_power">Мощность двигателя (л.с.):</label>
+                <input type="number" name="engine_power" id="engine_power" required><br>
+
+                <label for="engine_type">Тип двигателя:</label>
+                <select name="engine_type" id="engine_type" required>
+                    <option value="двухтактный">Двухтактный</option>
+                    <option value="четырехтактный">Четырехтактный</option>
+                </select><br>
+
+                <label for="weight">Вес мотора (кг):</label>
+                <input type="number" name="weight" id="weight" required><br>
+
+                <label for="number_cylinders">Количество цилиндров:</label>
+                <input type="number" name="number_cylinders" id="number_cylinders" required><br>
+
+                <label for="engine_displacement">Объем двигателя (куб.см):</label>
+                <input type="number" name="engine_displacement" id="engine_displacement" required><br>
+
+                <label for="control_type">Тип управления:</label>
+                <select name="control_type" id="control_type" required>
+                    <option value="румпельное">Румпельное</option>
+                    <option value="дистанционное">Дистанционное</option>
+                </select><br>
+
+                <label for="starter_type">Тип стартера:</label>
+                <select name="starter_type" id="starter_type" required>
+                    <option value="ручной">Ручной</option>
+                    <option value="электрический">Электрический</option>
+                </select><br>
+
+                <label for="images">Изображения (Зажимая "Shift", выберите изображения):</label>
+                <input type="file" name="images" id="images" multiple accept="image/*"><br>
+
+                <button type="submit" class="btn-details">Создать лодочный мотор</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Обновление Данных</summary>
+        <div class="details_content">
+            <h3>Обновление информации о лодочном моторе.</h3>
+            <p>Укажите ID лодочного мотора и заполните поля, которые хотите изменить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_update_outboard_motor') }}" method="post">
+                <label for="outboard_motor_id_up">ID лодочного мотора, который нужно обновить:</label>
+                <input type="number" name="outboard_motor_id_up" id="outboard_motor_id_up" required><br>
+
+                <label for="name">Название:</label>
+                <input type="text" name="name"><br>
+
+                <label for="price">Цена (руб):</label>
+                <input type="number" name="price"><br>
+
+                <label for="company_name">Производитель:</label>
+                <input type="text" name="company_name"><br>
+
+                <label for="description">Описание:</label>
+                <textarea name="description"></textarea><br>
+
+                <label for="is_active">Наличие:</label>
+                <select name="is_active">
+                    <option value="true">В наличии</option>
+                    <option value="false">Нет в наличии</option>
+                </select><br>
+
+                <label for="engine_power">Мощность двигателя (л.с.):</label>
+                <input type="number" name="engine_power"><br>
+
+                <label for="engine_type">Тип двигателя:</label>
+                <select name="engine_type">
+                    <option value="двухтактный">Двухтактный</option>
+                    <option value="четырехтактный">Четырехтактный</option>
+                </select><br>
+
+                <label for="weight">Вес мотора (кг):</label>
+                <input type="number" name="weight"><br>
+
+                <label for="number_cylinders">Количество цилиндров:</label>
+                <input type="number" name="number_cylinders"><br>
+
+                <label for="engine_displacement">Объем двигателя (куб.см):</label>
+                <input type="number" name="engine_displacement"><br>
+
+                <label for="control_type">Тип управления:</label>
+                <select name="control_type">
+                    <option value="румпельное">Румпельное</option>
+                    <option value="дистанционное">Дистанционное</option>
+                </select><br>
+
+                <label for="starter_type">Тип стартера:</label>
+                <select name="starter_type">
+                    <option value="ручной">Ручной</option>
+                    <option value="электрический">Электрический</option>
+                </select><br>
+
+                <button type="submit" class="btn-details">Обновить данные</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Обновление Фото</summary>
+        <div class="details_content">
+            <h3>Обновление фотографий лодочного мотора.</h3>
+            <p>Укажите ID лодочного мотора, у которого хотите изменить фото. Укажите через запятую, без пробелов, ID изображений этого лодочного мотора которые хотите удалить.</p>
+            <p>Добавьте новые фото, зажимая "Shift", выберите нужные изображения.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_update_outboard_motor_images') }}" method="post" enctype="multipart/form-data">
+                <label for="outboard_motor_id_img">ID лодочного мотора, у которого нужно обновить фото:</label>
+                <input type="number" name="outboard_motor_id_img" id="outboard_motor_id_img" required><br>
+
+                <label for="remove_images">ID изображений для удаления (через запятую, без пробелов):</label>
+                <input type="text" name="remove_images" id="remove_images"><br>
+
+                <label for="add_images">Новые изображения (Зажимая "Shift", выберите несколько):</label>
+                <input type="file" name="add_images" id="add_images" multiple accept="image/*"><br>
+
+                <button type="submit" class="btn-details">Обновить фото</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Удаление Лодочного Мотора</summary>
+        <div class="details_content">
+            <h3>Удаление лодочного мотора по ID.</h3>
+            <p>Укажите ID лодочного мотора, который хотите удалить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_delete_outboard_motor') }}" method="post">
+                <label for="outboard_motor_id_del">ID лодочного мотора:</label>
+                <input type="number" name="outboard_motor_id_del" id="outboard_motor_id_del" required>
+                <button type="submit" class="btn-details">Удалить</button>
+            </form>
+        </div>
+    </details>
+{% endblock %}
