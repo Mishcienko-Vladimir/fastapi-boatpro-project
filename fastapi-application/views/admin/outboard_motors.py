@@ -218,3 +218,46 @@ async def admin_update_outboard_motor(
             "message": message,
         },
     )
+
+
+@router.post(
+    path="/update-images",
+    name="admin_update_outboard_motor_images",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_update_outboard_motor_images(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    outboard_motor_id_img: int = Form(...),
+    remove_images: str | None = Form(None),
+    add_images: list[UploadFile] = File(...),
+):
+    try:
+        await update_outboard_motor_images_by_id(
+            session=session,
+            outboard_motor_id=outboard_motor_id_img,
+            remove_images=remove_images,
+            add_images=add_images,
+        )
+        message = (
+            f"Фото лодочного мотора с ID {outboard_motor_id_img} успешно обновлены"
+        )
+    except HTTPException as exc:
+        message = exc.detail
+    except Exception as exc:
+        message = "Ошибка при обновлении фото"
+
+    return templates.TemplateResponse(
+        name="admin/outboard_motors.html",
+        context={
+            "request": request,
+            "user": user,
+            "outboard_motors_list": await get_outboard_motors(session=session),
+            "message": message,
+        },
+    )
