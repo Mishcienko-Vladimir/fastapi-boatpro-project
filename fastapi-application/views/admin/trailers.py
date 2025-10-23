@@ -201,3 +201,44 @@ async def admin_update_trailer(
             "message": message,
         },
     )
+
+
+@router.post(
+    path="/update-images",
+    name="admin_update_trailer_images",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_update_trailer_images(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    trailer_id_img: int = Form(...),
+    remove_images: str | None = Form(None),
+    add_images: list[UploadFile] = File(...),
+):
+    try:
+        await update_trailer_images_by_id(
+            session=session,
+            trailer_id=trailer_id_img,
+            remove_images=remove_images,
+            add_images=add_images,
+        )
+        message = f"Фото прицепа с ID {trailer_id_img} успешно обновлены"
+    except HTTPException as exc:
+        message = exc.detail
+    except Exception as exc:
+        message = "Ошибка при обновлении фото"
+
+    return templates.TemplateResponse(
+        name="admin/trailers.html",
+        context={
+            "request": request,
+            "user": user,
+            "trailers_list": await get_trailers(session=session),
+            "message": message,
+        },
+    )
