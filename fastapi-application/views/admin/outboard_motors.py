@@ -52,3 +52,38 @@ async def admin_outboard_motors(
             "outboard_motors_list": outboard_motors_list,
         },
     )
+
+
+@router.post(
+    path="/delete-outboard-motor",
+    name="admin_delete_outboard_motor",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_delete_outboard_motor(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+    outboard_motor_id_del: int = Form(...),
+):
+    try:
+        await delete_outboard_motor_by_id(
+            session=session,
+            outboard_motor_id=outboard_motor_id_del,
+        )
+        message = f"Лодочный мотор с ID {outboard_motor_id_del} успешно удален"
+    except HTTPException as exc:
+        message = exc.detail
+
+    return templates.TemplateResponse(
+        name="admin/outboard_motors.html",
+        context={
+            "request": request,
+            "user": user,
+            "outboard_motors_list": await get_outboard_motors(session=session),
+            "message": message,
+        },
+    )
