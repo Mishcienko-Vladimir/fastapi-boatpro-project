@@ -98,7 +98,7 @@ main h2 {
 .window_info {
     position: relative;
     max-width: 1300px;
-    margin: 0 auto 40px;
+    margin: 0 auto 20px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
