@@ -95,9 +95,17 @@ main h2 {
     font-style: oblique;
 }
 
+.window_info {
+    position: relative;
+    max-width: 1300px;
+    margin: 0 auto 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .window_content {
     position: relative;
-    display: block;
     max-width: 1300px;
     max-height: 440px;
     overflow-y: scroll;
