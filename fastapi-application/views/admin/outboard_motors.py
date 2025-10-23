@@ -16,9 +16,39 @@ from api.api_v1.routers.products.outboard_motors import (
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
 from core.models import User, db_helper
-from core.schemas.products.outboard_motor import OutboardMotorUpdate
+from core.schemas.products.outboard_motor import (
+    EngineType,
+    ControlType,
+    StarterType,
+    OutboardMotorUpdate,
+)
 
 from utils.templates import templates
 
 
 router = APIRouter(prefix=settings.view.outboard_motors)
+
+
+@router.get(
+    path="/",
+    name="admin_outboard_motors",
+    include_in_schema=False,
+    response_model=None,
+)
+async def admin_outboard_motors(
+    request: Request,
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    user: Annotated[
+        User,
+        Depends(current_active_superuser),
+    ],
+):
+    outboard_motors_list = await get_outboard_motors(session=session)
+    return templates.TemplateResponse(
+        name="admin/outboard_motors.html",
+        context={
+            "request": request,
+            "user": user,
+            "outboard_motors_list": outboard_motors_list,
+        },
+    )
