@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,3 +39,17 @@ class UserManagerCrud:
         :return: - пользователь или None.
         """
         return await self.session.get(User, user_id)
+
+    async def delete_user(self, user_id: int) -> Optional[User]:
+        """
+        Удаляет пользователя по ID.
+
+        :param user_id: ID пользователя.
+        :return: Удалённый объект User или None, если пользователь не найден.
+        """
+        user = await self.get_user_by_id(user_id)
+        if not user:
+            return None
+        await self.session.delete(user)
+        await self.session.commit()
+        return user
