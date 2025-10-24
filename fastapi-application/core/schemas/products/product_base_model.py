@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 from pydantic import Field
 
 from core.schemas.base_model import BaseSchemaModel
@@ -38,7 +39,16 @@ class ProductBaseModelRead(ProductBaseModel):
     Базовая модель для чтения товаров.
     """
 
+    id: int = Field(
+        description="ID товара",
+    )
     type_product: str = Field(
         description="Тип товара",
+    )
+    created_at: datetime = Field(
+        description="Дата создания",
+    )
+    updated_at: datetime = Field(
+        description="Дата последнего обновления",
     )
     image: Optional[ImagePathRead] = None
