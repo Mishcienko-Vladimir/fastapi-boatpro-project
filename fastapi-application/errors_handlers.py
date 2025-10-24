@@ -1,11 +1,12 @@
 # Обработчик ошибок
 import logging
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import ORJSONResponse
 
 from pydantic import ValidationError
 from sqlalchemy.exc import DatabaseError
+from starlette.responses import RedirectResponse
 
 
 log = logging.getLogger(__name__)
@@ -46,3 +47,18 @@ def register_errors_handlers(app: FastAPI) -> None:
                 "Администраторы уже работают над решением."
             },
         )
+
+    @app.exception_handler(HTTPException)
+    def http_exception_handler(
+        request: Request,
+        exc: HTTPException,
+    ):
+        if exc.status_code in (401, 403):
+            return RedirectResponse(url="/page-missing")
+
+    @app.exception_handler(404)
+    def not_found_exception_handler(
+        request: Request,
+        exc: HTTPException,
+    ):
+        return RedirectResponse(url="/page-missing")
