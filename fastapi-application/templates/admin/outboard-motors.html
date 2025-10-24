@@ -27,8 +27,8 @@
             {% for image in outboard_motor.images %}
                 <p> - <strong>ID:</strong> {{ image.id }}  <strong>path:</strong> {{ image.path }}</p>
             {% endfor %}
-            <p><strong>Дата создания:</strong> {{ outboard_motor.created_at }}</p>
-            <p><strong>Дата обновления:</strong> {{ outboard_motor.updated_at }}</p>
+            <p><strong>Дата создания:</strong> {{ outboard_motor.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Дата обновления:</strong> {{ outboard_motor.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
         </div>
         {% endfor %}
     </div>

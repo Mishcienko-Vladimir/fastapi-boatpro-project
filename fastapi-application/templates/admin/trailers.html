@@ -24,8 +24,8 @@
             {% for image in trailer.images %}
                 <p> <strong>- ID:</strong> {{ image.id }}  <strong>path:</strong> {{ image.path }}</p>
             {% endfor %}
-            <p><strong>Дата создания:</strong> {{ trailer.created_at }}</p>
-            <p><strong>Дата обновления:</strong> {{ trailer.updated_at }}</p>
+            <p><strong>Дата создания:</strong> {{ trailer.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Дата обновления:</strong> {{ trailer.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
         </div>
         {% endfor %}
     </div>
