@@ -10,6 +10,8 @@ from typing import (
 )
 
 from fastapi import APIRouter, Depends, Response, Request
+from fastapi_cache.decorator import cache
+
 from api.api_v1.dependencies.authentication import get_users_db
 from core.repositories.authentication.fastapi_users import fastapi_users
 
@@ -49,6 +51,11 @@ def users_list_key_builder(
 @router.get(
     "",
     response_model=list[UserRead],
+)
+@cache(
+    expire=60,
+    key_builder=users_list_key_builder,
+    namespace=settings.cache.namespace.users_list,
 )
 async def get_users_list(
     users_db: Annotated[
