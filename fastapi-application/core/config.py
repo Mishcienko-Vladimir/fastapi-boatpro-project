@@ -1,6 +1,7 @@
 import logging
 
 from typing import Literal
+
 from pathlib import Path
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -150,6 +151,33 @@ class AccessToken(BaseModel):
     verification_token_secret: str
 
 
+class RedisDB(BaseModel):
+    """Настройки Redis"""
+
+    cache: int = 0
+
+
+class RedisConfig(BaseModel):
+    """Настройки Redis"""
+
+    host: str = "localhost"
+    port: int = 6379
+    db: RedisDB = RedisDB()
+
+
+class CacheNamespace(BaseModel):
+    """Именование пространства кэша"""
+
+    users_list: str = "users-list"
+
+
+class CacheConfig(BaseModel):
+    """Настройки кэша"""
+
+    prefix: str = "fastapi-cache"
+    namespace: CacheNamespace = CacheNamespace()
+
+
 class Settings(BaseSettings):
     """Настройка приложения"""
 
@@ -169,6 +197,8 @@ class Settings(BaseSettings):
     access_token: AccessToken
     webhook: WebhookConfig
     admin: AdminConfig
+    redis: RedisConfig = RedisConfig()
+    cache: CacheConfig = CacheConfig()
 
 
 settings = Settings()
