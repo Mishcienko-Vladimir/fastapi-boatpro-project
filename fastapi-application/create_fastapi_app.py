@@ -1,6 +1,6 @@
 # Создание FastAPI приложения и переопределение пути загрузки статики
-
 from contextlib import asynccontextmanager
+from redis.asyncio import Redis
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -10,9 +10,12 @@ from fastapi.openapi.docs import (
     get_swagger_ui_html,
     get_swagger_ui_oauth2_redirect_html,
 )
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 
 from api.webhooks import webhooks_router
 from core.models import db_helper
+from core.config import settings
 from errors_handlers import register_errors_handlers
 
 
@@ -20,6 +23,16 @@ from errors_handlers import register_errors_handlers
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
+    redis = Redis(
+        host=settings.redis.host,
+        port=settings.redis.port,
+        db=settings.redis.db.cache,
+    )
+    FastAPICache.init(
+        RedisBackend(redis),
+        prefix=settings.cache.prefix,
+    )
+
     yield
     # shutdown
     await db_helper.dispose()
