@@ -3,6 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 from fastapi_users import BaseUserManager, IntegerIDMixin
 from fastapi_users.db import BaseUserDatabase
+from fastapi_cache import FastAPICache
 
 from core.models.user import User
 from core.config import settings
@@ -68,7 +69,18 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
 
         :param user: Объект пользователя, который зарегистрировался.
         :param request: HTTP-запрос, который инициировал регистрацию (опционально).
+        :return: - сброс кэша.
         """
+
+        if self.background_tasks:
+            self.background_tasks.add_task(
+                FastAPICache.clear,
+                namespace=settings.cache.namespace.users_list,
+            )
+        else:
+            await FastAPICache.clear(
+                namespace=settings.cache.namespace.users_list,
+            )
 
         log.warning(
             "User %r has registered.",
