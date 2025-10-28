@@ -1,5 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, Form, File
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
@@ -15,6 +19,12 @@ from core.schemas.products import (
     OutboardMotorUpdate,
     OutboardMotorCreate,
     OutboardMotorSummarySchema,
+)
+
+from utils.key_builder import (
+    universal_list_key_builder,
+    get_by_name_key_builder,
+    get_by_id_key_builder,
 )
 
 
@@ -116,6 +126,12 @@ async def create_outboard_motor(
     outboard_motor_data = OutboardMotorCreate(**outboard_motor_data_json)
     _service = ProductsService(session, OutboardMotor)
     new_outboard_motor = await _service.create_product(outboard_motor_data, images)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motors_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motor,
+    )
     return OutboardMotorRead.model_validate(new_outboard_motor)
 
 
@@ -123,6 +139,11 @@ async def create_outboard_motor(
     "/outboard-motor-name/{outboard_motor_name}",
     status_code=200,
     response_model=OutboardMotorRead,
+)
+@cache(
+    expire=300,
+    key_builder=get_by_name_key_builder,
+    namespace=settings.cache.namespace.outboard_motor,
 )
 async def get_outboard_motor_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -141,6 +162,11 @@ async def get_outboard_motor_by_name(
     status_code=200,
     response_model=OutboardMotorRead,
 )
+@cache(
+    expire=300,
+    key_builder=get_by_id_key_builder,
+    namespace=settings.cache.namespace.outboard_motor,
+)
 async def get_outboard_motor_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     outboard_motor_id: int,
@@ -157,6 +183,11 @@ async def get_outboard_motor_by_id(
     "/",
     status_code=200,
     response_model=list[OutboardMotorRead],
+)
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.outboard_motors_list,
 )
 async def get_outboard_motors(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -176,6 +207,11 @@ async def get_outboard_motors(
     "/summary",
     status_code=200,
     response_model=list[OutboardMotorSummarySchema],
+)
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.outboard_motors_list,
 )
 async def get_outboard_motors_summary(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
@@ -215,6 +251,12 @@ async def update_outboard_motor_data_by_id(
     outboard_motor = await _service.update_product_data_by_id(
         outboard_motor_id, outboard_motor_data
     )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motors_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motor,
+    )
     return OutboardMotorRead.model_validate(outboard_motor)
 
 
@@ -244,6 +286,12 @@ async def update_outboard_motor_images_by_id(
         remove_images,
         add_images,
     )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motors_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motor,
+    )
     return OutboardMotorRead.model_validate(outboard_motor)
 
 
@@ -256,4 +304,11 @@ async def delete_outboard_motor_by_id(
     Удаление лодочного мотора по id.
     """
     _service = ProductsService(session, OutboardMotor)
-    return await _service.delete_product_by_id(outboard_motor_id)
+    delete_outboard_motor = await _service.delete_product_by_id(outboard_motor_id)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motors_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.outboard_motor,
+    )
+    return delete_outboard_motor
