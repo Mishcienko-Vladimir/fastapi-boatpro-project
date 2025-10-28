@@ -1,5 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, Form, File
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
@@ -12,6 +16,12 @@ from core.schemas.products import (
     TrailerUpdate,
     TrailerCreate,
     TrailerSummarySchema,
+)
+
+from utils.key_builder import (
+    universal_list_key_builder,
+    get_by_name_key_builder,
+    get_by_id_key_builder,
 )
 
 
@@ -98,10 +108,21 @@ async def create_trailer(
     trailer_data = TrailerCreate(**trailer_data_json)
     _service = ProductsService(session, Trailer)
     new_trailer = await _service.create_product(trailer_data, images)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailers_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailer,
+    )
     return TrailerRead.model_validate(new_trailer)
 
 
 @router.get("/trailer-name/{trailer_name}", status_code=200, response_model=TrailerRead)
+@cache(
+    expire=300,
+    key_builder=get_by_name_key_builder,
+    namespace=settings.cache.namespace.trailer,
+)
 async def get_trailer_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_name: str,
@@ -115,6 +136,11 @@ async def get_trailer_by_name(
 
 
 @router.get("/trailer-id/{trailer_id}", status_code=200, response_model=TrailerRead)
+@cache(
+    expire=300,
+    key_builder=get_by_id_key_builder,
+    namespace=settings.cache.namespace.trailer,
+)
 async def get_trailer_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     trailer_id: int,
@@ -128,6 +154,11 @@ async def get_trailer_by_id(
 
 
 @router.get("/", status_code=200, response_model=list[TrailerRead])
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.trailers_list,
+)
 async def get_trailers(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[TrailerRead]:
@@ -140,6 +171,11 @@ async def get_trailers(
 
 
 @router.get("/summary", status_code=200, response_model=list[TrailerSummarySchema])
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.trailers_list,
+)
 async def get_trailers_summary(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[TrailerSummarySchema]:
@@ -172,6 +208,12 @@ async def update_trailer_data_by_id(
     """
     _service = ProductsService(session, Trailer)
     trailer = await _service.update_product_data_by_id(trailer_id, trailer_data)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailers_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailer,
+    )
     return TrailerRead.model_validate(trailer)
 
 
@@ -197,6 +239,12 @@ async def update_trailer_images_by_id(
         remove_images,
         add_images,
     )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailers_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailer,
+    )
     return TrailerRead.model_validate(trailer)
 
 
@@ -209,4 +257,11 @@ async def delete_trailer_by_id(
     Удаление прицепа по id.
     """
     _service = ProductsService(session, Trailer)
-    return await _service.delete_product_by_id(trailer_id)
+    delete_trailer = await _service.delete_product_by_id(trailer_id)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailers_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.trailer,
+    )
+    return delete_trailer
