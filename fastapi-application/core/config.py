@@ -169,6 +169,13 @@ class CacheNamespace(BaseModel):
     """Именование пространства кэша"""
 
     users_list: str = "users-list"
+    boats_list: str = "boats-list"
+    outboard_motors_list: str = "outboard-motors-list"
+    trailers_list: str = "trailers-list"
+
+    boat: str = "boat"
+    outboard_motor: str = "outboard-motor"
+    trailer: str = "trailer"
 
 
 class CacheConfig(BaseModel):
