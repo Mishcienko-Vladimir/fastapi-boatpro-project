@@ -5,6 +5,9 @@ from fastapi import APIRouter, Request, Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.api_v1.routers.users import get_users_list
+from core.models.user import SQLAlchemyUserDatabase
+
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.repositories.user_manager_crud import UserManagerCrud
 from core.config import settings
@@ -31,10 +34,25 @@ async def admin_users(
         Depends(current_active_superuser),
     ],
 ):
-    users = await UserManagerCrud(session=session).get_all_users()
-    users_list = [UserRead.model_validate(user) for user in users]
-    number_verified = sum(1 for user in users_list if user.is_verified)
-    number_superuser = sum(1 for user in users_list if user.is_superuser)
+    users_list = await get_users_list(
+        SQLAlchemyUserDatabase(session=session, user_table=User)
+    )
+
+    # Проверка: если элемент — это экземпляр UserRead, тогда вызываем model_dump
+    users_list = [
+        (
+            user.model_dump() if isinstance(user, UserRead) else user
+        )  # или пропуск, если ожидается dict
+        for user in users_list
+    ]
+
+    number_verified = sum(
+        1 for user in users_list if "is_verified" in user and user["is_verified"]
+    )
+    number_superuser = sum(
+        1 for user in users_list if "is_superuser" in user and user["is_superuser"]
+    )
+
     return templates.TemplateResponse(
         name="admin/users.html",
         context={
