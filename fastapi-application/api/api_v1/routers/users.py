@@ -42,9 +42,11 @@ def users_list_key_builder(
             continue
         cache_kw[name] = value
 
-    cache_key = hashlib.md5(  # noqa: S324
-        f"{func.__module__}:{func.__name__}:{args}:{cache_kw}".encode()
-    ).hexdigest()
+    path = request.scope.get("path", "") if request else ""
+    method = request.scope.get("method", "GET") if request else ""
+
+    key_str = f"{func.__module__}:{func.__name__}:{method}:{path}:{cache_kw}"
+    cache_key = hashlib.md5(key_str.encode()).hexdigest()
     return f"{namespace}:{cache_key}"
 
 
