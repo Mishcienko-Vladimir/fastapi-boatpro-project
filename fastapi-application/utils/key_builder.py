@@ -33,3 +33,36 @@ def universal_list_key_builder(
     cache_key = hashlib.md5(key_str.encode()).hexdigest()
 
     return f"{namespace}:{cache_key}"
+
+
+def get_by_name_key_builder(
+    func: Callable[..., Any],
+    namespace: str,
+    *,
+    request: Optional[Request] = None,
+    response: Optional[Any] = None,
+    args: Tuple[Any, ...],
+    kwargs: Dict[str, Any],
+) -> str:
+    """
+    Формирует уникальный ключ кэша для метода get_by_name.
+    Учитывает имя товара и тип ресурса, игнорируя AsyncSession.
+    """
+
+    exclude_types = (AsyncSession,)
+    filtered_kwargs = {
+        k: v for k, v in kwargs.items() if not isinstance(v, exclude_types)
+    }
+
+    name_param = next((v for k, v in filtered_kwargs.items() if "name" in k), None)
+
+    if name_param is None:
+        raise ValueError("Не найден параметр 'name' в запросе")
+
+    path = request.scope.get("path", "") if request else ""
+    method = request.scope.get("method", "GET") if request else ""
+
+    key_str = f"{func.__module__}:{func.__name__}:{method}:{path}:{name_param}"
+    cache_key = hashlib.md5(key_str.encode()).hexdigest()
+
+    return f"{namespace}:{cache_key}"
