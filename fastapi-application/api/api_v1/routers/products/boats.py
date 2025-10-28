@@ -1,5 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, UploadFile, Form, File
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
@@ -12,6 +16,12 @@ from core.schemas.products import (
     BoatUpdate,
     BoatRead,
     BoatSummarySchema,
+)
+
+from utils.key_builder import (
+    universal_list_key_builder,
+    get_by_name_key_builder,
+    get_by_id_key_builder,
 )
 
 
@@ -154,10 +164,21 @@ async def create_boat(
     boat_data = BoatCreate(**boat_data_json)
     _service = ProductsService(session, Boat)
     new_boat = await _service.create_product(boat_data, images)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boats_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boat,
+    )
     return BoatRead.model_validate(new_boat)
 
 
 @router.get("/boat-name/{boat_name}", status_code=200, response_model=BoatRead)
+@cache(
+    expire=300,
+    key_builder=get_by_name_key_builder,
+    namespace=settings.cache.namespace.boat,
+)
 async def get_boat_by_name(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     boat_name: str,
@@ -171,6 +192,11 @@ async def get_boat_by_name(
 
 
 @router.get("/boat-id/{boat_id}", status_code=200, response_model=BoatRead)
+@cache(
+    expire=300,
+    key_builder=get_by_id_key_builder,
+    namespace=settings.cache.namespace.boat,
+)
 async def get_boat_by_id(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     boat_id: int,
@@ -184,6 +210,11 @@ async def get_boat_by_id(
 
 
 @router.get("/", status_code=200, response_model=list[BoatRead])
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.boats_list,
+)
 async def get_boats(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[BoatRead]:
@@ -196,6 +227,11 @@ async def get_boats(
 
 
 @router.get("/summary", status_code=200, response_model=list[BoatSummarySchema])
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.boats_list,
+)
 async def get_boats_summary(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> list[BoatSummarySchema]:
@@ -228,6 +264,12 @@ async def update_boat_data_by_id(
     """
     _service = ProductsService(session, Boat)
     boat = await _service.update_product_data_by_id(boat_id, boat_data)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boats_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boat,
+    )
     return BoatRead.model_validate(boat)
 
 
@@ -253,6 +295,12 @@ async def update_boat_images_by_id(
         remove_images,
         add_images,
     )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boats_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boat,
+    )
     return BoatRead.model_validate(boat)
 
 
@@ -265,4 +313,11 @@ async def delete_boat_by_id(
     Удаление катера по id.
     """
     _service = ProductsService(session, Boat)
-    return await _service.delete_product_by_id(boat_id)
+    delete_boat = await _service.delete_product_by_id(boat_id)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boats_list,
+    )
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.boat,
+    )
+    return delete_boat
