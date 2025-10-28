@@ -32,8 +32,8 @@
             {% for image in boat.images %}
                 <p> <strong>- ID:</strong> {{ image.id }}  <strong>path:</strong> {{ image.path }}</p>
             {% endfor %}
-            <p><strong>Дата создания:</strong> {{ boat.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
-            <p><strong>Дата обновления:</strong> {{ boat.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Дата создания:</strong> {{ boat.created_at | format_datetime }}</p>
+            <p><strong>Дата обновления:</strong> {{ boat.updated_at | format_datetime }}</p>
         </div>
         {% endfor %}
     </div>

@@ -36,7 +36,7 @@
                 {% elif product.type_product == 'trailer' %}Прицеп
                 {% endif %}
             </p>
-            <p><strong>Дата создания:</strong> {{ product.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p><strong>Дата создания:</strong> {{ product.created_at | format_datetime }}</p>
         </div>
         {% endfor %}
     </div>
