@@ -176,3 +176,13 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             send_email_confirmed,
             user=user,
         )
+
+        if self.background_tasks:
+            self.background_tasks.add_task(
+                FastAPICache.clear,
+                namespace=settings.cache.namespace.users_list,
+            )
+        else:
+            await FastAPICache.clear(
+                namespace=settings.cache.namespace.users_list,
+            )
