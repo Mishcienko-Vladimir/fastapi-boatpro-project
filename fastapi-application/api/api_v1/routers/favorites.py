@@ -1,8 +1,13 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.favorites_service import FavoritesService
+from utils.key_builder import universal_list_key_builder
 
 from core.config import settings
 from core.models import db_helper
@@ -22,10 +27,19 @@ async def add_to_favorites(
     Добавление товара в избранное.
     """
     _service = FavoritesService(session)
-    return await _service.create_favorite(favorite_data)
+    create_favorite = await _service.create_favorite(favorite_data)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.favorites_list,
+    )
+    return create_favorite
 
 
 @router.get("/", status_code=201, response_model=UserFavorites)
+@cache(
+    expire=60,
+    key_builder=universal_list_key_builder,
+    namespace=settings.cache.namespace.favorites_list,
+)
 async def get_favorites(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     user_id: int,
@@ -46,4 +60,8 @@ async def delete_favorite_by_id(
     Удаление товара из избранного.
     """
     _service = FavoritesService(session)
-    return await _service.delete_favorite_by_id(favorite_id)
+    delete_favorite = await _service.delete_favorite_by_id(favorite_id)
+    await FastAPICache.clear(
+        namespace=settings.cache.namespace.favorites_list,
+    )
+    return delete_favorite
