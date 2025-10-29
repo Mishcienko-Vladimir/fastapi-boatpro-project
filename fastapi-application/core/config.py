@@ -174,6 +174,7 @@ class CacheNamespace(BaseModel):
     trailers_list: str = "trailers-list"
     favorites_list: str = "favorites-list"
 
+    user: str = "user"
     boat: str = "boat"
     outboard_motor: str = "outboard-motor"
     trailer: str = "trailer"
