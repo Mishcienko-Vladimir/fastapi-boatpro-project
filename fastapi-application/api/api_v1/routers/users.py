@@ -1,53 +1,20 @@
-import hashlib
-
-from typing import (
-    Annotated,
-    Any,
-    Callable,
-    Dict,
-    Optional,
-    Tuple,
-)
-
-from fastapi import APIRouter, Depends, Response, Request
+from typing import Annotated, TYPE_CHECKING
+from fastapi import APIRouter, Depends
 from fastapi_cache.decorator import cache
 
 from api.api_v1.dependencies.authentication import get_users_db
-from core.repositories.authentication.fastapi_users import fastapi_users
 
+from core.repositories.authentication.fastapi_users import fastapi_users
 from core.config import settings
-from core.models.user import SQLAlchemyUserDatabase
 from core.schemas.user import UserRead, UserUpdate
+
+from utils.key_builder import users_list_key_builder
+
+if TYPE_CHECKING:
+    from core.models.user import SQLAlchemyUserDatabase  # noqa
 
 
 router = APIRouter(prefix=settings.api.v1.users, tags=["Users"])
-
-
-def users_list_key_builder(
-    func: Callable[..., Any],
-    namespace: str,
-    *,
-    request: Optional[Request] = None,
-    response: Optional[Response] = None,
-    args: Tuple[Any, ...],
-    kwargs: Dict[str, Any],
-) -> str:
-    """
-    Функция для построения ключа кэша для списка пользователей.
-    """
-    exclude_types = (SQLAlchemyUserDatabase,)
-    cache_kw = {}
-    for name, value in kwargs.items():
-        if isinstance(value, exclude_types):
-            continue
-        cache_kw[name] = value
-
-    path = request.scope.get("path", "") if request else ""
-    method = request.scope.get("method", "GET") if request else ""
-
-    key_str = f"{func.__module__}:{func.__name__}:{method}:{path}:{cache_kw}"
-    cache_key = hashlib.md5(key_str.encode()).hexdigest()
-    return f"{namespace}:{cache_key}"
 
 
 @router.get(
