@@ -77,16 +77,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
                 FastAPICache.clear,
                 namespace=settings.cache.namespace.users_list,
             )
-            self.background_tasks.add_task(
-                FastAPICache.clear,
-                namespace=settings.cache.namespace.user,
-            )
         else:
             await FastAPICache.clear(
                 namespace=settings.cache.namespace.users_list,
-            )
-            await FastAPICache.clear(
-                namespace=settings.cache.namespace.user,
             )
 
         log.warning(
