@@ -90,7 +90,15 @@ class ApiPrefix(BaseModel):
     v1: ApiV1Prefix = ApiV1Prefix()
 
     cookie_max_age: int = 3600  # время жизни куки в секундах
-    cookie_secure: bool = False  # True - только для HTTPS, False - для HTTP
+    cookie_secure: bool = True  # True - только для HTTPS, False - для HTTP
+
+    # Список разрешенных доменов для кросс-доменных запросов (сайты с которых можно отправлять запросы на наш API)
+    allowed_origins: list[str] = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:1080",
+        "http://localhost:1025",
+    ]
 
     @property
     def bearer_token_url(self) -> str:
