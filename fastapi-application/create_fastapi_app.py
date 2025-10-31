@@ -5,6 +5,7 @@ from redis.asyncio import Redis
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import ORJSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import (
     get_redoc_html,
     get_swagger_ui_html,
@@ -71,6 +72,14 @@ def create_app(
         docs_url=None if create_custom_static_urls else "/docs",
         redoc_url=None if create_custom_static_urls else "/redoc",
         webhooks=webhooks_router,
+    )
+    # Добавления CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.api.allowed_origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     if create_custom_static_urls:
         register_static_docs_routes(app)
