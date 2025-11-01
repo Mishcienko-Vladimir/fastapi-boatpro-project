@@ -14,6 +14,10 @@ from fastapi.openapi.docs import (
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
+
 from api.webhooks import webhooks_router
 from core.models import db_helper
 from core.config import settings
@@ -62,6 +66,9 @@ def register_static_docs_routes(app: FastAPI):
             redoc_js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
         )
 
+# Защита от спама (bruteforce).
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
 
 def create_app(
     create_custom_static_urls: bool = False,
@@ -73,6 +80,10 @@ def create_app(
         redoc_url=None if create_custom_static_urls else "/redoc",
         webhooks=webhooks_router,
     )
+
+    app.state.limiter = limiter  # type: ignore
+    app.add_middleware(SlowAPIMiddleware)
+
     # Добавления CORS
     app.add_middleware(
         CORSMiddleware,
