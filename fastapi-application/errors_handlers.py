@@ -7,6 +7,7 @@ from fastapi.responses import ORJSONResponse
 from pydantic import ValidationError
 from sqlalchemy.exc import DatabaseError
 from starlette.responses import RedirectResponse
+from slowapi.errors import RateLimitExceeded
 
 
 log = logging.getLogger(__name__)
@@ -53,12 +54,25 @@ def register_errors_handlers(app: FastAPI) -> None:
         request: Request,
         exc: HTTPException,
     ):
+        if request.url.path.startswith("/api"):
+            return ORJSONResponse(
+                status_code=exc.status_code,
+                content={"detail": exc.detail},
+            )
+
+        if exc.status_code == 404:
+            return RedirectResponse(url="/page-missing")
         if exc.status_code in (401, 403):
             return RedirectResponse(url="/page-missing")
 
-    @app.exception_handler(404)
-    def not_found_exception_handler(
-        request: Request,
-        exc: HTTPException,
-    ):
         return RedirectResponse(url="/page-missing")
+
+    @app.exception_handler(RateLimitExceeded)
+    async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+        if request.url.path.startswith("/api"):
+            return ORJSONResponse(
+                status_code=429,
+                content={"detail": "Слишком много запросов, попробуйте позже."},
+            )
+
+        return RedirectResponse(url="/limit-exceeded")
