@@ -58,6 +58,7 @@ class ViewPrefix(BaseModel):
     change_password: str = "/change-password"
     password_reset: str = "/password-reset"
     page_missing: str = "/page-missing"
+    limit_exceeded: str = "/limit-exceeded"
     catalog: str = "/catalog"
     boats: str = "/boats"
     outboard_motors: str = "/outboard-motors"
