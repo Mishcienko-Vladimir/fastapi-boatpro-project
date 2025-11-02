@@ -14,7 +14,8 @@ from fastapi.openapi.docs import (
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
-from slowapi import Limiter
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
@@ -66,6 +67,7 @@ def register_static_docs_routes(app: FastAPI):
             redoc_js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
         )
 
+
 # Защита от спама (bruteforce).
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 
@@ -82,6 +84,7 @@ def create_app(
     )
 
     app.state.limiter = limiter  # type: ignore
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
 
     # Добавления CORS
