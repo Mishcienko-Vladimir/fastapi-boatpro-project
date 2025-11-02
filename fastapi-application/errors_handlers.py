@@ -71,7 +71,7 @@ def register_errors_handlers(app: FastAPI) -> None:
     async def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
         if request.url.path.startswith("/api"):
             return ORJSONResponse(
-                status_code=429,
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"detail": "Слишком много запросов, попробуйте позже."},
             )
 
