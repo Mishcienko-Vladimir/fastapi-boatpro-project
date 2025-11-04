@@ -14,15 +14,14 @@ from fastapi.openapi.docs import (
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 
 from api.webhooks import webhooks_router
 from core.models import db_helper
 from core.config import settings
 from errors_handlers import register_errors_handlers
+from middleware.custom_rate_limit_middleware import CustomRateLimitMiddleware
+from utils.limiter import limiter
 
 
 # Для закрытия базы данных
@@ -68,10 +67,6 @@ def register_static_docs_routes(app: FastAPI):
         )
 
 
-# Защита от спама (bruteforce).
-limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
-
-
 def create_app(
     create_custom_static_urls: bool = False,
 ) -> FastAPI:
@@ -83,8 +78,8 @@ def create_app(
         webhooks=webhooks_router,
     )
 
+    # Защита от спама (bruteforce).
     app.state.limiter = limiter  # type: ignore
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
 
     # Добавления CORS
@@ -95,6 +90,9 @@ def create_app(
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.add_middleware(CustomRateLimitMiddleware)
+
     if create_custom_static_urls:
         register_static_docs_routes(app)
 
