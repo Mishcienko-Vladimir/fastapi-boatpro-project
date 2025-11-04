@@ -6,6 +6,7 @@ from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
 from core.models import User
 
+from utils.limiter import limiter
 from utils.templates import templates
 
 
@@ -20,6 +21,7 @@ router = APIRouter(
     include_in_schema=False,
     response_model=None,
 )
+@limiter.exempt
 def limit_exceeded(
     request: Request,
     user: Optional[User] = Depends(optional_user),
