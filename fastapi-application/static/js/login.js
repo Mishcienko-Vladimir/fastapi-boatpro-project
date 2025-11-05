@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const errorDiv = document.getElementById("login-error");
 
                     if (response.status === 429) {
-                        errorDiv.innerText = "Слишком много попыток. Подождите минуту.";
+                        errorDiv.innerText = "Слишком много попыток. Попробуйте позже.";
                     } else if (errorDetails.detail === "LOGIN_BAD_CREDENTIALS") {
                         errorDiv.innerText = "Неверный логин или пароль.";
                     } else {
