@@ -16,6 +16,7 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from slowapi.middleware import SlowAPIMiddleware
 
+from actions.create_superuser import create_superuser_if_not_exists
 from api.webhooks import webhooks_router
 from core.models import db_helper
 from core.config import settings
@@ -39,6 +40,9 @@ async def lifespan(app: FastAPI):
         RedisBackend(redis),
         prefix=settings.cache.prefix,
     )
+    # Создание суперпользователя при старте, если его нет.
+    async with db_helper.session_factory() as session:
+        await create_superuser_if_not_exists(session)
 
     yield
     # shutdown
