@@ -20,8 +20,10 @@ from api.webhooks import webhooks_router
 from core.models import db_helper
 from core.config import settings
 from errors_handlers import register_errors_handlers
-from middleware.custom_rate_limit_middleware import CustomRateLimitMiddleware
 from utils.limiter import limiter
+
+from middleware.custom_rate_limit_middleware import CustomRateLimitMiddleware
+from middleware.security_headers_middleware import SecurityHeadersMiddleware
 
 
 # Для закрытия базы данных
@@ -44,6 +46,11 @@ async def lifespan(app: FastAPI):
 
 
 def register_static_docs_routes(app: FastAPI):
+    """
+    Создание статических URL для Swagger, ReDoc и статических файлов.
+    Необходимо для того, чтобы документация нормально открывалась.
+    """
+
     @app.get("/docs", include_in_schema=False)
     async def custom_swagger_ui_html():
         return get_swagger_ui_html(
@@ -70,6 +77,8 @@ def register_static_docs_routes(app: FastAPI):
 def create_app(
     create_custom_static_urls: bool = False,
 ) -> FastAPI:
+    """Создание FastAPI приложения."""
+
     app = FastAPI(
         default_response_class=ORJSONResponse,
         lifespan=lifespan,
@@ -81,6 +90,10 @@ def create_app(
     # Защита от спама (bruteforce).
     app.state.limiter = limiter  # type: ignore
     app.add_middleware(SlowAPIMiddleware)
+    app.add_middleware(CustomRateLimitMiddleware)
+
+    # Установка безопасности HTTP-заголовков.
+    app.add_middleware(SecurityHeadersMiddleware)
 
     # Добавления CORS
     app.add_middleware(
@@ -91,12 +104,13 @@ def create_app(
         allow_headers=["*"],
     )
 
-    app.add_middleware(CustomRateLimitMiddleware)
-
+    # Создание статических URL для Swagger, ReDoc.
     if create_custom_static_urls:
         register_static_docs_routes(app)
 
+    # Регистрация статических файлов в папке static.
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
+    # Регистрация обработчиков ошибок из модуля errors_handlers
     register_errors_handlers(app)
     return app
