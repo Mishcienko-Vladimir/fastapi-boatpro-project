@@ -138,6 +138,7 @@ class AdminConfig(BaseModel):
     """Конфигурация администратора"""
 
     admin_email: str
+    admin_password: str
 
 
 class PathImageUploadDir(BaseModel):
