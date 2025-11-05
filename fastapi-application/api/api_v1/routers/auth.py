@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from api.api_v1.dependencies.authentication import authentication_backend
+from utils.limiter import limiter
 
 from core.repositories.authentication.fastapi_users import fastapi_users
 from core.config import settings
@@ -12,25 +13,31 @@ router = APIRouter(
     tags=["Auth"],
 )
 
-# login
-# logout
-router.include_router(
-    router=fastapi_users.get_auth_router(authentication_backend),
-)
+# /login и /logout
+login_router = fastapi_users.get_auth_router(authentication_backend)
 
 # /register
-router.include_router(
-    router=fastapi_users.get_register_router(UserRead, UserCreate),
-)
+register_router = fastapi_users.get_register_router(UserRead, UserCreate)
 
-# /request-verify-token
-# /verify
-router.include_router(
-    router=fastapi_users.get_verify_router(UserRead),
-)
+# /request-verify-token и /verify
+verify_router = fastapi_users.get_verify_router(UserRead)
 
-# /forgot-password
-# /reset-password
-router.include_router(
-    router=fastapi_users.get_reset_password_router(),
-)
+# /forgot-password и /reset-password
+reset_router = fastapi_users.get_reset_password_router()
+
+for route in login_router.routes:
+    if route.path == "/login" and route.methods == {"POST"}:
+        route.endpoint = limiter.limit("5/hour")(route.endpoint)
+
+for route in register_router.routes:
+    if route.path == "/register" and route.methods == {"POST"}:
+        route.endpoint = limiter.limit("3/hour")(route.endpoint)
+
+for route in reset_router.routes:
+    if route.path == "/forgot-password" and route.methods == {"POST"}:
+        route.endpoint = limiter.limit("2/hour")(route.endpoint)
+
+router.include_router(login_router)
+router.include_router(register_router)
+router.include_router(verify_router)
+router.include_router(reset_router)
