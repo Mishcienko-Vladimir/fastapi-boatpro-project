@@ -6,7 +6,7 @@ services:
       - "6379:6379"
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:4.2-management
     hostname: rabbitmq
     container_name: rabbitmq
     ports:
@@ -48,20 +48,6 @@ services:
       driver: "json-file"
       options:
         max-size: "1m"
-
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080"
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5050:80"
 
 
 volumes:
