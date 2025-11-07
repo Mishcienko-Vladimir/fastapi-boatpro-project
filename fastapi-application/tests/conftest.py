@@ -1,12 +1,14 @@
-import asyncio
 import pytest
 
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from core.models import Base
-from main import main_app
 from core.models.db_helper import db_helper
+from create_fastapi_app import create_app
 
 
 # Тестовая БД в памяти
@@ -14,14 +16,11 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 
 @pytest.fixture(scope="session")
-def event_loop():
+def anyio_backend():
     """
-    Создает событийный цикл для тестов.
-    Этот fixture нужен для корректной работы тестов с asyncio.
+    Фикстура, указывающая, какой асинхронный движок использовать (asyncio или trio)
     """
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
+    return "asyncio"
 
 
 @pytest.fixture(scope="session")
@@ -51,6 +50,12 @@ async def test_session(test_engine):
         await session.rollback()
 
 
+@asynccontextmanager
+async def empty_lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Пустой lifespan для тестов."""
+    yield
+
+
 @pytest.fixture(scope="function")
 async def client(test_session):
     """
@@ -61,8 +66,10 @@ async def client(test_session):
         """Заменяет реальную сессию на тестовую."""
         return test_session
 
-    app = main_app
-    app.dependency_overrides[db_helper.get_scoped_session] = override_get_session
+    app: FastAPI = create_app(
+        create_custom_static_urls=True, lifespan_override=empty_lifespan
+    )
+    app.dependency_overrides[db_helper.get_scoped_session] = override_get_session  # type: ignore
 
     async with AsyncClient(
         transport=ASGITransport(app=app),
@@ -70,4 +77,4 @@ async def client(test_session):
     ) as ac:
         yield ac
 
-    app.dependency_overrides.clear()
+    app.dependency_overrides.clear()  # type: ignore
