@@ -69,7 +69,7 @@ async def client(test_session):
     app: FastAPI = create_app(
         create_custom_static_urls=True, lifespan_override=empty_lifespan
     )
-    app.dependency_overrides[db_helper.get_scoped_session] = override_get_session  # type: ignore
+    app.dependency_overrides[db_helper.session_getter] = override_get_session  # type: ignore
 
     async with AsyncClient(
         transport=ASGITransport(app=app),
