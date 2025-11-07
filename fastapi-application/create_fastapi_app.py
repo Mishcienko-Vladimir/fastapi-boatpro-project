@@ -19,7 +19,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from actions.create_superuser import create_superuser_if_not_exists
 from api.webhooks import webhooks_router
 from core.models import db_helper
-from core.config import settings
+from core.config import settings, BASE_DIR
 from errors_handlers import register_errors_handlers
 from utils.limiter import limiter
 
@@ -80,12 +80,13 @@ def register_static_docs_routes(app: FastAPI):
 
 def create_app(
     create_custom_static_urls: bool = False,
+    lifespan_override=None,
 ) -> FastAPI:
     """Создание FastAPI приложения."""
 
     app = FastAPI(
         default_response_class=ORJSONResponse,
-        lifespan=lifespan,
+        lifespan=lifespan_override or lifespan,
         docs_url=None if create_custom_static_urls else "/docs",
         redoc_url=None if create_custom_static_urls else "/redoc",
         webhooks=webhooks_router,
@@ -113,7 +114,7 @@ def create_app(
         register_static_docs_routes(app)
 
     # Регистрация статических файлов в папке static.
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
     # Регистрация обработчиков ошибок из модуля errors_handlers
     register_errors_handlers(app)
