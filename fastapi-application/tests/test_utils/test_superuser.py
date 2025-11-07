@@ -39,6 +39,11 @@ async def test_create_superuser_if_not_exists_does_not_duplicate(
 
     user1 = await create_superuser_if_not_exists(test_session)
     assert user1 is not None
+    assert user1.email == settings.admin.admin_email
 
-    user2 = await create_superuser_if_not_exists(test_session)
+    result = await test_session.execute(
+        select(User).where(User.email == settings.admin.admin_email)
+    )
+    user2 = result.scalar_one()
     assert user2.id == user1.id
+    assert user2.is_superuser is True
