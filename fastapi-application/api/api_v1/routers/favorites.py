@@ -15,7 +15,7 @@ from core.schemas.user import UserFavorites
 from core.schemas.favorite import FavoriteCreate, FavoriteRead
 
 
-router = APIRouter(prefix=settings.api.v1.favorites, tags=["Избранное"])
+router = APIRouter(prefix=settings.api.v1.favorites, tags=["Избранное 💖"])
 
 
 @router.post("/", status_code=201, response_model=FavoriteRead)

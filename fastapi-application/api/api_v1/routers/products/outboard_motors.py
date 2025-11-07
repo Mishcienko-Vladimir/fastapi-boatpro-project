@@ -28,7 +28,7 @@ from utils.key_builder import (
 )
 
 
-router = APIRouter(prefix=settings.api.v1.outboard_motors, tags=["Лодочные моторы"])
+router = APIRouter(prefix=settings.api.v1.outboard_motors, tags=["Лодочные моторы 🔧"])
 
 
 @router.post("/", status_code=201, response_model=OutboardMotorRead)

@@ -10,7 +10,7 @@ from core.schemas.user import UserRead, UserCreate
 
 router = APIRouter(
     prefix=settings.api.v1.auth,
-    tags=["Auth"],
+    tags=["Auth 🔐"],
 )
 
 # /login и /logout

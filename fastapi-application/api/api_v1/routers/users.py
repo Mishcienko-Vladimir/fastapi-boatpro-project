@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from core.models.user import SQLAlchemyUserDatabase  # noqa
 
 
-router = APIRouter(prefix=settings.api.v1.users, tags=["Users"])
+router = APIRouter(prefix=settings.api.v1.users, tags=["Users 👥"])
 
 
 @router.get(

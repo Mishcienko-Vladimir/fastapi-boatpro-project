@@ -15,7 +15,7 @@ from core.schemas.user import UserRead
 
 router = APIRouter(
     prefix=settings.api.v1.messages,
-    tags=["Messages"],
+    tags=["Messages ✉️"],
 )
 
 

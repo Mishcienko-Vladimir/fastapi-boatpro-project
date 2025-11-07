@@ -8,7 +8,7 @@ from core.schemas.products import CategoryCreate, CategoryRead, CategoryUpdate
 from core.models import db_helper
 
 
-router = APIRouter(tags=["Каталог"])
+router = APIRouter(tags=["Каталог 📋"])
 
 
 @router.post("/", status_code=201, response_model=CategoryRead)

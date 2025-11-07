@@ -25,7 +25,7 @@ from utils.key_builder import (
 )
 
 
-router = APIRouter(prefix=settings.api.v1.boats, tags=["Катера"])
+router = APIRouter(prefix=settings.api.v1.boats, tags=["Катера 🚢"])
 
 
 @router.post("/", status_code=201, response_model=BoatRead)

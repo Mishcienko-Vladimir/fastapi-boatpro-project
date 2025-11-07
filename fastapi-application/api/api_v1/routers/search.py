@@ -10,7 +10,7 @@ from core.models.products import Product
 from core.schemas.products import ProductBaseModelRead
 
 
-router = APIRouter(prefix=settings.api.v1.search, tags=["Поиск"])
+router = APIRouter(prefix=settings.api.v1.search, tags=["Поиск 🔍"])
 
 
 @router.get("/", response_model=list[ProductBaseModelRead])

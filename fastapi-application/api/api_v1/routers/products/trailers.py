@@ -25,7 +25,7 @@ from utils.key_builder import (
 )
 
 
-router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы"])
+router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы 🚛"])
 
 
 @router.post("/", status_code=201, response_model=TrailerRead)
