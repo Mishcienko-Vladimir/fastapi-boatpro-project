@@ -1,4 +1,5 @@
 import logging
+import os
 
 from typing import Literal
 
@@ -91,7 +92,10 @@ class ApiPrefix(BaseModel):
     v1: ApiV1Prefix = ApiV1Prefix()
 
     cookie_max_age: int = 3600  # время жизни куки в секундах
-    cookie_secure: bool = True  # True - только для HTTPS, False - для HTTP
+
+    # Автоматическое определение на основе переменной окружения (True - только для HTTPS, False - для HTTP)
+    # В Docker (ENVIRONMENT=production uvicorn main:app --host 0.0.0.0 --port 8000)
+    cookie_secure: bool = os.getenv("ENVIRONMENT") == "production"
 
     # Список разрешенных доменов для кросс-доменных запросов (сайты с которых можно отправлять запросы на наш API)
     allowed_origins: list[str] = [
