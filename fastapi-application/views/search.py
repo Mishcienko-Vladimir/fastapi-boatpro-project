@@ -4,9 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.search import search_products
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 
 from utils.templates import templates
 
@@ -21,7 +22,7 @@ router = APIRouter(prefix=settings.view.search)
 )
 async def search(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     query: str,
     user: Optional[User] = Depends(optional_user),
 ):

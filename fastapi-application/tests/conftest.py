@@ -1,3 +1,4 @@
+# Запуск тестов: python -m pytest fastapi-application/tests/ -v
 import pytest
 
 from fastapi import FastAPI
@@ -6,8 +7,8 @@ from typing import AsyncIterator
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
+from core.dependencies import get_db_session
 from core.models import Base
-from core.models.db_helper import db_helper
 from create_fastapi_app import create_app
 
 
@@ -69,7 +70,7 @@ async def client(test_session):
     app: FastAPI = create_app(
         create_custom_static_urls=True, lifespan_override=empty_lifespan
     )
-    app.dependency_overrides[db_helper.session_getter] = override_get_session  # type: ignore
+    app.dependency_overrides[get_db_session] = override_get_session  # type: ignore
 
     async with AsyncClient(
         transport=ASGITransport(app=app),

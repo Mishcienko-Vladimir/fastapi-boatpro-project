@@ -13,9 +13,10 @@ from api.api_v1.routers.products.boats import (
     delete_boat_by_id,
 )
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.schemas.products.boat import BoatUpdate
 
 from utils.templates import templates
@@ -32,7 +33,7 @@ router = APIRouter(prefix=settings.view.boats)
 )
 async def admin_boats(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -57,7 +58,7 @@ async def admin_boats(
 )
 async def admin_delete_boat(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -89,7 +90,7 @@ async def admin_delete_boat(
 )
 async def admin_create_boat(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -162,7 +163,7 @@ async def admin_create_boat(
 )
 async def admin_update_boat(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -237,7 +238,7 @@ async def admin_update_boat(
 )
 async def admin_update_boat_images(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),

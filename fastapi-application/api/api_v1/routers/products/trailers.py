@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.services.products import ProductsService
 
 from core.config import settings
-from core.models import db_helper
+from core.dependencies import get_db_session
 from core.models.products import Trailer
 from core.schemas.products import (
     TrailerRead,
@@ -30,7 +30,7 @@ router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы 🚛"]
 
 @router.post("/", status_code=201, response_model=TrailerRead)
 async def create_trailer(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     category_id: int = Form(
         ...,
         description="ID категории товара",
@@ -124,7 +124,7 @@ async def create_trailer(
     namespace=settings.cache.namespace.trailer,
 )
 async def get_trailer_by_name(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     trailer_name: str,
 ) -> TrailerRead:
     """
@@ -142,7 +142,7 @@ async def get_trailer_by_name(
     namespace=settings.cache.namespace.trailer,
 )
 async def get_trailer_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     trailer_id: int,
 ) -> TrailerRead:
     """
@@ -160,7 +160,7 @@ async def get_trailer_by_id(
     namespace=settings.cache.namespace.trailers_list,
 )
 async def get_trailers(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[TrailerRead]:
     """
     Получение всех прицепов.
@@ -177,7 +177,7 @@ async def get_trailers(
     namespace=settings.cache.namespace.trailers_list,
 )
 async def get_trailers_summary(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[TrailerSummarySchema]:
     """
     Получает краткую информацию о всех прицепах.
@@ -199,7 +199,7 @@ async def get_trailers_summary(
 
 @router.patch("/{trailer_id}", status_code=200, response_model=TrailerRead)
 async def update_trailer_data_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     trailer_id: int,
     trailer_data: TrailerUpdate,
 ) -> TrailerRead:
@@ -219,7 +219,7 @@ async def update_trailer_data_by_id(
 
 @router.patch("/images/{trailer_id}", status_code=200, response_model=TrailerRead)
 async def update_trailer_images_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     trailer_id: int,
     remove_images: str | None = Form(
         None,
@@ -250,7 +250,7 @@ async def update_trailer_images_by_id(
 
 @router.delete("/{trailer_id}", status_code=204)
 async def delete_trailer_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     trailer_id: int,
 ) -> None:
     """

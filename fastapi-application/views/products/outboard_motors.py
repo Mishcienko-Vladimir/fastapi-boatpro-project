@@ -8,9 +8,10 @@ from api.api_v1.routers.products.outboard_motors import (
     get_outboard_motor_by_name,
 )
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 
 from utils.templates import templates
 
@@ -28,7 +29,7 @@ router = APIRouter(
 )
 async def outboard_motors(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Optional[User] = Depends(optional_user),
 ):
     outboard_motors_list = await get_outboard_motors_summary(session=session)
@@ -51,7 +52,7 @@ async def outboard_motors(
 async def outboard_motor_detail(
     request: Request,
     outboard_motor_name: str,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Optional[User] = Depends(optional_user),
 ):
     outboard_motor = await get_outboard_motor_by_name(

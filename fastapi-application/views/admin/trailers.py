@@ -13,9 +13,10 @@ from api.api_v1.routers.products.trailers import (
     delete_trailer_by_id,
 )
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.schemas.products.trailer import TrailerUpdate
 
 from utils.templates import templates
@@ -32,7 +33,7 @@ router = APIRouter(prefix=settings.view.trailers)
 )
 async def admin_trailers(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -57,7 +58,7 @@ async def admin_trailers(
 )
 async def admin_delete_trailer(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -89,7 +90,7 @@ async def admin_delete_trailer(
 )
 async def admin_create_trailer(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -146,7 +147,7 @@ async def admin_create_trailer(
 )
 async def admin_update_trailer(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -211,7 +212,7 @@ async def admin_update_trailer(
 )
 async def admin_update_trailer_images(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),

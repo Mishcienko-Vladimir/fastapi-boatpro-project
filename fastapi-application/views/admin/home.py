@@ -4,9 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.models.products import Product
 from core.schemas.products import ProductBaseModelRead
 
@@ -24,7 +25,7 @@ router = APIRouter(prefix=settings.view.home)
 )
 async def admin_home(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),

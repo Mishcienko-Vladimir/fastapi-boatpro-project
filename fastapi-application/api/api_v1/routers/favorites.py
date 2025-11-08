@@ -10,7 +10,7 @@ from api.api_v1.services.favorites_service import FavoritesService
 from utils.key_builder import universal_list_key_builder
 
 from core.config import settings
-from core.models import db_helper
+from core.dependencies import get_db_session
 from core.schemas.user import UserFavorites
 from core.schemas.favorite import FavoriteCreate, FavoriteRead
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix=settings.api.v1.favorites, tags=["Избранное �
 
 @router.post("/", status_code=201, response_model=FavoriteRead)
 async def add_to_favorites(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     favorite_data: FavoriteCreate,
 ) -> FavoriteRead:
     """
@@ -41,7 +41,7 @@ async def add_to_favorites(
     namespace=settings.cache.namespace.favorites_list,
 )
 async def get_favorites(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user_id: int,
 ) -> UserFavorites:
     """
@@ -53,7 +53,7 @@ async def get_favorites(
 
 @router.delete("/", status_code=204)
 async def delete_favorite_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     favorite_id: int,
 ) -> None:
     """

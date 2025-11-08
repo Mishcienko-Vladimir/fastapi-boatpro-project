@@ -11,7 +11,7 @@ from core.models.base import Base
 from core.types.user_id import UserIdType
 
 if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncSession
+    from sqlalchemy.ext.asyncio import AsyncSession  # noqa
 
 
 class AccessToken(Base, SQLAlchemyBaseAccessTokenTable[UserIdType]):

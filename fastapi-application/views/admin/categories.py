@@ -12,9 +12,10 @@ from api.api_v1.routers.products.categories import (
     delete_category_by_id,
 )
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.schemas.products.category import CategoryUpdate, CategoryCreate
 
 from utils.templates import templates
@@ -31,7 +32,7 @@ router = APIRouter(prefix=settings.view.catalog)
 )
 async def admin_categories(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -56,7 +57,7 @@ async def admin_categories(
 )
 async def admin_create_category(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -96,7 +97,7 @@ async def admin_create_category(
 )
 async def admin_update_category(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -145,7 +146,7 @@ async def admin_update_category(
 )
 async def admin_delete_category(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),

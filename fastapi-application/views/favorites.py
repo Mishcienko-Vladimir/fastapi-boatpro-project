@@ -4,9 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.favorites import get_favorites
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import optional_user
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 
 from utils.templates import templates
 
@@ -23,7 +24,7 @@ router = APIRouter(
 )
 async def favorites(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Optional[User] = Depends(optional_user),
 ):
     if not user:

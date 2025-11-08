@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.services.products import ProductsService
 
 from core.config import settings
-from core.models import db_helper
+from core.dependencies import get_db_session
 from core.models.products import OutboardMotor
 from core.schemas.products import (
     EngineType,
@@ -33,7 +33,7 @@ router = APIRouter(prefix=settings.api.v1.outboard_motors, tags=["Лодочны
 
 @router.post("/", status_code=201, response_model=OutboardMotorRead)
 async def create_outboard_motor(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     category_id: int = Form(
         ...,
         description="ID категории товара",
@@ -146,7 +146,7 @@ async def create_outboard_motor(
     namespace=settings.cache.namespace.outboard_motor,
 )
 async def get_outboard_motor_by_name(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     outboard_motor_name: str,
 ) -> OutboardMotorRead:
     """
@@ -168,7 +168,7 @@ async def get_outboard_motor_by_name(
     namespace=settings.cache.namespace.outboard_motor,
 )
 async def get_outboard_motor_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     outboard_motor_id: int,
 ) -> OutboardMotorRead:
     """
@@ -190,7 +190,7 @@ async def get_outboard_motor_by_id(
     namespace=settings.cache.namespace.outboard_motors_list,
 )
 async def get_outboard_motors(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[OutboardMotorRead]:
     """
     Получение всех лодочных моторов.
@@ -214,7 +214,7 @@ async def get_outboard_motors(
     namespace=settings.cache.namespace.outboard_motors_list,
 )
 async def get_outboard_motors_summary(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[OutboardMotorSummarySchema]:
     """
     Получает краткую информацию о всех лодочных моторов.
@@ -240,7 +240,7 @@ async def get_outboard_motors_summary(
     response_model=OutboardMotorRead,
 )
 async def update_outboard_motor_data_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     outboard_motor_id: int,
     outboard_motor_data: OutboardMotorUpdate,
 ) -> OutboardMotorRead:
@@ -266,7 +266,7 @@ async def update_outboard_motor_data_by_id(
     response_model=OutboardMotorRead,
 )
 async def update_outboard_motor_images_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     outboard_motor_id: int,
     remove_images: str | None = Form(
         None,
@@ -297,7 +297,7 @@ async def update_outboard_motor_images_by_id(
 
 @router.delete("/{outboard_motor_id}", status_code=204)
 async def delete_outboard_motor_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     outboard_motor_id: int,
 ) -> None:
     """

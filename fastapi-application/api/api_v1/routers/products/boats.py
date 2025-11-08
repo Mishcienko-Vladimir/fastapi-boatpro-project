@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.services.products import ProductsService
 
 from core.config import settings
-from core.models import db_helper
+from core.dependencies import get_db_session
 from core.models.products import Boat
 from core.schemas.products import (
     BoatCreate,
@@ -30,7 +30,7 @@ router = APIRouter(prefix=settings.api.v1.boats, tags=["Катера 🚢"])
 
 @router.post("/", status_code=201, response_model=BoatRead)
 async def create_boat(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     category_id: int = Form(
         ...,
         description="ID категории товара",
@@ -180,7 +180,7 @@ async def create_boat(
     namespace=settings.cache.namespace.boat,
 )
 async def get_boat_by_name(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_name: str,
 ) -> BoatRead:
     """
@@ -198,7 +198,7 @@ async def get_boat_by_name(
     namespace=settings.cache.namespace.boat,
 )
 async def get_boat_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_id: int,
 ) -> BoatRead:
     """
@@ -216,7 +216,7 @@ async def get_boat_by_id(
     namespace=settings.cache.namespace.boats_list,
 )
 async def get_boats(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[BoatRead]:
     """
     Получает все катера.
@@ -233,7 +233,7 @@ async def get_boats(
     namespace=settings.cache.namespace.boats_list,
 )
 async def get_boats_summary(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[BoatSummarySchema]:
     """
     Получает краткую информацию о всех катерах.
@@ -255,7 +255,7 @@ async def get_boats_summary(
 
 @router.patch("/{boat_id}", status_code=200, response_model=BoatRead)
 async def update_boat_data_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_id: int,
     boat_data: BoatUpdate,
 ) -> BoatRead:
@@ -275,7 +275,7 @@ async def update_boat_data_by_id(
 
 @router.patch("/images/{trailer_id}", status_code=200, response_model=BoatRead)
 async def update_boat_images_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_id: int,
     remove_images: str | None = Form(
         None,
@@ -306,7 +306,7 @@ async def update_boat_images_by_id(
 
 @router.delete("/{boat_id}", status_code=204)
 async def delete_boat_by_id(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_id: int,
 ) -> None:
     """

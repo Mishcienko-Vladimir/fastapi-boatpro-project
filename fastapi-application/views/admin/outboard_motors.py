@@ -13,9 +13,10 @@ from api.api_v1.routers.products.outboard_motors import (
     delete_outboard_motor_by_id,
 )
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.schemas.products.outboard_motor import (
     EngineType,
     ControlType,
@@ -37,7 +38,7 @@ router = APIRouter(prefix=settings.view.outboard_motors)
 )
 async def admin_outboard_motors(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -62,7 +63,7 @@ async def admin_outboard_motors(
 )
 async def admin_delete_outboard_motor(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -97,7 +98,7 @@ async def admin_delete_outboard_motor(
 )
 async def admin_create_outboard_motor(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -160,7 +161,7 @@ async def admin_create_outboard_motor(
 )
 async def admin_update_outboard_motor(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -228,7 +229,7 @@ async def admin_update_outboard_motor(
 )
 async def admin_update_outboard_motor_images(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),

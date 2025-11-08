@@ -8,10 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.routers.users import get_users_list
 from core.models.user import SQLAlchemyUserDatabase
 
+from core.dependencies import get_db_session
 from core.repositories.authentication.fastapi_users import current_active_superuser
 from core.repositories.user_manager_crud import UserManagerCrud
 from core.config import settings
-from core.models import User, db_helper
+from core.models import User
 from core.schemas.user import UserRead
 
 from utils.templates import templates
@@ -28,7 +29,7 @@ router = APIRouter(prefix=settings.view.users)
 )
 async def admin_users(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
@@ -73,7 +74,7 @@ async def admin_users(
 )
 async def admin_delete_user(
     request: Request,
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[
         User,
         Depends(current_active_superuser),
