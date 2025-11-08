@@ -5,7 +5,12 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from httpx import AsyncClient, ASGITransport
+
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from api import router as api_router
+from views import router as views_router
 
 from core.dependencies import get_db_session
 from core.models import Base
@@ -29,7 +34,11 @@ async def test_engine():
     """
     Создает тестовую БД и мигрирует модели в нее.
     """
-    engine = create_async_engine(TEST_DATABASE_URL, echo=False)
+    engine = create_async_engine(
+        TEST_DATABASE_URL,
+        echo=False,
+        poolclass=StaticPool,
+    )
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield engine
@@ -45,6 +54,8 @@ async def test_session(test_engine):
     async_session = async_sessionmaker(
         bind=test_engine,
         expire_on_commit=False,
+        autoflush=False,
+        autocommit=False,
     )
     async with async_session() as session:
         yield session
@@ -55,6 +66,21 @@ async def test_session(test_engine):
 async def empty_lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Пустой lifespan для тестов."""
     yield
+
+
+@pytest.fixture(autouse=True)
+def disable_fastapi_cache(monkeypatch):
+    """
+    Заглушка для FastAPICache — отключает инициализацию и очистку кэша.
+    """
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.init",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.clear",
+        lambda *args, **kwargs: None,
+    )
 
 
 @pytest.fixture(scope="function")
@@ -70,6 +96,8 @@ async def client(test_session):
     app: FastAPI = create_app(
         create_custom_static_urls=True, lifespan_override=empty_lifespan
     )
+    app.include_router(api_router)
+    app.include_router(views_router)
     app.dependency_overrides[get_db_session] = override_get_session  # type: ignore
 
     async with AsyncClient(
