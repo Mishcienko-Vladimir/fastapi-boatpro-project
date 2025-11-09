@@ -2,6 +2,9 @@
 import pytest
 
 from fastapi import FastAPI
+from fastapi_cache.coder import JsonCoder
+from fastapi_cache.backends.inmemory import InMemoryBackend
+
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from httpx import AsyncClient, ASGITransport
@@ -71,8 +74,12 @@ async def empty_lifespan(app: FastAPI) -> AsyncIterator[None]:
 @pytest.fixture(autouse=True)
 def disable_fastapi_cache(monkeypatch):
     """
-    Заглушка для FastAPICache — отключает инициализацию и очистку кэша.
+    Полностью отключает FastAPICache в тестах.
     """
+    # Заглушка для backend
+    backend = InMemoryBackend()
+
+    # Заглушка init и clear
     monkeypatch.setattr(
         "fastapi_cache.FastAPICache.init",
         lambda *args, **kwargs: None,
@@ -80,6 +87,30 @@ def disable_fastapi_cache(monkeypatch):
     monkeypatch.setattr(
         "fastapi_cache.FastAPICache.clear",
         lambda *args, **kwargs: None,
+    )
+
+    # Заглушка методов, которые проверяют инициализацию
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.get_prefix",
+        lambda: "test-prefix",
+    )
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.get_coder",
+        lambda: JsonCoder,
+    )
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.get_backend",
+        lambda: backend,
+    )
+    monkeypatch.setattr(
+        "fastapi_cache.FastAPICache.get_cache_status_header",
+        lambda: "X-Cache-Status",
+    )
+
+    # Отключение декоратор @cache
+    monkeypatch.setattr(
+        "fastapi_cache.decorator.cache",
+        lambda *args, **kwargs: lambda f: f,
     )
 
 
