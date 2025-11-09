@@ -9,11 +9,11 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from api import router as api_router
-from views import router as views_router
-
 from core.dependencies import get_db_session
 from core.models import Base
+
+from api import router as api_router
+from views import router as views_router
 from create_fastapi_app import create_app
 
 
@@ -94,7 +94,9 @@ async def client(test_session):
         return test_session
 
     app: FastAPI = create_app(
-        create_custom_static_urls=True, lifespan_override=empty_lifespan
+        create_custom_static_urls=True,
+        lifespan_override=empty_lifespan,
+        enable_rate_limit=False,
     )
     app.include_router(api_router)
     app.include_router(views_router)
