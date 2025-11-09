@@ -81,6 +81,7 @@ def register_static_docs_routes(app: FastAPI):
 def create_app(
     create_custom_static_urls: bool = False,
     lifespan_override=None,
+    enable_rate_limit: bool = True,
 ) -> FastAPI:
     """Создание FastAPI приложения."""
 
@@ -93,9 +94,10 @@ def create_app(
     )
 
     # Защита от спама (bruteforce).
-    app.state.limiter = limiter  # type: ignore
-    app.add_middleware(SlowAPIMiddleware)
-    app.add_middleware(CustomRateLimitMiddleware)
+    if enable_rate_limit:
+        app.state.limiter = limiter  # type: ignore
+        app.add_middleware(SlowAPIMiddleware)
+        app.add_middleware(CustomRateLimitMiddleware)
 
     # Установка безопасности HTTP-заголовков.
     app.add_middleware(SecurityHeadersMiddleware)
