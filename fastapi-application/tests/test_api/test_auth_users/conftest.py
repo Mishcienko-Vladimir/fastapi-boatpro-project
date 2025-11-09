@@ -12,8 +12,14 @@ faker = Faker()
 
 @pytest.fixture(scope="module")
 def prefix_auth():
-    """Базовый префикс для всех auth-роутеров."""
+    """Префикс для всех auth-роутеров."""
     return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.auth}"
+
+
+@pytest.fixture(scope="module")
+def prefix_users():
+    """Префикс для users-роутеров."""
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.users}"
 
 
 @pytest.fixture(scope="function")
