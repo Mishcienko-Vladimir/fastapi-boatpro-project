@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from faker import Faker
 
 from core.config import settings
+from utils.limiter import limiter
 
 
 faker = Faker()
@@ -59,3 +60,11 @@ async def logged_in_client(
     assert response.status_code == 204
     assert "fastapiusersauth" in response.cookies
     return client
+
+
+@pytest.fixture(autouse=True)
+def reset_limiter():
+    """Сбрасывает счётчики лимитов перед каждым тестом."""
+    limiter.reset()
+    yield
+    limiter.reset()
