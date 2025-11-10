@@ -273,7 +273,7 @@ async def update_boat_data_by_id(
     return BoatRead.model_validate(boat)
 
 
-@router.patch("/images/{trailer_id}", status_code=200, response_model=BoatRead)
+@router.patch("/images/{boat_id}", status_code=200, response_model=BoatRead)
 async def update_boat_images_by_id(
     session: Annotated[AsyncSession, Depends(get_db_session)],
     boat_id: int,
