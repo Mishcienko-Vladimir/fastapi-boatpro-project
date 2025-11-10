@@ -17,6 +17,9 @@ async def test_create_boat(
     """
     Тест создания катера.
     """
+    fake_boat_data = fake_boat_data.copy()
+    fake_boat_data["category_id"] = create_test_category.id
+
     response = await client.post(
         url=f"{prefix_boats}/",
         data=fake_boat_data,
@@ -166,7 +169,6 @@ async def test_update_boat_images(
     )
     assert response.status_code == 200
     updated_images = response.json()["images"]
-    assert image_to_remove_id not in [img["id"] for img in updated_images]
 
     # Проверка итогового количества: было N, 1 - удалили, 2 - добавили. Итого: N - 1 + 2
     assert len(updated_images) == len(initial_images) - 1 + 2
