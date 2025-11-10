@@ -35,6 +35,12 @@ def prefix_categories():
     return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}"
 
 
+@pytest.fixture(scope="module")
+def prefix_search():
+    """Префикс для категорий."""
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.search}/"
+
+
 @pytest.fixture(scope="function")
 def fake_images():
     """
