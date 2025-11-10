@@ -1,5 +1,6 @@
 # Запуск тестов: python -m pytest fastapi-application/tests/ -v
 import pytest
+import shutil
 
 from fastapi import FastAPI
 from fastapi_cache.coder import JsonCoder
@@ -8,12 +9,14 @@ from fastapi_cache.backends.inmemory import InMemoryBackend
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from httpx import AsyncClient, ASGITransport
+from pathlib import Path
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from core.dependencies import get_db_session
 from core.models import Base
+from core.config import settings, BASE_DIR
 
 from api import router as api_router
 from views import router as views_router
@@ -63,6 +66,34 @@ async def test_session(test_engine):
     async with async_session() as session:
         yield session
         await session.rollback()
+
+
+@pytest.fixture(autouse=True)
+def mock_image_upload_dir(monkeypatch):
+    """
+    Подменяет computed field в image_upload_dir на тестовый путь.
+    Во время тестов создается тестовая папка для изображений. В конце теста она удаляется.
+    """
+    test_images_path = Path(BASE_DIR / "static" / "test_images")
+    if test_images_path.exists():
+        shutil.rmtree(test_images_path)
+    test_images_path.mkdir(exist_ok=True)
+
+    test_config = {
+        "base_dir": str(BASE_DIR) + "\\",
+        "path": str(test_images_path),
+        "url": "/static/test_images",
+    }
+
+    with monkeypatch.context() as m:
+        m.setattr(
+            settings.image_upload_dir.__class__,
+            "image_upload_dir",
+            property(lambda self: test_config),
+        )
+        yield
+    if test_images_path.exists():
+        shutil.rmtree(test_images_path)
 
 
 @asynccontextmanager
