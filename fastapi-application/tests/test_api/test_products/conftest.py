@@ -53,7 +53,6 @@ def fake_images():
 def fake_boat_data():
     """Создаёт тестовые данные для катера."""
     return {
-        "category_id": 1,
         "name": faker.word().title(),
         "price": faker.random_int(10000, 1000000),
         "company_name": faker.company(),
@@ -80,7 +79,6 @@ def fake_boat_data():
 def fake_outboard_motor_data():
     """Создаёт тестовые данные для мотора."""
     return {
-        "category_id": 1,
         "name": f"Motor {faker.word()}",
         "price": faker.random_int(10000, 3000000),
         "company_name": faker.company(),
@@ -100,7 +98,6 @@ def fake_outboard_motor_data():
 def fake_trailer_data():
     """Создаёт тестовые данные для прицепа."""
     return {
-        "category_id": 1,
         "name": f"Trailer {faker.word()}",
         "price": faker.random_int(30000, 300000),
         "company_name": faker.company(),
@@ -146,6 +143,9 @@ async def create_test_boat(
     """
     Создаёт тестовый катер через API.
     """
+    fake_boat_data = fake_boat_data.copy()
+    fake_boat_data["category_id"] = create_test_category.id
+
     response = await client.post(
         url=f"{prefix_boats}/",
         data=fake_boat_data,
@@ -166,6 +166,9 @@ async def create_test_outboard_motor(
     """
     Создаёт тестовый лодочный мотор через API.
     """
+    fake_outboard_motor_data = fake_outboard_motor_data.copy()
+    fake_outboard_motor_data["category_id"] = create_test_category.id
+
     response = await client.post(
         url=f"{prefix_outboard_motors}/",
         data=fake_outboard_motor_data,
@@ -186,6 +189,9 @@ async def create_test_trailer(
     """
     Создаёт тестовый прицеп через API.
     """
+    fake_trailer_data = fake_trailer_data.copy()
+    fake_trailer_data["category_id"] = create_test_category.id
+
     response = await client.post(
         url=f"{prefix_trailers}/",
         data=fake_trailer_data,
