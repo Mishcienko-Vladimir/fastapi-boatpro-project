@@ -32,7 +32,7 @@ def prefix_trailers():
 @pytest.fixture(scope="module")
 def prefix_categories():
     """Префикс для категорий."""
-    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}/categories"
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}"
 
 
 @pytest.fixture(scope="function")
