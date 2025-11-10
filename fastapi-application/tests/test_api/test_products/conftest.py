@@ -14,19 +14,19 @@ faker = Faker()
 @pytest.fixture(scope="module")
 def prefix_boats():
     """Префикс для катеров."""
-    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.boats}"
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}{settings.api.v1.boats}"
 
 
 @pytest.fixture(scope="module")
 def prefix_outboard_motors():
     """Префикс для лодочных моторов."""
-    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.outboard_motors}"
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}{settings.api.v1.outboard_motors}"
 
 
 @pytest.fixture(scope="module")
 def prefix_trailers():
     """Префикс для прицепов."""
-    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.trailers}"
+    return f"{settings.api.prefix}{settings.api.v1.prefix}{settings.api.v1.products}{settings.api.v1.trailers}"
 
 
 @pytest.fixture(scope="module")
@@ -115,9 +115,9 @@ def fake_trailer_data():
 
 @pytest.fixture(scope="function")
 def fake_category_data():
-    """Создаёт тестовые данные для категории."""
+    """Создаёт тестовые данные для категории с уникальным именем."""
     return {
-        "name": f"Category {faker.word()}",
+        "name": f"Category {faker.unique.word()}",
         "description": faker.text(),
     }
 
@@ -147,7 +147,7 @@ async def create_test_boat(
     Создаёт тестовый катер через API.
     """
     response = await client.post(
-        url=prefix_boats,
+        url=f"{prefix_boats}/",
         data=fake_boat_data,
         files=fake_images,
     )
@@ -167,7 +167,7 @@ async def create_test_outboard_motor(
     Создаёт тестовый лодочный мотор через API.
     """
     response = await client.post(
-        url=prefix_outboard_motors,
+        url=f"{prefix_outboard_motors}/",
         data=fake_outboard_motor_data,
         files=fake_images,
     )
@@ -187,7 +187,7 @@ async def create_test_trailer(
     Создаёт тестовый прицеп через API.
     """
     response = await client.post(
-        url=prefix_trailers,
+        url=f"{prefix_trailers}/",
         data=fake_trailer_data,
         files=fake_images,
     )
