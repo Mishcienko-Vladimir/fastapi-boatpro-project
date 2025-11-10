@@ -4,7 +4,7 @@ import os
 from typing import Literal
 
 from pathlib import Path
-from pydantic import BaseModel, PostgresDsn
+from pydantic import BaseModel, PostgresDsn, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -148,11 +148,17 @@ class AdminConfig(BaseModel):
 class PathImageUploadDir(BaseModel):
     """Путь до папки с изображениями"""
 
+    # computed_field - нужен что бы при тестах задать путь до папки с изображениями.
     # Путь до Sources root: ....\BoatPro\fastapi-application\static\images
-    path: Path = BASE_DIR / "static" / "images"
-
-    # Путь до Sources root: ....\BoatPro\fastapi-application\
-    base_dir: Path = BASE_DIR
+    @computed_field
+    @property
+    def image_upload_dir(self) -> dict:
+        path = BASE_DIR / "static" / "images"
+        return {
+            "base_dir": str(BASE_DIR) + "\\",
+            "path": str(path),
+            "url": "/static/images",
+        }
 
 
 class AccessToken(BaseModel):
