@@ -79,6 +79,10 @@ def disable_fastapi_cache(monkeypatch):
     # Заглушка для backend
     backend = InMemoryBackend()
 
+    async def async_noop(*args, **kwargs):
+        """Асинхронная заглушка."""
+        pass
+
     # Заглушка init и clear
     monkeypatch.setattr(
         "fastapi_cache.FastAPICache.init",
@@ -86,7 +90,7 @@ def disable_fastapi_cache(monkeypatch):
     )
     monkeypatch.setattr(
         "fastapi_cache.FastAPICache.clear",
-        lambda *args, **kwargs: None,
+        async_noop,
     )
 
     # Заглушка методов, которые проверяют инициализацию
