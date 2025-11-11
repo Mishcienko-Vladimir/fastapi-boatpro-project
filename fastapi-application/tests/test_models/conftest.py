@@ -1,5 +1,6 @@
 import pytest
 
+from typing import Any
 from faker import Faker
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +12,7 @@ faker = Faker()
 
 
 @pytest.fixture(scope="function")
-def fake_user_data():
+def fake_user_data() -> dict[str, Any]:
     """Генерация тестовых данных пользователя."""
     return {
         "email": faker.email(),
@@ -25,8 +26,8 @@ def fake_user_data():
 @pytest.fixture(scope="function")
 async def test_user(
     test_session: AsyncSession,
-    fake_user_data,
-):
+    fake_user_data: dict[str, Any],
+) -> User:
     """Создаёт тестового пользователя в БД."""
     user = User(**fake_user_data)
     test_session.add(user)
@@ -38,7 +39,7 @@ async def test_user(
 @pytest.fixture(scope="function")
 async def test_category(
     test_session: AsyncSession,
-):
+) -> Category:
     """Создаёт тестовую категорию."""
     category = Category(
         name=f"Category {faker.word()}",
@@ -54,13 +55,14 @@ async def test_category(
 async def test_product(
     test_session: AsyncSession,
     test_category: Category,
-):
+) -> Product:
     """Создаёт тестовый товар."""
     product = Product(
         name=f"Product {faker.word()}",
         price=faker.random_int(10000, 1000000),
         company_name=faker.company(),
         category_id=test_category.id,
+        description=faker.text(),
     )
     test_session.add(product)
     await test_session.commit()
