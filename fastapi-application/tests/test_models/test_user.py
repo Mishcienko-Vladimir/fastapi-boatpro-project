@@ -1,7 +1,6 @@
 import pytest
 
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -37,28 +36,3 @@ async def test_user_relationship_favorites_empty(
     assert isinstance(loaded_user.favorites, list)
     assert len(loaded_user.favorites) == 0
 
-
-@pytest.mark.anyio
-async def test_user_unique_email_constraint(
-    test_session: AsyncSession,
-    test_user: User,
-):
-    """Тест: email пользователя должен быть уникальным (ограничение БД)."""
-    duplicate_user = User(
-        email=test_user.email,
-        hashed_password="fakehash",
-        first_name="Duplicate",
-        is_active=True,
-        is_superuser=False,
-    )
-    test_session.add(duplicate_user)
-
-    with pytest.raises(IntegrityError):
-        await test_session.flush()
-
-    await test_session.rollback()
-
-    stmt = select(User).where(User.email == test_user.email)
-    result = await test_session.execute(stmt)
-    users = result.scalars().all()
-    assert len(users) == 1

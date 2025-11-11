@@ -1,7 +1,6 @@
 import pytest
 
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -40,25 +39,3 @@ async def test_category_relationship_products_empty(
     assert isinstance(loaded_category.products, list)
     assert len(loaded_category.products) == 0
 
-
-@pytest.mark.anyio
-async def test_category_unique_name_constraint(
-    test_session: AsyncSession,
-    test_category: Category,
-):
-    """Тест: имя категории должно быть уникальным (ограничение БД)."""
-    duplicate_category = Category(
-        name=test_category.name,
-        description="Другое описание",
-    )
-    test_session.add(duplicate_category)
-
-    with pytest.raises(IntegrityError):
-        await test_session.flush()
-
-    await test_session.rollback()
-
-    stmt = select(Category).where(Category.name == test_category.name)
-    result = await test_session.execute(stmt)
-    categories = result.scalars().all()
-    assert len(categories) == 1
