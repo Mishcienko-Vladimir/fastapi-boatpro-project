@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -120,7 +121,7 @@ def fake_trailer_data():
 def fake_category_data():
     """Создаёт тестовые данные для категории с уникальным именем."""
     return {
-        "name": f"Category {faker.unique.word()}",
+        "name": f"Category {uuid.uuid4().hex[:8]}",
         "description": faker.text(),
     }
 
