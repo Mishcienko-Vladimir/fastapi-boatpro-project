@@ -60,7 +60,7 @@ def fake_images():
 def fake_boat_data():
     """Создаёт тестовые данные для катера."""
     return {
-        "name": faker.word().title(),
+        "name": uuid.uuid4().hex[:8],
         "price": faker.random_int(10000, 1000000),
         "company_name": faker.company()[:100],
         "description": faker.text(),
@@ -86,7 +86,7 @@ def fake_boat_data():
 def fake_outboard_motor_data():
     """Создаёт тестовые данные для мотора."""
     return {
-        "name": f"Motor {faker.word()}",
+        "name": f"Motor {uuid.uuid4().hex[:8]}",
         "price": faker.random_int(10000, 3000000),
         "company_name": faker.company()[:100],
         "description": faker.text(),
@@ -105,7 +105,7 @@ def fake_outboard_motor_data():
 def fake_trailer_data():
     """Создаёт тестовые данные для прицепа."""
     return {
-        "name": f"Trailer {faker.word()}",
+        "name": f"Trailer {uuid.uuid4().hex[:8]}",
         "price": faker.random_int(30000, 300000),
         "company_name": faker.company()[:100],
         "description": faker.text(),

@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from typing import Any
 from faker import Faker
@@ -42,7 +43,7 @@ async def test_category(
 ) -> Category:
     """Создаёт тестовую категорию."""
     category = Category(
-        name=f"Category {faker.word()}",
+        name=f"Category {uuid.uuid4().hex[:8]}",
         description=faker.text(),
     )
     test_session.add(category)
@@ -58,7 +59,7 @@ async def test_product(
 ) -> Product:
     """Создаёт тестовый товар."""
     product = Product(
-        name=f"Product {faker.word()}",
+        name=f"Product {uuid.uuid4().hex[:8]}",
         price=faker.random_int(10000, 1000000),
         company_name=faker.company(),
         category_id=test_category.id,

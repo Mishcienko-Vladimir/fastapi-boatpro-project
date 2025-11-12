@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,7 +35,9 @@ async def create_test_user(session):
 
 async def create_test_category(session):
     """Создание тестовой категории."""
-    category = Category(name=f"Category {faker.word()}", description=faker.text())
+    category = Category(
+        name=f"Category {uuid.uuid4().hex[:8]}", description=faker.text()
+    )
     session.add(category)
     await session.commit()
     await session.refresh(category)
@@ -44,7 +47,7 @@ async def create_test_category(session):
 async def create_test_product(session, category_id):
     """Создание тестового продукта."""
     product = Product(
-        name=f"Favorite {faker.word()}",
+        name=f"Favorite {uuid.uuid4().hex[:8]}",
         price=faker.random_int(50000, 2000000),
         company_name=faker.company(),
         description=faker.text(),
