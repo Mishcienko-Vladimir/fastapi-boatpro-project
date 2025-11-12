@@ -34,6 +34,26 @@ class ProductBaseModel(BaseSchemaModel):
     )
 
 
+class ProductBaseModelCreate(ProductBaseModel):
+    """Базовая модель для создания товаров."""
+
+    category_id: int = Field(
+        description="ID категории товара",
+    )
+
+
+class ProductBaseModelUpdate(ProductBaseModel):
+    """
+    Базовая модель для обновления товаров.
+    """
+
+    name: Optional[str] = None
+    price: Optional[int] = None
+    company_name: Optional[str] = None
+    description: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
 class ProductBaseModelRead(ProductBaseModel):
     """
     Базовая модель для чтения товаров.
