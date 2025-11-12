@@ -1,5 +1,7 @@
 __all__ = (
     "ProductBaseModel",
+    "ProductBaseModelCreate",
+    "ProductBaseModelUpdate",
     "ProductBaseModelRead",
     "CategoryCreate",
     "CategoryUpdate",
@@ -27,7 +29,12 @@ __all__ = (
     "ImagePathRead",
 )
 
-from .product_base_model import ProductBaseModel, ProductBaseModelRead
+from .product_base_model import (
+    ProductBaseModel,
+    ProductBaseModelCreate,
+    ProductBaseModelUpdate,
+    ProductBaseModelRead,
+)
 from .category import (
     CategoryCreate,
     CategoryUpdate,
