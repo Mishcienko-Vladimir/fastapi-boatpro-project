@@ -62,7 +62,7 @@ def fake_boat_data():
     return {
         "name": faker.word().title(),
         "price": faker.random_int(10000, 1000000),
-        "company_name": faker.company(),
+        "company_name": faker.company()[:100],
         "description": faker.text(),
         "is_active": True,
         "length_hull": faker.random_int(300, 1000),
@@ -88,7 +88,7 @@ def fake_outboard_motor_data():
     return {
         "name": f"Motor {faker.word()}",
         "price": faker.random_int(10000, 3000000),
-        "company_name": faker.company(),
+        "company_name": faker.company()[:100],
         "description": faker.text(),
         "is_active": True,
         "engine_power": faker.random_int(5, 200),
@@ -107,7 +107,7 @@ def fake_trailer_data():
     return {
         "name": f"Trailer {faker.word()}",
         "price": faker.random_int(30000, 300000),
-        "company_name": faker.company(),
+        "company_name": faker.company()[:100],
         "description": faker.text(),
         "is_active": True,
         "full_mass": faker.random_int(500, 2000),
