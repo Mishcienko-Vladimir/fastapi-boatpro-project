@@ -55,9 +55,9 @@ async def admin_users(
     )
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/users.html",
         context={
-            "request": request,
             "user": user,
             "users_list": users_list,
             "number_verified": number_verified,
@@ -94,9 +94,9 @@ async def admin_delete_user(
     number_superuser = sum(1 for u in users_list if u.is_superuser)
 
     return templates.TemplateResponse(
-        "admin/users.html",
-        {
-            "request": request,
+        request=request,
+        name="admin/users.html",
+        context={
             "user": user,
             "users_list": users_list,
             "number_verified": number_verified,

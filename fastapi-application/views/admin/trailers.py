@@ -41,9 +41,9 @@ async def admin_trailers(
 ):
     trailers_list = await get_trailers(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="admin/trailers.html",
         context={
-            "request": request,
             "user": user,
             "trailers_list": trailers_list,
         },
@@ -72,9 +72,9 @@ async def admin_delete_trailer(
         message = exc.detail
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/trailers.html",
         context={
-            "request": request,
             "user": user,
             "trailers_list": await get_trailers(session=session),
             "message": message,
@@ -129,9 +129,9 @@ async def admin_create_trailer(
         message = f"Ошибка при создании прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/trailers.html",
         context={
-            "request": request,
             "user": user,
             "trailers_list": await get_trailers(session=session),
             "message": message,
@@ -194,9 +194,9 @@ async def admin_update_trailer(
         message = f"Ошибка при обновлении прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/trailers.html",
         context={
-            "request": request,
             "user": user,
             "trailers_list": await get_trailers(session=session),
             "message": message,
@@ -235,9 +235,9 @@ async def admin_update_trailer_images(
         message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/trailers.html",
         context={
-            "request": request,
             "user": user,
             "trailers_list": await get_trailers(session=session),
             "message": message,

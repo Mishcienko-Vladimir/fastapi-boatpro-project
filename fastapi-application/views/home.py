@@ -25,9 +25,9 @@ def home(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
+        request=request,
         name="index.html",
         context={
-            "request": request,
             "user": user,
         },
     )

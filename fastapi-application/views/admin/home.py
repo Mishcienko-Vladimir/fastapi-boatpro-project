@@ -32,7 +32,8 @@ async def admin_home(
     ],
 ):
     all_products = await ProductsService(
-        session=session, product_db=Product
+        session=session,
+        product_db=Product,
     ).get_products()
     products_list = [
         ProductBaseModelRead.model_validate(product) for product in all_products
@@ -47,9 +48,9 @@ async def admin_home(
         1 for trailer in products_list if trailer.type_product == "trailer"
     )
     return templates.TemplateResponse(
+        request=request,
         name="admin/home.html",
         context={
-            "request": request,
             "user": user,
             "products_list": products_list,
             "number_boats": number_boats,

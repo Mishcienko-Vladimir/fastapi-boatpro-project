@@ -34,9 +34,9 @@ async def trailers(
 ):
     trailers_list = await get_trailers_summary(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="products/trailers.html",
         context={
-            "request": request,
             "trailers_list": trailers_list,
             "user": user,
         },
@@ -57,9 +57,9 @@ async def trailer_detail(
 ):
     trailer = await get_trailer_by_name(session=session, trailer_name=trailer_name)
     return templates.TemplateResponse(
+        request=request,
         name="products/trailer-detail.html",
         context={
-            "request": request,
             "trailer": trailer,
             "user": user,
         },

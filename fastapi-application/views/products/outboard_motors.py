@@ -34,9 +34,9 @@ async def outboard_motors(
 ):
     outboard_motors_list = await get_outboard_motors_summary(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="products/outboard-motors.html",
         context={
-            "request": request,
             "outboard_motors_list": outboard_motors_list,
             "user": user,
         },
@@ -59,9 +59,9 @@ async def outboard_motor_detail(
         session=session, outboard_motor_name=outboard_motor_name
     )
     return templates.TemplateResponse(
+        request=request,
         name="products/outboard-motor-detail.html",
         context={
-            "request": request,
             "outboard_motor": outboard_motor,
             "user": user,
         },

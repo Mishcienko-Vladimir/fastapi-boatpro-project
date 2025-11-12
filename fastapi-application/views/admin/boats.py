@@ -41,9 +41,9 @@ async def admin_boats(
 ):
     boats_list = await get_boats(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="admin/boats.html",
         context={
-            "request": request,
             "user": user,
             "boats_list": boats_list,
         },
@@ -72,9 +72,9 @@ async def admin_delete_boat(
         message = exc.detail
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/boats.html",
         context={
-            "request": request,
             "user": user,
             "boats_list": await get_boats(session=session),
             "message": message,
@@ -145,9 +145,9 @@ async def admin_create_boat(
         message = f"Ошибка при создании катера: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/boats.html",
         context={
-            "request": request,
             "user": user,
             "boats_list": await get_boats(session=session),
             "message": message,
@@ -220,9 +220,9 @@ async def admin_update_boat(
         message = f"Ошибка при обновлении катера: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/boats.html",
         context={
-            "request": request,
             "user": user,
             "boats_list": await get_boats(session=session),
             "message": message,
@@ -261,9 +261,9 @@ async def admin_update_boat_images(
         message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/boats.html",
         context={
-            "request": request,
             "user": user,
             "boats_list": await get_boats(session=session),
             "message": message,

@@ -24,9 +24,9 @@ def change_password(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
+        request=request,
         name="auth/forgot-password.html",
         context={
-            "request": request,
             "user": user,
         },
     )

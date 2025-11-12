@@ -40,9 +40,9 @@ async def admin_categories(
 ):
     categories_list = await get_categories(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="admin/categories.html",
         context={
-            "request": request,
             "user": user,
             "categories_list": categories_list,
         },
@@ -79,9 +79,9 @@ async def admin_create_category(
         message = f"Ошибка при создании категории: {str(e)}"
 
     return templates.TemplateResponse(
-        "admin/categories.html",
-        {
-            "request": request,
+        request=request,
+        name="admin/categories.html",
+        context={
             "user": user,
             "categories_list": await get_categories(session=session),
             "message": message,
@@ -128,9 +128,9 @@ async def admin_update_category(
         message = f"Ошибка при обновлении категории: {str(exc)}"
 
     return templates.TemplateResponse(
-        "admin/categories.html",
-        {
-            "request": request,
+        request=request,
+        name="admin/categories.html",
+        context={
             "user": user,
             "categories_list": await get_categories(session=session),
             "message": message,
@@ -160,9 +160,9 @@ async def admin_delete_category(
         message = f"Ошибка при удалении категории: {str(exc)}"
 
     return templates.TemplateResponse(
-        "admin/categories.html",
-        {
-            "request": request,
+        request=request,
+        name="admin/categories.html",
+        context={
             "user": user,
             "categories_list": await get_categories(session=session),
             "message": message,

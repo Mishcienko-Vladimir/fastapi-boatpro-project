@@ -28,9 +28,9 @@ async def search(
 ):
     products_list = await search_products(session=session, query=query)
     return templates.TemplateResponse(
+        request=request,
         name="search.html",
         context={
-            "request": request,
             "user": user,
             "products_list": products_list,
             "query": query,

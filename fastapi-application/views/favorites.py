@@ -29,18 +29,18 @@ async def favorites(
 ):
     if not user:
         return templates.TemplateResponse(
+            request=request,
             name="favorites_and_orders/please-log.html",
             context={
-                "request": request,
                 "user": user,
             },
         )
 
     favorites_list = await get_favorites(session=session, user_id=user.id)
     return templates.TemplateResponse(
+        request=request,
         name="favorites_and_orders/favorites.html",
         context={
-            "request": request,
             "user": user,
             "favorites_list": favorites_list,
         },

@@ -46,9 +46,9 @@ async def admin_outboard_motors(
 ):
     outboard_motors_list = await get_outboard_motors(session=session)
     return templates.TemplateResponse(
+        request=request,
         name="admin/outboard-motors.html",
         context={
-            "request": request,
             "user": user,
             "outboard_motors_list": outboard_motors_list,
         },
@@ -80,9 +80,9 @@ async def admin_delete_outboard_motor(
         message = exc.detail
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/outboard-motors.html",
         context={
-            "request": request,
             "user": user,
             "outboard_motors_list": await get_outboard_motors(session=session),
             "message": message,
@@ -143,9 +143,9 @@ async def admin_create_outboard_motor(
         message = f"Ошибка при создании прицепа: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/outboard-motors.html",
         context={
-            "request": request,
             "user": user,
             "outboard_motors_list": await get_outboard_motors(session=session),
             "message": message,
@@ -211,9 +211,9 @@ async def admin_update_outboard_motor(
         message = f"Ошибка при обновлении лодочного мотора: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/outboard-motors.html",
         context={
-            "request": request,
             "user": user,
             "outboard_motors_list": await get_outboard_motors(session=session),
             "message": message,
@@ -254,9 +254,9 @@ async def admin_update_outboard_motor_images(
         message = f"Ошибка при обновлении фото: {str(exc)}"
 
     return templates.TemplateResponse(
+        request=request,
         name="admin/outboard-motors.html",
         context={
-            "request": request,
             "user": user,
             "outboard_motors_list": await get_outboard_motors(session=session),
             "message": message,

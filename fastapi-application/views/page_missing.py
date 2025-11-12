@@ -25,9 +25,9 @@ def page_missing(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
+        request=request,
         name="page-missing.html",
         context={
-            "request": request,
             "user": user,
         },
     )

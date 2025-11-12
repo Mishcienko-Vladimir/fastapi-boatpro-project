@@ -27,9 +27,9 @@ def limit_exceeded(
     user: Optional[User] = Depends(optional_user),
 ):
     return templates.TemplateResponse(
+        request=request,
         name="limit-exceeded.html",
         context={
-            "request": request,
             "user": user,
         },
     )
