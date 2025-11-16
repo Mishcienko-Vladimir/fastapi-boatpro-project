@@ -4,12 +4,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.models.products import ImagePath, Product
+from core.models.products import ImagePath
 
 
 @pytest.mark.anyio
 async def test_image_path_creation(test_session: AsyncSession):
-    """Тест создания пути к изображению."""
+    """
+    Тест создания пути к изображению.
+    """
     image = ImagePath(path="/static/images/test_image.jpg")
     test_session.add(image)
     await test_session.commit()
@@ -24,7 +26,9 @@ async def test_image_path_creation(test_session: AsyncSession):
 async def test_image_path_relationship_products_empty(
     test_session: AsyncSession,
 ):
-    """Тест: у нового изображения нет привязанных товаров."""
+    """
+    Тест, что у нового изображения нет привязанных товаров.
+    """
     image = ImagePath(path="/static/images/empty.jpg")
     test_session.add(image)
     await test_session.commit()
@@ -45,7 +49,9 @@ async def test_image_path_relationship_products_empty(
 
 @pytest.mark.anyio
 async def test_image_path_str_repr():
-    """Тест строкового представления ImagePath."""
+    """
+    Тест строкового представления ImagePath.
+    """
     image = ImagePath(id=1, path="/static/images/demo.jpg")
     result = str(image)
 
