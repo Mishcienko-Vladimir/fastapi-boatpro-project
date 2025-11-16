@@ -12,9 +12,9 @@ async def test_get_all_users(
     test_user: User,
 ):
     """
-    Тест получения всех пользователей.
+    Тест получения всех пользователей, через репозиторий.
     """
-    repo = UserManagerCrud(test_session)
+    repo = UserManagerCrud(session=test_session)
     users = await repo.get_all_users()
 
     assert len(users) >= 1
@@ -27,10 +27,10 @@ async def test_get_user_by_id(
     test_user: User,
 ):
     """
-    Тест получения пользователя по ID.
+    Тест получения пользователя по ID, через репозиторий.
     """
-    repo = UserManagerCrud(test_session)
-    user = await repo.get_user_by_id(test_user.id)
+    repo = UserManagerCrud(session=test_session)
+    user = await repo.get_user_by_id(user_id=test_user.id)
 
     assert user is not None
     assert user.id == test_user.id
@@ -42,10 +42,10 @@ async def test_get_user_by_id_not_found(
     test_session: AsyncSession,
 ):
     """
-    Тест получения несуществующего пользователя.
+    Тест получения несуществующего пользователя, через репозиторий.
     """
-    repo = UserManagerCrud(test_session)
-    user = await repo.get_user_by_id(999)
+    repo = UserManagerCrud(session=test_session)
+    user = await repo.get_user_by_id(user_id=999)
 
     assert user is None
 
@@ -56,15 +56,15 @@ async def test_delete_user(
     test_user: User,
 ):
     """
-    Тест удаления пользователя по ID.
+    Тест удаления пользователя по ID, через репозиторий.
     """
-    repo = UserManagerCrud(test_session)
-    deleted_user = await repo.delete_user(test_user.id)
+    repo = UserManagerCrud(session=test_session)
+    deleted_user = await repo.delete_user(user_id=test_user.id)
 
     assert deleted_user is not None
     assert deleted_user.id == test_user.id
 
-    user_in_db = await repo.get_user_by_id(test_user.id)
+    user_in_db = await repo.get_user_by_id(user_id=test_user.id)
     assert user_in_db is None
 
 
@@ -73,9 +73,9 @@ async def test_delete_user_not_found(
     test_session: AsyncSession,
 ):
     """
-    Тест удаления несуществующего пользователя.
+    Тест удаления несуществующего пользователя, через репозиторий.
     """
-    repo = UserManagerCrud(test_session)
-    deleted_user = await repo.delete_user(999)
+    repo = UserManagerCrud(session=test_session)
+    deleted_user = await repo.delete_user(user_id=999)
 
     assert deleted_user is None
