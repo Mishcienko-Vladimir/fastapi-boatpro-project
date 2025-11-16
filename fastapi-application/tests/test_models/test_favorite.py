@@ -15,7 +15,9 @@ async def test_favorite_creation(
     test_user: User,
     test_product: Product,
 ):
-    """Тест создания избранного."""
+    """
+    Тест создания избранного.
+    """
     favorite = Favorite(
         user_id=test_user.id,
         product_id=test_product.id,
@@ -35,7 +37,9 @@ async def test_favorite_relationships(
     test_user: User,
     test_product: Product,
 ):
-    """Тест обратных связей избранного."""
+    """
+    Тест обратных связей избранного.
+    """
     favorite = Favorite(
         user_id=test_user.id,
         product_id=test_product.id,
