@@ -9,7 +9,9 @@ from core.models.products import Category
 
 @pytest.mark.anyio
 async def test_category_creation(test_category: Category):
-    """Тест создания категории."""
+    """
+    Тест создания категории.
+    """
 
     assert test_category.id is not None
     assert test_category.name is not None
@@ -23,7 +25,9 @@ async def test_category_relationship_products_empty(
     test_category: Category,
     test_session: AsyncSession,
 ):
-    """Тест: у новой категории нет товаров."""
+    """
+    Тест, что у новой категории нет товаров.
+    """
 
     stmt = (
         select(Category)
@@ -38,4 +42,3 @@ async def test_category_relationship_products_empty(
     ), "Category должна иметь атрибут products"
     assert isinstance(loaded_category.products, list)
     assert len(loaded_category.products) == 0
-
