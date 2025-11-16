@@ -1,27 +1,36 @@
 # Запуск тестов: python -m pytest fastapi-application/tests/ -v
 import pytest
 import shutil
+import uuid
 
 from fastapi import FastAPI
 from fastapi_cache.coder import JsonCoder
 from fastapi_cache.backends.inmemory import InMemoryBackend
 
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
+from typing import AsyncIterator, Any
 from httpx import AsyncClient, ASGITransport
 from pathlib import Path
+from faker import Faker
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    create_async_engine,
+    async_sessionmaker,
+)
 from sqlalchemy.pool import StaticPool
-
-from core.dependencies import get_db_session
-from core.models import Base
-from core.config import settings, BASE_DIR
 
 from api import router as api_router
 from views import router as views_router
 from create_fastapi_app import create_app
 
+from core.dependencies import get_db_session
+from core.models import Base, User
+from core.models.products import Product, Category
+from core.config import settings, BASE_DIR
+
+
+faker = Faker()
 
 # Тестовая БД в памяти
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -175,3 +184,158 @@ async def client(test_session):
         yield ac
 
     app.dependency_overrides.clear()  # type: ignore
+
+
+@pytest.fixture(scope="function")
+def fake_user_data() -> dict[str, Any]:
+    """
+    Генерация тестовых данных пользователя.
+    """
+    return {
+        "email": faker.email(),
+        "hashed_password": faker.password(),
+        "first_name": faker.first_name(),
+        "is_active": True,
+        "is_superuser": False,
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_category_data() -> dict[str, Any]:
+    """
+    Генерация тестовых данных категории.
+    """
+    return {
+        "name": f"Category-{uuid.uuid4().hex[:40]}",
+        "description": faker.text(),
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_product_data() -> dict[str, Any]:
+    """
+    Создаёт тестовые данные для товара.
+    """
+    return {
+        "name": f"Product-{uuid.uuid4().hex[:100]}",
+        "price": faker.random_int(10000, 1000000),
+        "company_name": faker.company()[:100],
+        "is_active": True,
+        "description": faker.text(),
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_boat_data() -> dict[str, Any]:
+    """
+    Создаёт тестовые данные для катера.
+    """
+    return {
+        "name": f"Boat-{uuid.uuid4().hex[:100]}",
+        "price": faker.random_int(20000, 20000000),
+        "company_name": faker.company()[:100],
+        "description": faker.text(),
+        "is_active": True,
+        "length_hull": faker.random_int(200, 10000),
+        "width_hull": faker.random_int(100, 900),
+        "weight": faker.random_int(100, 30000),
+        "capacity": faker.random_int(1, 20),
+        "maximum_load": faker.random_int(100, 4000),
+        "hull_material": faker.random_element(
+            elements=["Aluminum", "Steel", "Fiberglass", "Tree"]
+        ),
+        "thickness_side_sheet": faker.random_int(10, 1000),
+        "bottom_sheet_thickness": faker.random_int(10, 1000),
+        "fuel_capacity": faker.random_int(10, 1000),
+        "maximum_engine_power": faker.random_int(10, 1000),
+        "height_side_midship": faker.random_int(10, 1000),
+        "transom_height": faker.random_int(10, 1000),
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_trailer_data():
+    """
+    Создаёт тестовые данные для прицепа.
+    """
+    return {
+        "name": f"Trailer-{uuid.uuid4().hex[:100]}",
+        "price": faker.random_int(20000, 3000000),
+        "company_name": faker.company()[:100],
+        "description": faker.text(),
+        "is_active": True,
+        "full_mass": faker.random_int(200, 10000),
+        "load_capacity": faker.random_int(200, 5000),
+        "trailer_length": faker.random_int(200, 2000),
+        "max_ship_length": faker.random_int(200, 10000),
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_outboard_motor_data():
+    """
+    Создаёт тестовые данные для мотора.
+    """
+    return {
+        "name": f"Motor-{uuid.uuid4().hex[:100]}",
+        "price": faker.random_int(10000, 5000000),
+        "company_name": faker.company()[:100],
+        "description": faker.text(),
+        "is_active": True,
+        "engine_power": faker.random_int(2, 600),
+        "engine_type": faker.random_element(elements=["двухтактный", "четырехтактный"]),
+        "weight": faker.random_int(5, 1000),
+        "number_cylinders": faker.random_int(2, 6),
+        "engine_displacement": faker.random_int(100, 9000),
+        "control_type": faker.random_element(elements=["румпельное", "дистанционное"]),
+        "starter_type": faker.random_element(elements=["ручной", "электрический"]),
+    }
+
+
+@pytest.fixture(scope="function")
+async def test_user(
+    test_session: AsyncSession,
+    fake_user_data: dict[str, Any],
+) -> User:
+    """
+    Создаёт тестового пользователя.
+    """
+    user = User(**fake_user_data)
+    test_session.add(user)
+    await test_session.commit()
+    await test_session.refresh(user)
+    return user
+
+
+@pytest.fixture(scope="function")
+async def test_category(
+    test_session: AsyncSession,
+    fake_category_data: dict[str, Any],
+) -> Category:
+    """
+    Создаёт тестовую категорию.
+    """
+    category = Category(**fake_category_data)
+    test_session.add(category)
+    await test_session.commit()
+    await test_session.refresh(category)
+    return category
+
+
+@pytest.fixture(scope="function")
+async def test_product(
+    test_session: AsyncSession,
+    fake_product_data: dict[str, Any],
+    test_category: Category,
+) -> Product:
+    """
+    Создаёт тестовый товар.
+    """
+    product = Product(
+        category_id=test_category.id,
+        **fake_product_data,
+    )
+    test_session.add(product)
+    await test_session.commit()
+    await test_session.refresh(product)
+    return product
