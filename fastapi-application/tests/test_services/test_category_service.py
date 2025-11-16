@@ -1,5 +1,6 @@
 import pytest
 
+from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,17 +11,18 @@ from core.schemas.products import CategoryCreate, CategoryUpdate
 
 
 @pytest.mark.anyio
-async def test_create_category(test_session: AsyncSession):
+async def test_create_category(
+    test_session: AsyncSession,
+    fake_category_data: dict[str, Any],
+):
     """
-    Тест создание категории.
+    Тест создание категории, через сервис.
     """
-    service = CategoryService(test_session)
-    create_data = CategoryCreate(
-        name="New Category",
-        description="Test",
-    )
+    fake_category_data["name"] = "New Category"
+    create_data = CategoryCreate(**fake_category_data)
 
-    category = await service.create_category(create_data)
+    service = CategoryService(session=test_session)
+    category = await service.create_category(category_data=create_data)
 
     assert category.id is not None
     assert category.name == "New Category"
@@ -34,50 +36,43 @@ async def test_create_category(test_session: AsyncSession):
 
 
 @pytest.mark.anyio
-async def test_update_category(test_session: AsyncSession):
+async def test_update_category(
+    test_session: AsyncSession,
+    test_category: Category,
+):
     """
-    Тест обновление категории.
+    Тест обновление категории, через сервис.
     """
-
-    category = Category(
-        name="Old Category",
-        description="Old",
+    update_data = CategoryUpdate(
+        name="Updated Category",
+        description="New desc",
     )
-    test_session.add(category)
-    await test_session.commit()
-    await test_session.refresh(category)
-
-    service = CategoryService(test_session)
-    update_data = CategoryUpdate(name="Updated Category", description="New desc,")
+    service = CategoryService(session=test_session)
     updated = await service.update_category_by_id(
-        category.id,
-        update_data,
+        category_id=test_category.id,
+        category_data=update_data,
     )
 
     assert updated.name == "Updated Category"
+    assert updated.description == "New desc"
 
-    stmt = select(Category).where(Category.id == category.id)
+    stmt = select(Category).where(Category.id == test_category.id)
     result = await test_session.execute(stmt)
     db_category = result.scalars().first()
     assert db_category.name == "Updated Category"
 
 
 @pytest.mark.anyio
-async def test_delete_category(test_session: AsyncSession):
+async def test_delete_category(
+    test_session: AsyncSession,
+    test_category: Category,
+):
     """
-    Тест удаление категории.
+    Тест удаление категории, через сервис.
     """
-    category = Category(
-        name="To Delete",
-        description="Delete me",
-    )
-    test_session.add(category)
-    await test_session.commit()
-    await test_session.refresh(category)
+    service = CategoryService(session=test_session)
+    await service.delete_category_by_id(category_id=test_category.id)
 
-    service = CategoryService(test_session)
-    await service.delete_category_by_id(category.id)
-
-    stmt = select(Category).where(Category.id == category.id)
+    stmt = select(Category).where(Category.id == test_category.id)
     result = await test_session.execute(stmt)
     assert result.scalars().first() is None
