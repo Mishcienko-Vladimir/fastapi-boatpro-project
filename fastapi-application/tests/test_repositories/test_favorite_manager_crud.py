@@ -14,13 +14,15 @@ async def test_create_favorite(
     test_user: User,
     test_product: Product,
 ):
-    """Тест создания избранного"""
-    repo = FavoriteManagerCrud(test_session)
+    """
+    Тест создания избранного, через репозиторий.
+    """
+    repo = FavoriteManagerCrud(session=test_session)
     fav_data = FavoriteCreate(
         user_id=test_user.id,
         product_id=test_product.id,
     )
-    favorite = await repo.create_favorite(fav_data)
+    favorite = await repo.create_favorite(favorite_data=fav_data)
 
     assert favorite.id is not None
     assert favorite.user_id == test_user.id
@@ -33,16 +35,18 @@ async def test_is_favorite_exists(
     test_user: User,
     test_product: Product,
 ):
-    """Тест проверки существования избранного"""
-    repo = FavoriteManagerCrud(test_session)
+    """
+    Тест проверки существования избранного, через репозиторий.
+    """
+    repo = FavoriteManagerCrud(session=test_session)
     fav_data = FavoriteCreate(
         user_id=test_user.id,
         product_id=test_product.id,
     )
-    await repo.create_favorite(fav_data)
+    await repo.create_favorite(favorite_data=fav_data)
     exists = await repo.is_favorite_exists(
-        test_user.id,
-        test_product.id,
+        user_id=test_user.id,
+        product_id=test_product.id,
     )
 
     assert exists is True
@@ -54,14 +58,16 @@ async def test_get_favorites_user(
     test_user: User,
     test_product: Product,
 ):
-    """Тест получения избранных товаров пользователя"""
-    repo = FavoriteManagerCrud(test_session)
+    """
+    Тест получения избранных товаров пользователя, через репозиторий.
+    """
+    repo = FavoriteManagerCrud(session=test_session)
     fav_data = FavoriteCreate(
         user_id=test_user.id,
         product_id=test_product.id,
     )
-    await repo.create_favorite(fav_data)
-    favorites = await repo.get_favorites_user(test_user.id)
+    await repo.create_favorite(favorite_data=fav_data)
+    favorites = await repo.get_favorites_user(user_id=test_user.id)
 
     assert len(favorites) == 1
     assert favorites[0].product_id == test_product.id
@@ -73,14 +79,16 @@ async def test_get_favorite_with_relations(
     test_user: User,
     test_product: Product,
 ):
-    """Тест получения избранного со связанными данными"""
-    repo = FavoriteManagerCrud(test_session)
+    """
+    Тест получения избранного со связанными данными, через репозиторий.
+    """
+    repo = FavoriteManagerCrud(session=test_session)
     fav_data = FavoriteCreate(
         user_id=test_user.id,
         product_id=test_product.id,
     )
-    await repo.create_favorite(fav_data)
-    favorite = await repo.get_favorite_with_relations(test_product.id)
+    await repo.create_favorite(favorite_data=fav_data)
+    favorite = await repo.get_favorite_with_relations(product_id=test_product.id)
 
     assert favorite is not None
     assert favorite.product_id == test_product.id
@@ -93,16 +101,18 @@ async def test_delete_favorite_by_id(
     test_user: User,
     test_product: Product,
 ):
-    """Тест удаления избранного по ID"""
-    repo = FavoriteManagerCrud(test_session)
+    """
+    Тест удаления избранного по ID, через репозиторий.
+    """
+    repo = FavoriteManagerCrud(session=test_session)
     fav_data = FavoriteCreate(
         user_id=test_user.id,
         product_id=test_product.id,
     )
-    favorite = await repo.create_favorite(fav_data)
+    favorite = await repo.create_favorite(favorite_data=fav_data)
 
-    deleted = await repo.delete_favorite_by_id(favorite.id)
+    deleted = await repo.delete_favorite_by_id(favorite_id=favorite.id)
     assert deleted is True
 
-    deleted_again = await repo.delete_favorite_by_id(favorite.id)
+    deleted_again = await repo.delete_favorite_by_id(favorite_id=favorite.id)
     assert deleted_again is False
