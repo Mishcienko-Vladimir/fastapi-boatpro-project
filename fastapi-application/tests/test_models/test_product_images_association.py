@@ -15,7 +15,9 @@ async def test_product_images_association_empty_for_new_product(
     test_product: Product,
     test_session: AsyncSession,
 ):
-    """Тест: у нового товара нет записей в ассоциативной таблице (нет изображений)."""
+    """
+    Тест, что у нового товара нет записей в ассоциативной таблице (нет изображений).
+    """
 
     stmt = (
         select(Product)
@@ -44,7 +46,9 @@ async def test_product_images_association_empty_for_new_product(
     test_product: Product,
     test_session: AsyncSession,
 ):
-    """Тест: у нового товара нет записей в ассоциативной таблице (нет изображений)."""
+    """
+    Тест, что у нового товара нет записей в ассоциативной таблице (нет изображений).
+    """
 
     stmt = (
         select(Product)
