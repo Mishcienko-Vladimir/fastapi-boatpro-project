@@ -9,7 +9,9 @@ from core.models.user import User
 
 @pytest.mark.anyio
 async def test_user_creation(test_user: User):
-    """Тест создания пользователя через fixture."""
+    """
+    Тест создания пользователя через fixture.
+    """
 
     assert test_user.id is not None
     assert isinstance(test_user.email, str)
@@ -22,7 +24,9 @@ async def test_user_relationship_favorites_empty(
     test_user: User,
     test_session: AsyncSession,
 ):
-    """Тест: у нового пользователя нет избранного."""
+    """
+    Тест, что у нового пользователя нет избранного.
+    """
 
     stmt = (
         select(User)
@@ -35,4 +39,3 @@ async def test_user_relationship_favorites_empty(
     assert hasattr(loaded_user, "favorites"), "User должен иметь атрибут favorites"
     assert isinstance(loaded_user.favorites, list)
     assert len(loaded_user.favorites) == 0
-
