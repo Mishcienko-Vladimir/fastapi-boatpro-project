@@ -10,7 +10,9 @@ from core.models import User
 
 
 @pytest.mark.anyio
-async def test_create_superuser_if_not_exists_creates_user(test_session: AsyncSession):
+async def test_create_superuser_if_not_exists_creates_user(
+    test_session: AsyncSession,
+):
     """
     Тест создания суперпользователя.
     """
