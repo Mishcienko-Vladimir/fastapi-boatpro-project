@@ -8,7 +8,9 @@ async def test_request_verify_token_nonexistent_user(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Запрос токена для несуществующего пользователя — должен вернуть 202."""
+    """
+    Запрос токена для несуществующего пользователя — должен вернуть 202.
+    """
     response = await client.post(
         url=f"{prefix_auth}/request-verify-token",
         json={"email": "notexists@example.com"},
@@ -21,7 +23,9 @@ async def test_request_verify_token_invalid_email(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Запрос токена с невалидным email — 422."""
+    """
+    Запрос токена с невалидным email — 422.
+    """
     response = await client.post(
         url=f"{prefix_auth}/request-verify-token",
         json={"email": "invalid-email"},
@@ -34,7 +38,9 @@ async def test_verify_email_invalid_token(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Верификация с неверным токеном — 400."""
+    """
+    Верификация с неверным токеном — 400.
+    """
     response = await client.post(
         url=f"{prefix_auth}/verify",
         json={"token": "invalid_token"},
@@ -48,7 +54,9 @@ async def test_verify_email_empty_token(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Верификация с пустым токеном — 400."""
+    """
+    Верификация с пустым токеном — 400.
+    """
     response = await client.post(
         url=f"{prefix_auth}/verify",
         json={"token": ""},
@@ -62,7 +70,9 @@ async def test_verify_email_missing_token(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Верификация без токена — 422."""
+    """
+    Верификация без токена — 422.
+    """
     response = await client.post(
         url=f"{prefix_auth}/verify",
         json={},

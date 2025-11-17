@@ -1,15 +1,18 @@
 import pytest
 
+from typing import Any
 from httpx import AsyncClient
 
 
 @pytest.mark.anyio
 async def test_login_success(
     client: AsyncClient,
-    registered_user: dict,
+    registered_user: dict[str, Any],
     prefix_auth: str,
 ):
-    """Успешный вход."""
+    """
+    Успешный вход.
+    """
     response = await client.post(
         url=f"{prefix_auth}/login",
         data={
@@ -25,10 +28,12 @@ async def test_login_success(
 @pytest.mark.anyio
 async def test_login_invalid_credentials(
     client: AsyncClient,
-    registered_user: dict,
+    registered_user: dict[str, Any],
     prefix_auth: str,
 ):
-    """Вход с неверным паролем."""
+    """
+    Вход с неверным паролем.
+    """
     response = await client.post(
         url=f"{prefix_auth}/login",
         data={
@@ -46,7 +51,9 @@ async def test_login_nonexistent_user(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Вход с несуществующим пользователем."""
+    """
+    Вход с несуществующим пользователем.
+    """
     response = await client.post(
         url=f"{prefix_auth}/login",
         data={

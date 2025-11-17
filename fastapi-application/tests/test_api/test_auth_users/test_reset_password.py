@@ -1,5 +1,6 @@
 import pytest
 
+from typing import Any
 from httpx import AsyncClient
 from unittest.mock import AsyncMock, patch
 
@@ -8,13 +9,14 @@ from unittest.mock import AsyncMock, patch
 async def test_forgot_password_success(
     client: AsyncClient,
     prefix_auth: str,
-    registered_user: dict,
+    registered_user: dict[str, Any],
 ):
     """
     Отправка письма на почту для сброса пароля.
     """
     with patch(
-        "mailing.send_reset_password.send_email", new_callable=AsyncMock
+        target="mailing.send_reset_password.send_email",
+        new_callable=AsyncMock,
     ) as mock:
         response = await client.post(
             url=f"{prefix_auth}/forgot-password",
@@ -29,7 +31,9 @@ async def test_reset_password_invalid_token(
     client: AsyncClient,
     prefix_auth: str,
 ):
-    """Сброс пароля с неверным токеном."""
+    """
+    Сброс пароля с неверным токеном.
+    """
     response = await client.post(
         url=f"{prefix_auth}/reset-password",
         json={"token": "invalid_token", "password": "newpass123"},
