@@ -1,24 +1,24 @@
 import pytest
 
+from typing import Any
 from httpx import AsyncClient
-from faker import Faker
 
-faker = Faker()
+from core.models.products.category import Category
 
 
 @pytest.mark.anyio
 async def test_create_boat(
     client: AsyncClient,
     prefix_boats: str,
-    fake_boat_data: dict,
-    create_test_category,
-    fake_images,
+    fake_boat_data: dict[str, Any],
+    test_category: Category,
+    fake_images: list,
 ):
     """
-    Тест создания катера.
+    Тест создания катера, через API.
     """
     fake_boat_data = fake_boat_data.copy()
-    fake_boat_data["category_id"] = create_test_category.id
+    fake_boat_data["category_id"] = test_category.id
 
     response = await client.post(
         url=f"{prefix_boats}/",
@@ -38,13 +38,13 @@ async def test_create_boat(
 async def test_get_boat_by_id(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест получения катера по ID.
+    Тест получения катера по ID, через API.
     """
     boat_id = create_test_boat["id"]
-    response = await client.get(f"{prefix_boats}/boat-id/{boat_id}")
+    response = await client.get(url=f"{prefix_boats}/boat-id/{boat_id}")
     assert response.status_code == 200
     boat = response.json()
 
@@ -56,13 +56,13 @@ async def test_get_boat_by_id(
 async def test_get_boat_by_name(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест получения катера по имени.
+    Тест получения катера по имени, через API.
     """
     name = create_test_boat["name"]
-    response = await client.get(f"{prefix_boats}/boat-name/{name}")
+    response = await client.get(url=f"{prefix_boats}/boat-name/{name}")
     assert response.status_code == 200
     boat = response.json()
 
@@ -74,12 +74,12 @@ async def test_get_boat_by_name(
 async def test_get_all_boats(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест получения всех катеров.
+    Тест получения всех катеров, через API.
     """
-    response = await client.get(f"{prefix_boats}/")
+    response = await client.get(url=f"{prefix_boats}/")
     assert response.status_code == 200
     boats = response.json()
 
@@ -92,12 +92,12 @@ async def test_get_all_boats(
 async def test_get_boats_summary(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест получения краткой информации о катерах (с одним изображением).
+    Тест получения краткой информации о катерах (с одним изображением), через API.
     """
-    response = await client.get(f"{prefix_boats}/summary")
+    response = await client.get(url=f"{prefix_boats}/summary")
     assert response.status_code == 200
     summary_list_boats = response.json()
 
@@ -115,10 +115,10 @@ async def test_get_boats_summary(
 async def test_update_boat_data(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест обновления данных катера (без изображений).
+    Тест обновления данных катера (без изображений), через API.
     """
     boat_id = create_test_boat["id"]
     update_data = {
@@ -144,13 +144,13 @@ async def test_update_boat_data(
 async def test_update_boat_images(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест обновления изображений катера: удаление и добавление.
+    Тест обновления изображений катера: удаление и добавление, через API.
     """
     boat_id = create_test_boat["id"]
-    response = await client.get(f"{prefix_boats}/boat-id/{boat_id}")
+    response = await client.get(url=f"{prefix_boats}/boat-id/{boat_id}")
     assert response.status_code == 200
     initial_images = response.json()["images"]
 
@@ -178,18 +178,18 @@ async def test_update_boat_images(
 async def test_delete_boat(
     client: AsyncClient,
     prefix_boats: str,
-    create_test_boat: dict,
+    create_test_boat: dict[str, Any],
 ):
     """
-    Тест удаления катера.
+    Тест удаления катера, через API.
     """
     boat_id = create_test_boat["id"]
 
-    response = await client.delete(f"{prefix_boats}/{boat_id}")
+    response = await client.delete(url=f"{prefix_boats}/{boat_id}")
     assert response.status_code == 204, f"Ответ: {response.text}"
 
-    get_response = await client.get(f"{prefix_boats}/boat-id/{boat_id}")
+    get_response = await client.get(url=f"{prefix_boats}/boat-id/{boat_id}")
     assert get_response.status_code == 404
 
-    delete_response = await client.delete(f"{prefix_boats}/{boat_id}")
+    delete_response = await client.delete(url=f"{prefix_boats}/{boat_id}")
     assert delete_response.status_code == 404

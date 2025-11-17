@@ -1,24 +1,24 @@
 import pytest
 
+from typing import Any
 from httpx import AsyncClient
-from faker import Faker
 
-faker = Faker()
+from core.models.products.category import Category
 
 
 @pytest.mark.anyio
 async def test_create_outboard_motor(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    fake_outboard_motor_data: dict,
-    create_test_category,
-    fake_images,
+    fake_outboard_motor_data: dict[str, Any],
+    test_category: Category,
+    fake_images: list,
 ):
     """
-    Тест создания лодочного мотора.
+    Тест создания лодочного мотора, через API.
     """
     fake_outboard_motor_data = fake_outboard_motor_data.copy()
-    fake_outboard_motor_data["category_id"] = create_test_category.id
+    fake_outboard_motor_data["category_id"] = test_category.id
 
     response = await client.post(
         url=f"{prefix_outboard_motors}/",
@@ -38,14 +38,14 @@ async def test_create_outboard_motor(
 async def test_get_outboard_motor_by_id(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест получения лодочного мотора по ID.
+    Тест получения лодочного мотора по ID, через API.
     """
     motor_id = create_test_outboard_motor["id"]
     response = await client.get(
-        f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
+        url=f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
     )
     assert response.status_code == 200
     motor = response.json()
@@ -58,13 +58,15 @@ async def test_get_outboard_motor_by_id(
 async def test_get_outboard_motor_by_name(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест получения лодочного мотора по имени.
+    Тест получения лодочного мотора по имени, через API.
     """
     name = create_test_outboard_motor["name"]
-    response = await client.get(f"{prefix_outboard_motors}/outboard-motor-name/{name}")
+    response = await client.get(
+        url=f"{prefix_outboard_motors}/outboard-motor-name/{name}"
+    )
     assert response.status_code == 200
     motor = response.json()
 
@@ -76,12 +78,12 @@ async def test_get_outboard_motor_by_name(
 async def test_get_all_outboard_motors(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест получения всех лодочных моторов.
+    Тест получения всех лодочных моторов, через API.
     """
-    response = await client.get(f"{prefix_outboard_motors}/")
+    response = await client.get(url=f"{prefix_outboard_motors}/")
     assert response.status_code == 200
     motors = response.json()
 
@@ -94,13 +96,13 @@ async def test_get_all_outboard_motors(
 async def test_get_outboard_motors_summary(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест получения краткой информации о лодочных моторах (с одним изображением).
+    Тест получения краткой информации о лодочных моторах (с одним изображением), через API.
     """
-    response = await client.get(f"{prefix_outboard_motors}/summary")
-    assert response.status_code == 200, f"Ответ: {response.text}"
+    response = await client.get(url=f"{prefix_outboard_motors}/summary")
+    assert response.status_code == 200
     summary_list_motors = response.json()
 
     assert isinstance(summary_list_motors, list)
@@ -117,10 +119,10 @@ async def test_get_outboard_motors_summary(
 async def test_update_outboard_motor_data(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест обновления данных лодочного мотора (без изображений).
+    Тест обновления данных лодочного мотора (без изображений), через API.
     """
     motor_id = create_test_outboard_motor["id"]
     update_data = {
@@ -146,14 +148,14 @@ async def test_update_outboard_motor_data(
 async def test_update_outboard_motor_images(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест обновления изображений лодочного мотора: удаление и добавление.
+    Тест обновления изображений лодочного мотора: удаление и добавление, через API.
     """
     motor_id = create_test_outboard_motor["id"]
     response = await client.get(
-        f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
+        url=f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
     )
     assert response.status_code == 200
     initial_images = response.json()["images"]
@@ -182,20 +184,20 @@ async def test_update_outboard_motor_images(
 async def test_delete_outboard_motor(
     client: AsyncClient,
     prefix_outboard_motors: str,
-    create_test_outboard_motor: dict,
+    create_test_outboard_motor: dict[str, Any],
 ):
     """
-    Тест удаления лодочного мотора.
+    Тест удаления лодочного мотора, через API.
     """
     motor_id = create_test_outboard_motor["id"]
 
-    response = await client.delete(f"{prefix_outboard_motors}/{motor_id}")
+    response = await client.delete(url=f"{prefix_outboard_motors}/{motor_id}")
     assert response.status_code == 204
 
     get_response = await client.get(
-        f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
+        url=f"{prefix_outboard_motors}/outboard-motor-id/{motor_id}"
     )
     assert get_response.status_code == 404
 
-    delete_response = await client.delete(f"{prefix_outboard_motors}/{motor_id}")
+    delete_response = await client.delete(url=f"{prefix_outboard_motors}/{motor_id}")
     assert delete_response.status_code == 404

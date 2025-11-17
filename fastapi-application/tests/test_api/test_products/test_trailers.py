@@ -1,25 +1,24 @@
 import pytest
 
+from typing import Any
 from httpx import AsyncClient
-from faker import Faker
 
-
-faker = Faker()
+from core.models.products.category import Category
 
 
 @pytest.mark.anyio
 async def test_create_trailer(
     client: AsyncClient,
     prefix_trailers: str,
-    fake_trailer_data: dict,
-    create_test_category,
-    fake_images,
+    fake_trailer_data: dict[str, Any],
+    test_category: Category,
+    fake_images: list,
 ):
     """
-    Тест создания прицепа.
+    Тест создания прицепа, через API.
     """
     fake_trailer_data = fake_trailer_data.copy()
-    fake_trailer_data["category_id"] = create_test_category.id
+    fake_trailer_data["category_id"] = test_category.id
 
     response = await client.post(
         url=f"{prefix_trailers}/",
@@ -39,13 +38,13 @@ async def test_create_trailer(
 async def test_get_trailer_by_id(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест получения прицепа по ID.
+    Тест получения прицепа по ID, через API.
     """
     trailer_id = create_test_trailer["id"]
-    response = await client.get(f"{prefix_trailers}/trailer-id/{trailer_id}")
+    response = await client.get(url=f"{prefix_trailers}/trailer-id/{trailer_id}")
     assert response.status_code == 200
     json = response.json()
 
@@ -57,13 +56,13 @@ async def test_get_trailer_by_id(
 async def test_get_trailer_by_name(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест получения прицепа по имени.
+    Тест получения прицепа по имени, через API.
     """
     name = create_test_trailer["name"]
-    response = await client.get(f"{prefix_trailers}/trailer-name/{name}")
+    response = await client.get(url=f"{prefix_trailers}/trailer-name/{name}")
     assert response.status_code == 200
     json = response.json()
 
@@ -75,10 +74,10 @@ async def test_get_trailer_by_name(
 async def test_get_all_trailers(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест получения всех прицепов.
+    Тест получения всех прицепов, через API.
     """
     response = await client.get(url=f"{prefix_trailers}/")
     assert response.status_code == 200
@@ -93,12 +92,12 @@ async def test_get_all_trailers(
 async def test_get_trailers_summary(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест получения краткой информации о прицепах (с одним изображением).
+    Тест получения краткой информации о прицепах (с одним изображением), через API.
     """
-    response = await client.get(f"{prefix_trailers}/summary")
+    response = await client.get(url=f"{prefix_trailers}/summary")
     assert response.status_code == 200
     summary_list = response.json()
 
@@ -116,10 +115,10 @@ async def test_get_trailers_summary(
 async def test_update_trailer_data(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест обновления данных прицепа (без изображений).
+    Тест обновления данных прицепа (без изображений), через API.
     """
     trailer_id = create_test_trailer["id"]
     update_data = {
@@ -145,13 +144,13 @@ async def test_update_trailer_data(
 async def test_update_trailer_images(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест обновления изображений прицепа: удаление и добавление.
+    Тест обновления изображений прицепа: удаление и добавление, через API.
     """
     trailer_id = create_test_trailer["id"]
-    response = await client.get(f"{prefix_trailers}/trailer-id/{trailer_id}")
+    response = await client.get(url=f"{prefix_trailers}/trailer-id/{trailer_id}")
     assert response.status_code == 200
     initial_images = response.json()["images"]
 
@@ -179,18 +178,18 @@ async def test_update_trailer_images(
 async def test_delete_trailer(
     client: AsyncClient,
     prefix_trailers: str,
-    create_test_trailer: dict,
+    create_test_trailer: dict[str, Any],
 ):
     """
-    Тест удаления прицепа.
+    Тест удаления прицепа, через API.
     """
     trailer_id = create_test_trailer["id"]
 
-    response = await client.delete(f"{prefix_trailers}/{trailer_id}")
-    assert response.status_code == 204, f"Ответ: {response.text}"
+    response = await client.delete(url=f"{prefix_trailers}/{trailer_id}")
+    assert response.status_code == 204
 
-    get_response = await client.get(f"{prefix_trailers}/trailer-id/{trailer_id}")
+    get_response = await client.get(url=f"{prefix_trailers}/trailer-id/{trailer_id}")
     assert get_response.status_code == 404
 
-    delete_response = await client.delete(f"{prefix_trailers}/{trailer_id}")
+    delete_response = await client.delete(url=f"{prefix_trailers}/{trailer_id}")
     assert delete_response.status_code == 404
