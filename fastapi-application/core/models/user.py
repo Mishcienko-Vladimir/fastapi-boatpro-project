@@ -15,6 +15,7 @@ from core.models.mixins import IntIdPkMixin
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession  # noqa
     from core.models.favorite import Favorite  # noqa
+    from core.models.orders.order import Order  # noqa
 
 
 class SQLAlchemyUserDatabase(SQLAlchemyUserDatabaseGeneric):
@@ -42,6 +43,11 @@ class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
     # Обратная связь с избранным
     favorites: Mapped[list["Favorite"]] = relationship(
         back_populates="user",
+    )
+    # Обратная связь с заказами
+    orders: Mapped[list["Order"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     # Получение данных из БД

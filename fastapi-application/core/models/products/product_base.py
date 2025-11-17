@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from core.models.products import Category  # noqa
     from core.models.products import ImagePath  # noqa
     from core.models.favorite import Favorite  # noqa
+    from core.models.orders.order import Order  # noqa
 
 
 class Product(
@@ -62,13 +63,15 @@ class Product(
         secondary="product_images_associations",
         back_populates="products",
     )
-
     # Обратная ссылка на категорию
     category: Mapped["Category"] = relationship(
         back_populates="products",
     )
-
     # Обратная связь с избранным
     favorites: Mapped[list["Favorite"]] = relationship(
+        back_populates="product",
+    )
+    # Обратная связь с позициями заказом
+    orders: Mapped[list["Order"]] = relationship(
         back_populates="product",
     )
