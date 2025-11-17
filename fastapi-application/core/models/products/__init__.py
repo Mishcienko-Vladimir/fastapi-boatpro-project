@@ -8,9 +8,7 @@ __all__ = (
     "ProductImagesAssociation",
 )
 
-from .product_base import (
-    Product,
-)
+from .product_base import Product
 from .category import Category
 from .boat import Boat
 from .outboard_motor import OutboardMotor

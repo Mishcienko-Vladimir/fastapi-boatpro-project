@@ -11,6 +11,10 @@ from .base import Base
 from .user import User
 from .favorite import Favorite
 from .access_token import AccessToken
+from .orders import (
+    Order,
+    PickupPoint,
+)
 from .products import (
     Product,
     product_images_association,
