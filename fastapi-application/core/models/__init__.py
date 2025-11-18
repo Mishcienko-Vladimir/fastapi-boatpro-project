@@ -13,6 +13,7 @@ from .favorite import Favorite
 from .access_token import AccessToken
 from .orders import (
     Order,
+    OrderStatus,
     PickupPoint,
 )
 from .products import (
