@@ -2,6 +2,8 @@ __add__ = (
     "BaseSchemaModel",
     "FavoriteCreate",
     "FavoriteRead",
+    "OrderCreate",
+    "OrderRead",
     "UserRegisteredNotification",
     "UserCreate",
     "UserUpdate",
@@ -11,6 +13,7 @@ __add__ = (
 
 from .base_model import BaseSchemaModel
 from .favorite import FavoriteCreate, FavoriteRead
+from .order import OrderCreate, OrderRead
 from .user import (
     UserRegisteredNotification,
     UserCreate,
