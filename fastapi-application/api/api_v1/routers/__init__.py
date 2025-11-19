@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBearer
 
-from core.config import settings
 from .users import router as users_router
 from .auth import router as auth_router
 from .messages import router as messages_router
 from .products import router as products_router
 from .favorites import router as favorites_router
 from .search import router as search_router
+from .pickup_points import router as pickup_points_router
+
+from core.config import settings
 
 
 http_bearer = HTTPBearer(auto_error=False)
@@ -20,3 +22,4 @@ router.include_router(messages_router)
 router.include_router(products_router)
 router.include_router(favorites_router)
 router.include_router(search_router)
+router.include_router(pickup_points_router)
