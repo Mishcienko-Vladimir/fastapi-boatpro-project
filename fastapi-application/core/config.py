@@ -83,6 +83,8 @@ class ApiV1Prefix(BaseModel):
     trailers: str = "/trailers"
     outboard_motors: str = "/outboard-motors"
     search: str = "/search"
+    orders: str = "/orders"
+    pickup_points: str = "/pickup-points"
 
 
 class ApiPrefix(BaseModel):
