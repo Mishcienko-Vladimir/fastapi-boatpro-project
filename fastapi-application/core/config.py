@@ -147,6 +147,13 @@ class AdminConfig(BaseModel):
     admin_password: str
 
 
+class YookassaConfig(BaseModel):
+    """Конфигурация yookassa (сервис приема платежей)"""
+
+    account_id: int
+    secret_key: str
+
+
 class PathImageUploadDir(BaseModel):
     """Путь до папки с изображениями"""
 
@@ -227,6 +234,7 @@ class Settings(BaseSettings):
     access_token: AccessToken
     webhook: WebhookConfig
     admin: AdminConfig
+    yookassa: YookassaConfig
     redis: RedisConfig = RedisConfig()
     cache: CacheConfig = CacheConfig()
 
