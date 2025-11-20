@@ -68,6 +68,7 @@ class ViewPrefix(BaseModel):
     search: str = "/search"
     admin: str = "/admin"
     users: str = "/users"
+    orders: str = "/orders"
 
 
 class ApiV1Prefix(BaseModel):
@@ -85,6 +86,8 @@ class ApiV1Prefix(BaseModel):
     search: str = "/search"
     orders: str = "/orders"
     pickup_points: str = "/pickup-points"
+    webhooks: str = "/webhooks"
+    yookassa: str = "/yookassa"
 
 
 class ApiPrefix(BaseModel):
@@ -105,6 +108,7 @@ class ApiPrefix(BaseModel):
         "http://127.0.0.1:8000",
         "http://localhost:1080",
         "http://localhost:1025",
+        "https://yookassa.ru",
     ]
 
     @property
