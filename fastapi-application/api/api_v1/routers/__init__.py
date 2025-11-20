@@ -8,6 +8,7 @@ from .products import router as products_router
 from .favorites import router as favorites_router
 from .search import router as search_router
 from .pickup_points import router as pickup_points_router
+from .orders import router as orders_router
 
 from core.config import settings
 
@@ -23,3 +24,4 @@ router.include_router(products_router)
 router.include_router(favorites_router)
 router.include_router(search_router)
 router.include_router(pickup_points_router)
+router.include_router(orders_router)
