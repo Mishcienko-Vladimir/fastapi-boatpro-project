@@ -4,6 +4,7 @@ __add__ = (
     "FavoriteRead",
     "OrderCreate",
     "OrderRead",
+    "OrderUpdate",
     "PickupPointCreate",
     "PickupPointUpdate",
     "PickupPointRead",
@@ -16,7 +17,7 @@ __add__ = (
 
 from .base_model import BaseSchemaModel
 from .favorite import FavoriteCreate, FavoriteRead
-from .order import OrderCreate, OrderRead
+from .order import OrderCreate, OrderRead, OrderUpdate
 from .pickup_point import PickupPointCreate, PickupPointUpdate, PickupPointRead
 from .user import (
     UserRegisteredNotification,

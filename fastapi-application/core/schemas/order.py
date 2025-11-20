@@ -18,6 +18,16 @@ class OrderCreate(BaseSchemaModel):
     )
 
 
+class OrderUpdate(BaseSchemaModel):
+    """
+    Модель обновления заказа.
+    """
+
+    status: OrderStatus = Field(
+        description="Статус заказа",
+    )
+
+
 class OrderRead(BaseSchemaModel):
     """
     Модель чтения заказа.
@@ -32,20 +42,20 @@ class OrderRead(BaseSchemaModel):
     pickup_point_id: int = Field(
         description="ID пункта самовывоза",
     )
-    pickup_point_name: str = Field(
-        description="Название пункта самовывоза",
-    )
     product_id: int = Field(
         description="ID товара",
-    )
-    product_name: str = Field(
-        description="Название товара",
     )
     status: OrderStatus = Field(
         description="Статус заказа",
     )
     total_price: int = Field(
         description="Общая цена заказа",
+    )
+    pickup_point_name: str = Field(
+        description="Имея пункта самовывоза",
+    )
+    product_name: str = Field(
+        description="Название товара",
     )
     created_at: datetime = Field(
         description="Дата создания заказа",
