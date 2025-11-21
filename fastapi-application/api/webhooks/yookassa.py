@@ -4,11 +4,11 @@ from typing import Annotated
 from fastapi import APIRouter, Request, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.services.orders_service import OrdersService
-
 from core.config import settings
 from core.dependencies import get_db_session
 from core.models.orders import Order, OrderStatus
+from core.repositories.manager_сrud import ManagerCrud
+
 from utils.payment.yookassa import verify_webhook_signature
 
 
@@ -72,8 +72,11 @@ async def yookassa_webhook(
         if not order_id:
             raise HTTPException(status_code=400, detail="Invalid order_id in metadata")
 
-        service = OrdersService(session=session)
-        order = await service.get_order_by_id(order_id=order_id)
+        order = await ManagerCrud(
+            session=session,
+            model_db=Order,
+        ).get_by_id(instance_id=order_id)
+
         if not order:
             raise HTTPException(
                 status_code=404,
