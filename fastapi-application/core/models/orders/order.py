@@ -53,6 +53,14 @@ class Order(
     total_price: Mapped[int] = mapped_column(
         comment="Цена на момент заказа",
     )
+    product_name: Mapped[str] = mapped_column(
+        String(255),
+        comment="Название товара",
+    )
+    pickup_point_name: Mapped[str] = mapped_column(
+        String(100),
+        comment="Имя пункта самовывоза",
+    )
     payment_id: Mapped[str | None] = mapped_column(
         String(255),
         comment="ID платежа в YooKassa",
@@ -86,6 +94,8 @@ class Order(
             f"product_id={self.product_id!r}, "
             f"status={self.status!r}, "
             f"total_price={self.total_price!r}, "
+            f"product_name={self.product_name!r}, "
+            f"pickup_point_name={self.pickup_point_name!r}, "
             f"payment_id={self.payment_id!r}, "
             f"payment_url={self.payment_url!r}, "
             f"expires_at={self.expires_at!r}, "
