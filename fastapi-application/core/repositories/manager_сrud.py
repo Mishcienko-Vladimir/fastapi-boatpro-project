@@ -19,17 +19,18 @@ class ManagerCrud(Generic[T]):
     """
     Универсальный CRUD-менеджер для работы с любой моделью.
 
-    :param session: - сессия для работы с БД.
-    :param model_db: - модель для работы с БД.
+    Attributes:
+        session (AsyncSession): Сессия для работы с БД
+        model_db (Type[T]): Модель для работы с БД
 
-    :methods:
-        - create: - создает новую запись.
-        - get_by_id: - получает запись по id.
-        - get_by_field: - получает запись по полю.
-        - get_by_fields: - получает запись по нескольким полям.
-        - get_all: - получает все записи.
-        - update: - обновляет запись.
-        - delete: - удаляет запись.
+    Methods:
+        create(data): - Создаёт новую запись.
+        get_by_id(instance_id): - Получает запись по id.
+        get_by_field(field, value): - Получает запись по полю.
+        get_by_fields(**filters): - Получает запись по нескольким полям.
+        get_all(): - Получает все записи.
+        update(instance, data): - Обновляет запись.
+        delete(instance): - Удаляет запись.
     """
 
     def __init__(
@@ -44,8 +45,8 @@ class ManagerCrud(Generic[T]):
         """
         Создает новый пункт самовывоза.
 
-        :param data: - данные для создания записи.
-        :return: - экземпляр модели.
+        :param data: Данные для создания записи.
+        :return: Экземпляр модели.
         """
         instance = self.model_db(**data.model_dump())
         self.session.add(instance)
@@ -57,8 +58,8 @@ class ManagerCrud(Generic[T]):
         """
         Получает запись по id.
 
-        :param instance_id: - id экземпляра.
-        :return: - экземпляр модели или None.
+        :param instance_id: Id экземпляра.
+        :return: Экземпляр модели или None.
         """
         stmt = select(self.model_db).where(self.model_db.id == instance_id)  # type: ignore
         result = await self.session.execute(stmt)
@@ -68,10 +69,10 @@ class ManagerCrud(Generic[T]):
         """
         Получает запись по любому полю.
 
-        :param field: - название поля модели (например: "name", "email", "id").
-        :param value: - значение для поиска (например: "Tom", "tom@email.com", 123).
-        :raises ValueError: - если поле field не найдено в модели.
-        :return: - экземпляр модели или None.
+        :param field: Название поля модели (например: "name", "email", "id").
+        :param value: Значение для поиска (например: "Tom", "tom@email.com", 123).
+        :raises ValueError: Если поле field не найдено в модели.
+        :return: Экземпляр модели или None.
         """
         if not hasattr(self.model_db, field):
             raise ValueError(f"Модель {self.model_db.__name__} не имеет поля '{field}'")
@@ -84,9 +85,9 @@ class ManagerCrud(Generic[T]):
         """
         Получает запись по нескольким полям.
 
-        :param filters: - название полей и их значения для поиска (например: name="Tom", email="tom@email.com").
-        :raises ValueError: - если поле название не найдено в модели.
-        :return: - экземпляр модели или None.
+        :param filters: Название полей и их значения для поиска (например: name="Tom", email="tom@email.com").
+        :raises ValueError: Если поле название не найдено в модели.
+        :return: Экземпляр модели или None.
         """
         stmt = select(self.model_db)
         for field, value in filters.items():
@@ -102,7 +103,7 @@ class ManagerCrud(Generic[T]):
         """
         Получает все записи.
 
-        :return: - список всех экземпляров модели или None.
+        :return: Список всех экземпляров модели или None.
         """
         stmt = select(self.model_db)
         result = await self.session.execute(stmt)
@@ -112,9 +113,9 @@ class ManagerCrud(Generic[T]):
         """
         Обновляет запись.
 
-        :param instance: - экземпляр модели.
-        :param data: - данные для обновления экземпляра.
-        :return: - обновленный экземпляр модели.
+        :param instance: Экземпляр модели.
+        :param data: Данные для обновления экземпляра.
+        :return: Обновленный экземпляр модели.
         """
         for name, value in data.model_dump(exclude_unset=True).items():
             setattr(instance, name, value)
@@ -125,8 +126,8 @@ class ManagerCrud(Generic[T]):
         """
         Удаляет запись.
 
-        :param instance: - экземпляр модели для удаления.
-        :return: - удаление прошло успешно True.
+        :param instance: Экземпляр модели для удаления.
+        :return: Удаление прошло успешно True.
         """
         await self.session.delete(instance)
         await self.session.commit()
