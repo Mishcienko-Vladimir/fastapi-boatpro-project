@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -40,8 +40,8 @@ class ProductManagerCrud:
         stmt = select(self.product_db).filter_by(name=name)
         if options:
             stmt = stmt.options(
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
+                selectinload(self.product_db.category),
+                selectinload(self.product_db.images),
             )
         result = await self.session.execute(stmt)
         return result.scalars().first()
@@ -58,8 +58,8 @@ class ProductManagerCrud:
         stmt = select(self.product_db).filter_by(id=product_id)
         if options:
             stmt = stmt.options(
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
+                selectinload(self.product_db.category),
+                selectinload(self.product_db.images),
             )
         result = await self.session.execute(stmt)
         return result.scalars().first()
@@ -75,8 +75,8 @@ class ProductManagerCrud:
         stmt = select(self.product_db)
         if options:
             stmt = stmt.options(
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
+                selectinload(self.product_db.category),
+                selectinload(self.product_db.images),
             )
         result = await self.session.execute(stmt)
         return result.scalars().unique().all()
@@ -97,8 +97,8 @@ class ProductManagerCrud:
                 | (self.product_db.description.ilike(f"%{query}%")),
             )
             .options(
-                joinedload(self.product_db.category),
-                joinedload(self.product_db.images),
+                selectinload(self.product_db.category),
+                selectinload(self.product_db.images),
             )
         )
         result = await self.session.execute(stmt)
