@@ -52,7 +52,7 @@ class OrderRead(BaseSchemaModel):
         description="Общая цена заказа",
     )
     pickup_point_name: str = Field(
-        description="Имея пункта самовывоза",
+        description="Имя пункта самовывоза",
     )
     product_name: str = Field(
         description="Название товара",
@@ -67,5 +67,21 @@ class OrderRead(BaseSchemaModel):
         description="Ссылка на оплату",
     )
     expires_at: datetime | None = Field(
+        description="Срок действия ссылки",
+    )
+
+
+class Payment(BaseSchemaModel):
+    """
+    Модель оплаты заказа.
+    """
+
+    payment_id: str = Field(
+        description="ID платежа в YooKassa",
+    )
+    payment_url: str = Field(
+        description="Ссылка на оплату",
+    )
+    expires_at: datetime = Field(
         description="Срок действия ссылки",
     )
