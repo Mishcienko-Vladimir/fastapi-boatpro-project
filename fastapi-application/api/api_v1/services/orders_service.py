@@ -8,9 +8,10 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import Product
-from core.models.orders import Order, OrderStatus
-from core.schemas.order import OrderCreate, OrderRead, OrderUpdate
+from core.models.orders import Order, OrderStatus, PickupPoint
+from core.schemas.order import OrderCreate, OrderRead, OrderUpdate, Payment
 
+from core.repositories.manager_сrud import ManagerCrud
 from core.repositories.pickup_point_manager_crud import PickupPointManagerCrud
 from core.repositories.products.product_manager_crud import ProductManagerCrud
 
@@ -32,15 +33,6 @@ class OrdersService:
         self.repo_product = ProductManagerCrud(session=session, product_db=Product)
         self.session = session
 
-    async def get_order_by_id(
-        self,
-        order_id: int,
-    ) -> Order | None:
-        """
-        Получение заказа по ID.
-        """
-        return await self.session.get(Order, order_id)
-
     async def create_order(
         self,
         user_id: int,
@@ -54,10 +46,12 @@ class OrdersService:
         4. Генерация ссылки на оплату
         5. Возврат OrderRead
         """
+
         # 1. Проверка пункта самовывоза
-        pickup_point = await self.repo_pickup_point.get_pickup_point_by_id(
-            point_id=order_data.pickup_point_id,
-        )
+        pickup_point = await ManagerCrud(
+            session=self.session, model_db=PickupPoint
+        ).get_by_id(instance_id=order_data.pickup_point_id)
+
         if not pickup_point:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -65,9 +59,11 @@ class OrdersService:
             )
 
         # 2. Проверка товара
-        product = await self.repo_product.get_product_by_id(
-            product_id=order_data.product_id,
-        )
+        product = await ManagerCrud(
+            session=self.session,
+            model_db=Product,
+        ).get_by_id(instance_id=order_data.product_id)
+
         if not product:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -80,16 +76,19 @@ class OrdersService:
             )
 
         # 3. Создание заказа
-        order = Order(
-            user_id=user_id,
-            pickup_point_id=pickup_point.id,
-            product_id=product.id,
-            total_price=product.price,
-            status=OrderStatus.PENDING,
+        order_data.update(
+            {
+                "user_id": user_id,
+                "total_price": product.price,
+                "status": OrderStatus.PENDING,
+                "product_name": product.name,
+                "pickup_point_name": pickup_point.name,
+            }
         )
-        self.session.add(order)
-        await self.session.commit()
-        await self.session.refresh(order)
+        order = await ManagerCrud(
+            session=self.session,
+            model_db=Order,
+        ).create(data=order_data)
 
         # 4. Генерируем ссылку на оплату
         payment_data = generate_payment_link(
@@ -99,25 +98,20 @@ class OrdersService:
         )
 
         # 5. Обновляем заказ и возвращаем данные
-        order.payment_id = payment_data["payment_id"]
-        order.payment_url = payment_data["confirmation_url"]
-        order.expires_at = order.created_at + timedelta(minutes=15)
-        await self.session.commit()
-
-        return OrderRead(
-            id=order.id,
-            user_id=order.user_id,
-            pickup_point_id=order.pickup_point_id,
-            product_id=order.product_id,
-            status=order.status,
-            total_price=order.total_price,
-            created_at=order.created_at,
-            payment_id=order.payment_id,  # type: ignore
-            payment_url=order.payment_url,  # type: ignore
-            expires_at=order.expires_at,  # type: ignore
-            pickup_point_name=pickup_point.name,
-            product_name=product.name,
+        data_update = Payment(
+            payment_id=payment_data["payment_id"],
+            payment_url=payment_data["confirmation_url"],
+            expires_at=order.created_at + timedelta(minutes=15),
         )
+        updated_order = await ManagerCrud(
+            session=self.session,
+            model_db=Order,
+        ).update(
+            instance=order,
+            data=data_update,
+        )
+        log.info("Created order with id: %r", updated_order.id)
+        return OrderRead.model_validate(updated_order)
 
     async def get_orders_by_user(
         self,
