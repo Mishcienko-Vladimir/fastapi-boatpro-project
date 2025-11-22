@@ -37,6 +37,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         - on_after_forgot_password: Вызывается после запроса на сброс пароля.
         - on_after_request_verify: Вызывается после запроса на подтверждение почты.
         - on_after_verify: Вызывается после успешного подтверждения почты.
+        - on_after_delete: Вызывается после успешного удаления пользователя.
     """
 
     reset_password_token_secret = settings.access_token.reset_password_token_secret
@@ -176,6 +177,26 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
             send_email_confirmed,
             user=user,
         )
+
+        if self.background_tasks:
+            self.background_tasks.add_task(
+                FastAPICache.clear,
+                namespace=settings.cache.namespace.users_list,
+            )
+        else:
+            await FastAPICache.clear(
+                namespace=settings.cache.namespace.users_list,
+            )
+
+    async def on_after_delete(
+        self,
+        user: User,
+        request: Optional["Request"] = None,
+    ):
+        """
+        Вызывается после успешного удаления пользователя.
+        """
+        log.warning("User %r has been deleted.", user.id)
 
         if self.background_tasks:
             self.background_tasks.add_task(
