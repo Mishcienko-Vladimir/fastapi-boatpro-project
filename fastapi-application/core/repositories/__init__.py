@@ -1,9 +1,9 @@
 __all__ = (
-    "UserManagerCrud",
+    "ManagerCrud",
     "FavoriteManagerCrud",
     "PickupPointManagerCrud",
 )
 
-from .user_manager_crud import UserManagerCrud
+from .manager_сrud import ManagerCrud
 from .favorite_manager_crud import FavoriteManagerCrud
 from .pickup_point_manager_crud import PickupPointManagerCrud
