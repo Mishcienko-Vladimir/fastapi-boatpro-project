@@ -2,18 +2,18 @@ import logging
 
 from datetime import timedelta
 from fastapi import HTTPException, status
-
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.products import Product
 from core.models.orders import Order, OrderStatus, PickupPoint
-from core.schemas.order import OrderCreate, OrderRead, OrderUpdate, Payment
-
 from core.repositories.manager_сrud import ManagerCrud
-from core.repositories.pickup_point_manager_crud import PickupPointManagerCrud
-from core.repositories.products.product_manager_crud import ProductManagerCrud
+from core.schemas.order import (
+    OrderCreate,
+    OrderCreateExtended,
+    OrderRead,
+    OrderUpdate,
+    OrderPaymentUpdate,
+)
 
 from utils.payment.yookassa import generate_payment_link
 
@@ -25,12 +25,22 @@ class OrdersService:
     """
     Сервис для управления операциями с заказами.
 
-    :param session: - сессия для работы с БД.
+    Attributes:
+        repo_order (ManagerCrud): Репозиторий для работы с заказами в БД
+        session (AsyncSession): Асинхронная сессия SQLAlchemy для работы с БД
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy для работы с БД
+
+    Methods:
+        create_order(user_id, order_data): - Создание нового заказа
+        get_orders_by_user(user_id): - Получение всех заказов пользователя
+        get_all_orders(): - Получение всех заказов в системе
+        update_order_status(order_id, status): - Обновление статуса заказа
     """
 
     def __init__(self, session: AsyncSession):
-        self.repo_pickup_point = PickupPointManagerCrud(session=session)
-        self.repo_product = ProductManagerCrud(session=session, product_db=Product)
+        self.repo_order = ManagerCrud(session=session, model_db=Order)
         self.session = session
 
     async def create_order(
@@ -39,12 +49,28 @@ class OrdersService:
         order_data: OrderCreate,
     ) -> OrderRead:
         """
-        Создание заказа:
-        1. Проверка пункта самовывоза
-        2. Проверка товара
-        3. Создание заказа
-        4. Генерация ссылки на оплату
-        5. Возврат OrderRead
+        Создаёт новый заказ с привязкой к пользователю.
+
+        Используется при оформлении заказа пользователем.
+
+        Процесс:
+            1. Проверяется существование пункта самовывоза.
+            2. Проверяется наличие и активность товара.
+            3. Создаётся заказ со статусом `pending`.
+            4. Генерируется ссылка на оплату через YooKassa.
+            5. Заказ обновляется с данными платежа.
+            6. Возвращается полная модель заказа.
+
+        Args:
+            user_id (int): Уникальный идентификатор пользователя
+            order_data (OrderCreate): Схема с `product_id` и `pickup_point_id`
+
+        Raises:
+            HTTPException: 404 NOT FOUND — Если пункт самовывоза или товар не найден
+            HTTPException: 400 BAD REQUEST — Если товар нет в наличии
+
+        Returns:
+            OrderRead: Модель созданного заказа с данными для оплаты
         """
 
         # 1. Проверка пункта самовывоза
@@ -76,19 +102,15 @@ class OrdersService:
             )
 
         # 3. Создание заказа
-        order_data.update(
-            {
-                "user_id": user_id,
-                "total_price": product.price,
-                "status": OrderStatus.PENDING,
-                "product_name": product.name,
-                "pickup_point_name": pickup_point.name,
-            }
+        new_order_data = OrderCreateExtended(
+            user_id=user_id,
+            total_price=product.price,
+            status=OrderStatus.PENDING,
+            product_name=product.name,
+            pickup_point_name=pickup_point.name,
+            **order_data.model_dump(),
         )
-        order = await ManagerCrud(
-            session=self.session,
-            model_db=Order,
-        ).create(data=order_data)
+        order = await self.repo_order.create(data=new_order_data)
 
         # 4. Генерируем ссылку на оплату
         payment_data = generate_payment_link(
@@ -98,15 +120,12 @@ class OrdersService:
         )
 
         # 5. Обновляем заказ и возвращаем данные
-        data_update = Payment(
+        data_update = OrderPaymentUpdate(
             payment_id=payment_data["payment_id"],
             payment_url=payment_data["confirmation_url"],
             expires_at=order.created_at + timedelta(minutes=15),
         )
-        updated_order = await ManagerCrud(
-            session=self.session,
-            model_db=Order,
-        ).update(
+        updated_order = await self.repo_order.update(
             instance=order,
             data=data_update,
         )
@@ -118,64 +137,56 @@ class OrdersService:
         user_id: int,
     ) -> list[OrderRead]:
         """
-        Получение всех заказов пользователя.
-        """
-        result = await self.session.execute(
-            select(Order)
-            .where(Order.user_id == user_id)
-            .options(
-                selectinload(Order.pickup_point),
-                selectinload(Order.product),
-            )
-        )
-        orders = result.scalars().all()
+        Получает все заказы, принадлежащие пользователю.
 
-        return [
-            OrderRead(
-                id=order.id,
-                user_id=order.user_id,
-                pickup_point_id=order.pickup_point_id,
-                product_id=order.product_id,
-                status=order.status,
-                total_price=order.total_price,
-                created_at=order.created_at,
-                payment_id=order.payment_id,
-                payment_url=order.payment_url,
-                expires_at=order.expires_at,
-                pickup_point_name=order.pickup_point.name,
-                product_name=order.product.name,
+        Выполняет выборку заказов по `user_id`.
+        Возвращает список заказов в виде модели `OrderRead`.
+
+        Используется в личном кабинете пользователя для отображения истории заказов.
+
+        Args:
+            user_id (int): Уникальный идентификатор пользователя
+
+        Raises:
+            HTTPException: 404 NOT FOUND — Если у пользователя нет заказов
+
+        Returns:
+            list[OrderRead]: Список заказов пользователя
+        """
+        orders = await self.repo_order.get_all_by_field(
+            field="user_id",
+            value=user_id,
+        )
+
+        if not orders:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="У пользователя нет заказов",
             )
-            for order in orders
-        ]
+        return [OrderRead.model_validate(order) for order in orders]
 
     async def get_all_orders(self) -> list[OrderRead]:
         """
-        Получение всех заказов.
+        Получает все заказы в системе.
+
+        Возвращает полный список заказов без фильтрации.
+
+        Используется в админ-панели для модерации и аналитики.
+
+        Raises:
+            HTTPException: 404 NOT FOUND — Если в системе нет ни одного заказа
+
+        Returns:
+            list[OrderRead]: Список всех заказов
         """
-        result = await self.session.execute(
-            select(Order).options(
-                selectinload(Order.pickup_point),
-                selectinload(Order.product),
+        orders = await self.repo_order.get_all()
+
+        if not orders:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Нет заказов",
             )
-        )
-        orders = result.scalars().all()
-        return [
-            OrderRead(
-                id=order.id,
-                user_id=order.user_id,
-                pickup_point_id=order.pickup_point_id,
-                product_id=order.product_id,
-                status=order.status,
-                total_price=order.total_price,
-                created_at=order.created_at,
-                payment_id=order.payment_id,
-                payment_url=order.payment_url,
-                expires_at=order.expires_at,
-                pickup_point_name=order.pickup_point.name,
-                product_name=order.product.name,
-            )
-            for order in orders
-        ]
+        return [OrderRead.model_validate(order) for order in orders]
 
     async def update_order_status(
         self,
@@ -183,38 +194,34 @@ class OrdersService:
         order_update: OrderUpdate,
     ) -> OrderRead:
         """
-        Обновление статуса заказа (для админа).
+        Обновляет статус заказа по его ID.
+
+        При обновлении проверяется существование заказа. Если заказ не найден —
+        возвращается ошибка 404. Поддерживает переход между статусами:
+        `pending` → `paid` → `processing` → `ready` → `completed`.
+
+        Используется в админ-панели и вебхуках (например, при подтверждении оплаты).
+
+        Args:
+            order_id (int): Уникальный идентификатор заказа
+            order_update (OrderUpdate): Схема с новым статусом заказа
+
+        Raises:
+            HTTPException: 404 NOT FOUND - Если заказ с указанным `order_id` не найден
+
+        Returns:
+            OrderRead: Обновлённая модель заказа с актуальным статусом
         """
-        stmt = (
-            select(Order)
-            .filter_by(id=order_id)
-            .options(
-                selectinload(Order.pickup_point),
-                selectinload(Order.product),
-            )
-        )
-        result = await self.session.execute(stmt)
-        order = result.scalars().first()
+        order = await self.repo_order.get_by_id(instance_id=order_id)
         if not order:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Заказ не найден",
             )
-        order.status = order_update.status
-        await self.session.commit()
-        await self.session.refresh(order)
 
-        return OrderRead(
-            id=order.id,
-            user_id=order.user_id,
-            pickup_point_id=order.pickup_point_id,
-            product_id=order.product_id,
-            status=order.status,  # type: ignore
-            total_price=order.total_price,
-            created_at=order.created_at,
-            payment_id=order.payment_id,
-            payment_url=order.payment_url,
-            expires_at=order.expires_at,
-            pickup_point_name=order.pickup_point.name,
-            product_name=order.product.name,
+        updated_order = await self.repo_order.update(
+            instance=order,
+            data=order_update,
         )
+        log.info("Updated order with id: %r", order_id)
+        return OrderRead.model_validate(updated_order)
