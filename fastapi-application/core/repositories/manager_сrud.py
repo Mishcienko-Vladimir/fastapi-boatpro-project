@@ -17,20 +17,27 @@ T = TypeVar("T", bound=Base)
 
 class ManagerCrud(Generic[T]):
     """
-    Универсальный CRUD-менеджер для работы с любой моделью.
+    Универсальный CRUD-менеджер для работы с любой моделью SQLAlchemy.
+
+    Предоставляет базовые операции: создание, чтение, обновление, удаление.
+    Поддерживает работу с любыми моделями, унаследованными от `Base`.
 
     Attributes:
-        session (AsyncSession): Сессия для работы с БД
-        model_db (Type[T]): Модель для работы с БД
+        session (AsyncSession): Асинхронная сессия SQLAlchemy для работы с БД
+        model_db (Type[T]): Модель, с которой будет работать менеджер
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy
+        model_db: Модель БД (например: User, Order, Product, Boat и т.д.)
 
     Methods:
-        create(data): - Создаёт новую запись.
+        create(data): - Создаёт новую запись в БД.
         get_by_id(instance_id): - Получает запись по id.
-        get_by_field(field, value): - Получает запись по полю.
-        get_by_fields(**filters): - Получает запись по нескольким полям.
-        get_all(): - Получает все записи.
-        update(instance, data): - Обновляет запись.
-        delete(instance): - Удаляет запись.
+        get_all_by_field(field, value): - Получает все записи по полю.
+        get_all_by_fields(**filters): - Получает все записи по нескольким полям.
+        get_all(): - Получает все записи модели.
+        update(instance, data): - Обновляет существующую запись.
+        delete(instance): - Удаляет запись из БД.
     """
 
     def __init__(
@@ -43,10 +50,13 @@ class ManagerCrud(Generic[T]):
 
     async def create(self, data) -> T:
         """
-        Создает новый пункт самовывоза.
+        Создаёт новую запись в базе данных.
 
-        :param data: Данные для создания записи.
-        :return: Экземпляр модели.
+        Args:
+            data: Pydantic-схема с данными для создания
+
+        Returns:
+            T: Созданный экземпляр модели с заполненным `id` и `created_at`
         """
         instance = self.model_db(**data.model_dump())
         self.session.add(instance)
@@ -56,38 +66,59 @@ class ManagerCrud(Generic[T]):
 
     async def get_by_id(self, instance_id: int) -> T | None:
         """
-        Получает запись по id.
+        Получает одну запись по её уникальному идентификатору.
 
-        :param instance_id: Id экземпляра.
-        :return: Экземпляр модели или None.
+        Args:
+            instance_id (int): Уникальный идентификатор записи
+
+        Returns:
+            T | None: Экземпляр модели или None, если не найден
         """
         stmt = select(self.model_db).where(self.model_db.id == instance_id)  # type: ignore
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def get_by_field(self, field: str, value: Any) -> T | None:
+    async def get_all_by_field(self, field: str, value: Any) -> Sequence[T]:
         """
-        Получает запись по любому полю.
+        Получает все записи по любому полю.
 
-        :param field: Название поля модели (например: "name", "email", "id").
-        :param value: Значение для поиска (например: "Tom", "tom@email.com", 123).
-        :raises ValueError: Если поле field не найдено в модели.
-        :return: Экземпляр модели или None.
+        Получает все записи, соответствующие значению указанного поля.
+
+        Используется для выборки по полям: `user_id`, `status`, `is_active` и т.д.
+
+        Args:
+            field (str): Название поля модели (например: "email", "status", "user_id")
+            value (Any): Значение для поиска (например: "Tom", "tom@email.com", 123)
+
+        Raises:
+            ValueError: Если указанное поле отсутствует в модели
+
+        Returns:
+            Sequence[T]: Список экземпляров модели (может быть пустым)
         """
         if not hasattr(self.model_db, field):
             raise ValueError(f"Модель {self.model_db.__name__} не имеет поля '{field}'")
 
         stmt = select(self.model_db).where(getattr(self.model_db, field) == value)  # type: ignore
         result = await self.session.execute(stmt)
-        return result.scalars().first()
+        return result.scalars().unique().all()
 
-    async def get_by_fields(self, **filters) -> T | None:
+    async def get_by_fields(self, **filters) -> Sequence[T]:
         """
-        Получает запись по нескольким полям.
+        Получает все записи, соответствующие нескольким полям и значениям.
 
-        :param filters: Название полей и их значения для поиска (например: name="Tom", email="tom@email.com").
-        :raises ValueError: Если поле название не найдено в модели.
-        :return: Экземпляр модели или None.
+        Выполняет фильтрацию по любому количеству полей.
+
+        Используется для сложных выборок: например, заказы с определённым статусом и пользователем.
+
+        Args:
+            **filters: Пары "поле=значение" для фильтрации (например: status="paid", user_id=5)
+
+        Raises:
+            ValueError: Если одно из указанных полей отсутствует в модели
+
+        Returns:
+            Sequence[T]: Список экземпляров модели, соответствующих всем условиям
         """
         stmt = select(self.model_db)
         for field, value in filters.items():
@@ -97,13 +128,14 @@ class ManagerCrud(Generic[T]):
                 )
             stmt = stmt.where(getattr(self.model_db, field) == value)  # type: ignore
         result = await self.session.execute(stmt)
-        return result.scalars().first()
+        return result.scalars().unique().all()
 
     async def get_all(self) -> Sequence[T]:
         """
-        Получает все записи.
+        Получает все записи указанной модели.
 
-        :return: Список всех экземпляров модели или None.
+        Returns:
+            Sequence[T]: Список всех экземпляров модели (может быть пустым)
         """
         stmt = select(self.model_db)
         result = await self.session.execute(stmt)
@@ -111,11 +143,16 @@ class ManagerCrud(Generic[T]):
 
     async def update(self, instance: T, data) -> T:
         """
-        Обновляет запись.
+        Обновляет существующую запись в базе данных.
 
-        :param instance: Экземпляр модели.
-        :param data: Данные для обновления экземпляра.
-        :return: Обновленный экземпляр модели.
+        Поддерживает частичное обновление (`exclude_unset=True`), что позволяет обновлять только указанные поля.
+
+        Args:
+            instance (T): Существующий экземпляр модели
+            data: Pydantic-схема с новыми данными
+
+        Returns:
+            T: Обновлённый экземпляр модели
         """
         for name, value in data.model_dump(exclude_unset=True).items():
             setattr(instance, name, value)
@@ -124,10 +161,13 @@ class ManagerCrud(Generic[T]):
 
     async def delete(self, instance: T) -> bool:
         """
-        Удаляет запись.
+        Удаляет запись из базы данных.
 
-        :param instance: Экземпляр модели для удаления.
-        :return: Удаление прошло успешно True.
+        Args:
+            instance (T): Экземпляр модели, который нужно удалить
+
+        Returns:
+            bool: Всегда `True`, если удаление прошло успешно
         """
         await self.session.delete(instance)
         await self.session.commit()
