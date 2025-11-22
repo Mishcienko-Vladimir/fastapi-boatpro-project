@@ -2,13 +2,14 @@ __add__ = (
     "BaseSchemaModel",
     "FavoriteCreate",
     "FavoriteRead",
-    "OrderCreate",
-    "OrderRead",
-    "OrderUpdate",
-    "Payment",
     "PickupPointCreate",
     "PickupPointUpdate",
     "PickupPointRead",
+    "OrderCreate",
+    "OrderCreateExtended",
+    "OrderRead",
+    "OrderUpdate",
+    "OrderPaymentUpdate",
     "UserRegisteredNotification",
     "UserCreate",
     "UserUpdate",
@@ -18,8 +19,14 @@ __add__ = (
 
 from .base_model import BaseSchemaModel
 from .favorite import FavoriteCreate, FavoriteRead
-from .order import OrderCreate, OrderRead, OrderUpdate, Payment
 from .pickup_point import PickupPointCreate, PickupPointUpdate, PickupPointRead
+from .order import (
+    OrderCreate,
+    OrderCreateExtended,
+    OrderRead,
+    OrderUpdate,
+    OrderPaymentUpdate,
+)
 from .user import (
     UserRegisteredNotification,
     UserCreate,

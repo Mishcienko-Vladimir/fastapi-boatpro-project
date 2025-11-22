@@ -11,10 +11,32 @@ class OrderCreate(BaseSchemaModel):
     """
 
     product_id: int = Field(
-        description="ID владельца заказа",
+        description="ID товар для заказа",
     )
     pickup_point_id: int = Field(
         description="ID пункта самовывоза",
+    )
+
+
+class OrderCreateExtended(OrderCreate):
+    """
+    Расширенная модель создания заказа.
+    """
+
+    user_id: int = Field(
+        description="ID владельца заказа",
+    )
+    status: OrderStatus = Field(
+        description="Статус заказа",
+    )
+    total_price: int = Field(
+        description="Общая цена заказа",
+    )
+    pickup_point_name: str = Field(
+        description="Имя пункта самовывоза",
+    )
+    product_name: str = Field(
+        description="Название товара",
     )
 
 
@@ -28,34 +50,13 @@ class OrderUpdate(BaseSchemaModel):
     )
 
 
-class OrderRead(BaseSchemaModel):
+class OrderRead(OrderCreateExtended):
     """
     Модель чтения заказа.
     """
 
     id: int = Field(
         description="ID заказа",
-    )
-    user_id: int = Field(
-        description="ID владельца заказа",
-    )
-    pickup_point_id: int = Field(
-        description="ID пункта самовывоза",
-    )
-    product_id: int = Field(
-        description="ID товара",
-    )
-    status: OrderStatus = Field(
-        description="Статус заказа",
-    )
-    total_price: int = Field(
-        description="Общая цена заказа",
-    )
-    pickup_point_name: str = Field(
-        description="Имя пункта самовывоза",
-    )
-    product_name: str = Field(
-        description="Название товара",
     )
     created_at: datetime = Field(
         description="Дата создания заказа",
@@ -71,7 +72,7 @@ class OrderRead(BaseSchemaModel):
     )
 
 
-class Payment(BaseSchemaModel):
+class OrderPaymentUpdate(BaseSchemaModel):
     """
     Модель оплаты заказа.
     """
