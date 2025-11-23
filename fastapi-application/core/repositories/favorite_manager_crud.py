@@ -23,37 +23,6 @@ class FavoriteManagerCrud:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def create_favorite(self, favorite_data: FavoriteCreate) -> Favorite:
-        """
-        Создает новый избранный товар.
-
-        :param favorite_data: - данные для создания товара.
-        :return: - экземпляр модели товара.
-        """
-
-        favorite = Favorite(**favorite_data.model_dump())
-        self.session.add(favorite)
-
-        await self.session.commit()
-        return favorite
-
-    async def get_favorite_with_relations(self, favorite_id: int) -> Favorite:
-        """
-        Получает избранный товар со связанными данными.
-
-        :param favorite_id:: - идентификатор избранного.
-        :return: - экземпляр модели избранного товара.
-        """
-        stmt = (
-            select(Favorite)
-            .options(
-                selectinload(Favorite.product).selectinload(Product.images),
-            )
-            .where(Favorite.id == favorite_id)
-        )
-        result = await self.session.execute(stmt)
-        return result.scalars().first()
-
     async def get_favorites_user(self, user_id: int) -> Sequence[Favorite]:
         """
         Получает все избранные товары пользователя.
