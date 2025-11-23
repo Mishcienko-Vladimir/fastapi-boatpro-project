@@ -114,7 +114,10 @@ async def get_pickup_point_by_id(
     Получение пункта выдачи по id.
     """
     _service = PickupPointsService(session=session)
-    return await _service.get_pickup_point_by_id(pickup_point_id=pickup_point_id)
+    pickup_point = await _service.get_pickup_point_by_id(
+        pickup_point_id=pickup_point_id
+    )
+    return PickupPointRead.model_validate(pickup_point)
 
 
 @router.get(

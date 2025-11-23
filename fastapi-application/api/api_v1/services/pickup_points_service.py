@@ -54,7 +54,7 @@ class PickupPointsService:
             HTTPException: 404 NOT FOUND — Если пункт с указанным ID не найден
 
         Returns:
-            PickupPointRead: Модель найденного пункта самовывоза
+            PickupPoint: SQLAlchemy-модель (не Pydantic-схема)
         """
 
         pickup_point = await self.repo.get_by_id(instance_id=pickup_point_id)
@@ -175,7 +175,9 @@ class PickupPointsService:
             PickupPointRead: Обновлённая модель пункта самовывоза
         """
 
-        pickup_point = await self.repo.get_by_id(instance_id=pickup_point_id)
+        pickup_point = await self.get_pickup_point_by_id(
+            pickup_point_id=pickup_point_id
+        )
 
         updated_pickup_point = await self.repo.update(
             instance=pickup_point,
@@ -200,7 +202,9 @@ class PickupPointsService:
             None
         """
 
-        pickup_point = await self.repo.get_by_id(instance_id=pickup_point_id)
+        pickup_point = await self.get_pickup_point_by_id(
+            pickup_point_id=pickup_point_id
+        )
 
         log.info("Deleted pickup point with id: %r", pickup_point_id)
         await self.repo.delete(instance=pickup_point)
