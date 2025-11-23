@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import (
@@ -33,6 +34,7 @@ class ManagerCrud(Generic[T]):
     Methods:
         create(data): - Создаёт новую запись в БД.
         get_by_id(instance_id): - Получает запись по id.
+        get_by_id_with_relations(instance_id, *relations): - Получает запись по id с подгруженными связями.
         get_all_by_field(field, value): - Получает все записи по полю.
         get_all_by_fields(**filters): - Получает все записи по нескольким полям.
         get_all(): - Получает все записи модели.
@@ -75,6 +77,68 @@ class ManagerCrud(Generic[T]):
             T | None: Экземпляр модели или None, если не найден
         """
         stmt = select(self.model_db).where(self.model_db.id == instance_id)  # type: ignore
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
+    async def get_by_id_with_relations(
+        self,
+        instance_id: int,
+        *relations: tuple[str, Type[Base]],
+    ) -> T | None:
+        """
+        Получает объект по ID с подгруженными связями.
+
+        Пример:
+            favorite = await manager(session, Favorite).get_by_id_with_relations(
+                - 123,
+                - ("product", Product),
+                - ("images", ImagePath),
+            )
+
+            SQLAlchemy-запрос будет выглядеть так:
+                select(Favorite).options(
+                    selectinload(Favorite.product)
+                    .selectinload(Product.images)
+                )
+                .where(Favorite.id == 123)
+
+        Args:
+            instance_id: ID объекта
+            *relations: Цепочка связей в формате (attr_name, Model). Может быть одна или более
+
+        Returns:
+            T | None: Объект с подгруженными связями или None
+
+        Raises:
+            AttributeError: Если указанное поле не существует в модели
+        """
+        stmt = select(self.model_db).where(self.model_db.id == instance_id)  # type: ignore
+
+        if not relations:
+            result = await self.session.execute(stmt)
+            return result.scalars().first()
+
+        current_load = None
+        prev_model = self.model_db
+
+        for attr_name, next_model in relations:
+            if not hasattr(prev_model, attr_name):
+                raise AttributeError(
+                    f"{prev_model.__name__} не имеет атрибута '{attr_name}'"
+                )
+
+            attr = getattr(prev_model, attr_name)
+
+            if current_load is None:
+                current_load = selectinload(attr)
+            else:
+                current_load = current_load.selectinload(attr)
+
+            prev_model = next_model
+
+        if current_load is not None:
+            stmt = stmt.options(current_load)
+
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
