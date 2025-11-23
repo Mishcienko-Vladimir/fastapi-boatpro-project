@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.favorite import Favorite
@@ -37,19 +37,19 @@ class FavoriteManagerCrud:
         await self.session.commit()
         return favorite
 
-    async def get_favorite_with_relations(self, product_id: int) -> Favorite:
+    async def get_favorite_with_relations(self, favorite_id: int) -> Favorite:
         """
         Получает избранный товар со связанными данными.
 
-        :param product_id: - идентификатор товара.
+        :param favorite_id:: - идентификатор избранного.
         :return: - экземпляр модели избранного товара.
         """
         stmt = (
             select(Favorite)
             .options(
-                joinedload(Favorite.product).joinedload(Product.images),
+                selectinload(Favorite.product).selectinload(Product.images),
             )
-            .where(Favorite.product_id == product_id)
+            .where(Favorite.id == favorite_id)
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
@@ -64,7 +64,7 @@ class FavoriteManagerCrud:
         stmt = (
             select(Favorite)
             .options(
-                joinedload(Favorite.product).joinedload(Product.images),
+                selectinload(Favorite.product).selectinload(Product.images),
             )
             .where(Favorite.user_id == user_id)
         )
