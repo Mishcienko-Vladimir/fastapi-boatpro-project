@@ -69,7 +69,7 @@ class FavoritesService:
                 detail=f"The user already has this product in their favorites",
             )
 
-        favorite = await self.repo_favorite.create_favorite(favorite_data)
+        favorite = await self.repo.create(favorite_data)
         favorite_with_relations = await self.repo.get_by_id_with_relations(
             favorite.id,
             ("product", Product),  # Favorite.product → возвращает Product
