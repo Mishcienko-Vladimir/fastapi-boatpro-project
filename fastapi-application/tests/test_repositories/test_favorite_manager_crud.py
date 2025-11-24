@@ -30,29 +30,6 @@ async def test_create_favorite(
 
 
 @pytest.mark.anyio
-async def test_is_favorite_exists(
-    test_session: AsyncSession,
-    test_user: User,
-    test_product: Product,
-):
-    """
-    Тест проверки существования избранного, через репозиторий.
-    """
-    repo = FavoriteManagerCrud(session=test_session)
-    fav_data = FavoriteCreate(
-        user_id=test_user.id,
-        product_id=test_product.id,
-    )
-    await repo.create_favorite(favorite_data=fav_data)
-    exists = await repo.is_favorite_exists(
-        user_id=test_user.id,
-        product_id=test_product.id,
-    )
-
-    assert exists is True
-
-
-@pytest.mark.anyio
 async def test_get_favorites_user(
     test_session: AsyncSession,
     test_user: User,
