@@ -5,19 +5,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class ProductManagerCrud:
     """
-    Помощник для работы с товарами и категориями.
+    Универсальный CRUD-менеджер для работы с товарами (Boat, Trailer, OutboardMotor и др.).
 
-    :session: - сессия для работы с БД.
-    :product_db: - модель БД (Boat, Trailer и т.д.).
+    Предоставляет базовые операции: создание, чтение, обновление, удаление.
+    Поддерживает работу с любыми моделями товаров, унаследованными от `ProductBase`.
+    Автоматически подгружает связанные данные: категорию и изображения.
 
-    :methods:
-        - get_product_by_name - получает товар по name.
-        - get_product_by_id - получает товар по id.
-        - get_all_products - получает все товары.
-        - get_search_products - получает товары по ключевому слову.
-        - create_product - создает новый товар.
-        - update_product_data - обновляет товар, без обработки изображений.
-        - delete_product - удаляет товар.
+    Attributes:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy для работы с БД
+        product_db: Модель товара (например: Boat, Trailer, OutboardMotor)
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy
+        product_db: Конкретная модель товара (например: Boat)
+
+    Methods:
+        get_product_by_name(name, options): - Получает товар по имени.
+        get_product_by_id(product_id, options): - Получает товар по ID.
+        get_all_products(options): - Получает все товары.
+        get_search_products(query): - Ищет товары по названию, производителю или описанию.
+        create_product(product_data): - Создаёт новый товар.
+        update_product_data(product, product_data): - Обновляет данные товара (без изображений).
+        delete_product(product): - Удаляет товар из БД.
     """
 
     def __init__(
@@ -30,11 +39,17 @@ class ProductManagerCrud:
 
     async def get_product_by_name(self, name: str, options: bool = None):
         """
-        Получает товар по name.
+         Получает товар по его названию.
 
-        :name: - имя товара.
-        :options: - True - загрузить связанные данные.
-        :return: - экземпляр модели товара или None.
+        Args:
+            name (str): Название товара (полное или частичное)
+            options (bool): Если True — подгружает связанные данные:
+                           - Категорию (category)
+                           - Изображения (images)
+
+        Returns:
+            Экземпляр модели товара или None, если не найден
+
         """
 
         stmt = select(self.product_db).filter_by(name=name)
@@ -48,11 +63,17 @@ class ProductManagerCrud:
 
     async def get_product_by_id(self, product_id: int, options: bool = None):
         """
-        Получает товар по id.
+        Получает товар по его уникальному идентификатору.
 
-        :param product_id: - id товара.
-        :param options: - True - загрузить связанные данные.
-        :return: - экземпляр модели товара или None.
+        Args:
+            product_id (int): Уникальный ID товара
+            options (bool): Если True — подгружает связанные данные:
+                           - Категорию (category)
+                           - Изображения (images)
+
+        Returns:
+            Экземпляр модели товара или None, если не найден
+
         """
 
         stmt = select(self.product_db).filter_by(id=product_id)
@@ -66,10 +87,16 @@ class ProductManagerCrud:
 
     async def get_all_products(self, options: bool = None):
         """
-        Получает все товары.
+        Получает все товары указанного типа (например, все катера).
 
-        :param options: - True - загрузить связанные данные.
-        :return: - список всех товаров или None.
+        Args:
+            options (bool): Если True — подгружает связанные данные:
+                           - Категорию (category)
+                           - Изображения (images)
+
+        Returns:
+            Список всех товаров (может быть пустым)
+
         """
 
         stmt = select(self.product_db)
@@ -83,10 +110,19 @@ class ProductManagerCrud:
 
     async def get_search_products(self, query: str):
         """
-        Получение товаров по ключевому слову (название, производитель, описание).
+        Выполняет поиск товаров по ключевому слову.
 
-        :param query: - ключевое слово для поиска.
-        :return: - список товаров или None.
+        Ищет совпадения в:
+        - Названии товара
+        - Названии производителя
+        - Описании товара
+
+        Args:
+            query (str): Ключевое слово для поиска
+
+        Returns:
+            Список товаров, соответствующих запросу
+
         """
 
         stmt = (
@@ -106,10 +142,14 @@ class ProductManagerCrud:
 
     async def create_product(self, product_data):
         """
-        Создает новый товар.
+        Создаёт новый товар в базе данных.
 
-        :product_data: - данные для создания товара.
-        :return: - экземпляр модели товара.
+        Args:
+            product_data: Pydantic-схема с данными для создания товара
+
+        Returns:
+            Созданный экземпляр модели товара с заполненным `id`
+
         """
 
         product = self.product_db(**product_data.model_dump())
@@ -120,11 +160,17 @@ class ProductManagerCrud:
 
     async def update_product_data(self, product, product_data):
         """
-        Обновляет товар, без обработки изображений.
+        Обновляет данные товара (без обработки изображений).
 
-        :param product: - экземпляр модели товара для обновления.
-        :param product_data: - данные для обновления.
-        :return: - обновленный экземпляр модели товара.
+        Поддерживает частичное обновление (только переданные поля).
+
+        Args:
+            product: Существующий экземпляр товара
+            product_data: Pydantic-схема с новыми данными
+
+        Returns:
+            Обновлённый экземпляр модели
+
         """
 
         for name, value in product_data.model_dump(exclude_unset=True).items():
@@ -134,10 +180,13 @@ class ProductManagerCrud:
 
     async def delete_product(self, product) -> bool:
         """
-        Удаляет товар.
+        Удаляет товар из базы данных.
 
-        :param product: - экземпляр модели товара для удаления.
-        :return: - удаление прошло успешно True.
+        Args:
+            product: Экземпляр товара, который нужно удалить
+
+        Returns:
+            bool: True, если удаление прошло успешно
         """
 
         await self.session.delete(product)
