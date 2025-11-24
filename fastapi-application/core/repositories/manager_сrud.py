@@ -80,16 +80,18 @@ class ManagerCrud(Generic[T]):
         result = await self.session.execute(stmt)
         return result.scalars().first()
 
-    async def get_by_id_with_relations(
+    async def get_all_by_field_with_relations(
         self,
-        instance_id: int,
+        field: str,
+        value: Any,
         *relations: tuple[str, Type[Base]],
-    ) -> T | None:
+    ) -> Sequence[T]:
         """
-        Получает объект по ID с подгруженными связями.
+        Получает объекты по полю field со значением value с подгруженными связями.
 
         Пример:
             favorite = await manager(session, Favorite).get_by_id_with_relations(
+                - "id",
                 - 123,
                 - ("product", Product),
                 - ("images", ImagePath),
@@ -103,16 +105,21 @@ class ManagerCrud(Generic[T]):
                 .where(Favorite.id == 123)
 
         Args:
-            instance_id: ID объекта
+            field: Название поля модели
+            value: Значение поля
             *relations: Цепочка связей в формате (attr_name, Model). Может быть одна или более
 
         Returns:
-            T | None: Объект с подгруженными связями или None
+            Sequence[T]: Объекты с подгруженными связями или None
 
         Raises:
+            ValueError: Если указанное поле field отсутствует в модели
             AttributeError: Если указанное поле не существует в модели
         """
-        stmt = select(self.model_db).where(self.model_db.id == instance_id)  # type: ignore
+        if not hasattr(self.model_db, field):
+            raise ValueError(f"Модель {self.model_db.__name__} не имеет поля '{field}'")
+
+        stmt = select(self.model_db).where(getattr(self.model_db, field) == value)  # type: ignore
 
         if not relations:
             result = await self.session.execute(stmt)
@@ -140,7 +147,7 @@ class ManagerCrud(Generic[T]):
             stmt = stmt.options(current_load)
 
         result = await self.session.execute(stmt)
-        return result.scalars().first()
+        return result.scalars().unique().all()
 
     async def get_all_by_field(self, field: str, value: Any) -> Sequence[T]:
         """
