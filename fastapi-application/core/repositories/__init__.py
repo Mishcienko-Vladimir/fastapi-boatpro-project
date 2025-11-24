@@ -1,7 +1,3 @@
-__all__ = (
-    "ManagerCrud",
-    "FavoriteManagerCrud",
-)
+__all__ = ("ManagerCrud",)
 
 from .manager_сrud import ManagerCrud
-from .favorite_manager_crud import FavoriteManagerCrud
