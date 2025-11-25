@@ -20,7 +20,7 @@ from core.models.products import (
     ImagePath,
     ProductImagesAssociation,
 )
-from core.repositories.authentication.fastapi_users import (
+from core.dependencies.fastapi_users import (
     current_active_superuser,
     optional_user,
 )

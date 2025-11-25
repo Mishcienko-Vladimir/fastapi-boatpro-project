@@ -8,8 +8,7 @@ from api.api_v1.routers.products.outboard_motors import (
     get_outboard_motor_by_name,
 )
 
-from core.dependencies import get_db_session
-from core.repositories.authentication.fastapi_users import optional_user
+from core.dependencies import get_db_session, optional_user
 from core.config import settings
 from core.models import User
 

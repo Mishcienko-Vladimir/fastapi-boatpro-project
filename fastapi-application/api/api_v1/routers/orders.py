@@ -5,9 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.api_v1.services.orders_service import OrdersService
 
 from core.config import settings
-from core.dependencies import get_db_session
+from core.dependencies import get_db_session, current_active_user
 from core.models import User
-from core.repositories.authentication.fastapi_users import current_active_user
 from core.schemas.order import OrderCreate, OrderRead, OrderUpdate
 
 

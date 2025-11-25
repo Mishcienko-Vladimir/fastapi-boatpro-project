@@ -4,7 +4,7 @@ from fastapi_cache.decorator import cache
 
 from api.api_v1.dependencies.authentication import get_users_db
 
-from core.repositories.authentication.fastapi_users import fastapi_users
+from core.dependencies.fastapi_users import fastapi_users
 from core.config import settings
 from core.schemas.user import UserRead, UserUpdate
 

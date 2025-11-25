@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Request, Depends
 
-from core.repositories.authentication.fastapi_users import optional_user
+from core.dependencies.fastapi_users import optional_user
 from core.config import settings
 from core.models import User
 

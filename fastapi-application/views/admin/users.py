@@ -9,14 +9,12 @@ from api.api_v1.routers.users import get_users_list
 from api.api_v1.dependencies.authentication.user_manager import get_user_manager
 
 from core.config import settings
-from core.dependencies import get_db_session
+from core.dependencies import get_db_session, current_active_superuser
+from core.repositories.authentication.user_manager import UserManager
 from core.schemas.user import UserRead
 
 from core.models.user import SQLAlchemyUserDatabase
 from core.models import User
-
-from core.repositories.authentication.user_manager import UserManager
-from core.repositories.authentication.fastapi_users import current_active_superuser
 
 from utils.templates import templates
 
