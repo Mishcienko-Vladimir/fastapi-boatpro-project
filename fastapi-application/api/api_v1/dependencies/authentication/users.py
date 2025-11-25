@@ -15,4 +15,16 @@ async def get_users_db(
         Depends(get_db_session),
     ],
 ):
+    """
+    Зависимость для получения базы данных пользователей.
+
+    Возвращает адаптер для работы с моделью User через SQLAlchemy.
+    Используется UserManager для выполнения CRUD операций.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия
+
+    Yields:
+        SQLAlchemyUserDatabase: Адаптер для User
+    """
     yield User.get_db(session=session)
