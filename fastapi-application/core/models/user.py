@@ -22,11 +22,12 @@ class SQLAlchemyUserDatabase(SQLAlchemyUserDatabaseGeneric):
     """
     Добавление новых методов в SQLAlchemyUserDatabase, для работы с пользователями.
 
-    :methods:
-        - get_users() - возвращает список пользователей.
+    Methods:
+        get_users() Возвращает список пользователей.
     """
 
     async def get_users(self) -> list["User"]:
+        """Возвращает список пользователей."""
         statement = select(User).order_by(User.id)
         results = await self.session.scalars(statement)
         return list(results.all())
@@ -53,4 +54,5 @@ class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[UserIdType]):
     # Получение данных из БД
     @classmethod
     def get_db(cls, session: "AsyncSession"):
+        """Получение данных из БД"""
         return SQLAlchemyUserDatabase(session, cls)
