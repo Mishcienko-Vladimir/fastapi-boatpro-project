@@ -27,10 +27,21 @@ from middleware.custom_rate_limit_middleware import CustomRateLimitMiddleware
 from middleware.security_headers_middleware import SecurityHeadersMiddleware
 
 
-# Для закрытия базы данных
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # startup
+    """
+    Управление жизненным циклом приложения (lifespan).
+    Выполняется при старте и завершении приложения.
+
+    :param app: Экземпляр FastAPI приложения.
+    :yields: Ничего не возвращает, передаёт управление приложению.
+    :side effects:
+        - Инициализирует базу данных.
+        - Инициализирует кэш через Redis.
+        - Создаёт суперпользователя, если его нет.
+        - Закрывает соединение с БД при завершении.
+    """
+    # startup (старт приложения)
     redis = Redis(
         host=settings.redis.host,
         port=settings.redis.port,
@@ -45,14 +56,24 @@ async def lifespan(app: FastAPI):
         await create_superuser_if_not_exists(session)
 
     yield
-    # shutdown
-    await db_helper.dispose()
+    # shutdown (завершение приложения)
+    await db_helper.dispose()  # Закрытия базы данных
 
 
 def register_static_docs_routes(app: FastAPI):
     """
     Создание статических URL для Swagger, ReDoc и статических файлов.
     Необходимо для того, чтобы документация нормально открывалась.
+
+    :param app: Экземпляр FastAPI приложения.
+    :side effects:
+        - Добавляет ручки:
+          - `/docs` → кастомный Swagger UI
+          - `/redoc` → кастомный ReDoc
+          - `/docs/oauth2-redirect` → редирект для OAuth2
+    :notes:
+        - Используется, если `create_custom_static_urls=True`
+        - Позволяет обновлять UI без перезапуска приложения
     """
 
     @app.get("/docs", include_in_schema=False)
@@ -83,7 +104,22 @@ def create_app(
     lifespan_override=None,
     enable_rate_limit: bool = True,
 ) -> FastAPI:
-    """Создание FastAPI приложения."""
+    """
+    Фабрика для создания экземпляра FastAPI приложения.
+
+    :param create_custom_static_urls: True — отключает стандартные /docs и /redoc, и регистрирует кастомные с CDN.
+    :param lifespan_override: Возможность переопределить функцию lifespan (для тестов).
+    :param enable_rate_limit: Включать ли ограничение запросов (по умолчанию — да).
+    :return: Настроенный экземпляр FastAPI.
+    :side effects:
+        - Добавляет middleware:
+          - CORS
+          - Rate Limiting (SlowAPI + Custom)
+          - Security Headers
+        - Монтирует статику (/static)
+        - Регистрирует обработчики ошибок
+        - Подключает вебхуки
+    """
 
     app = FastAPI(
         default_response_class=ORJSONResponse,
@@ -93,7 +129,7 @@ def create_app(
         webhooks=webhooks_router,
     )
 
-    # Защита от спама (bruteforce).
+    # Защита от bruteforce и DDoS.
     if enable_rate_limit:
         app.state.limiter = limiter  # type: ignore
         app.add_middleware(SlowAPIMiddleware)
@@ -102,7 +138,7 @@ def create_app(
     # Установка безопасности HTTP-заголовков.
     app.add_middleware(SecurityHeadersMiddleware)
 
-    # Добавления CORS
+    # Добавления и настройка CORS.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.api.allowed_origins,
@@ -118,6 +154,6 @@ def create_app(
     # Регистрация статических файлов в папке static.
     app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
-    # Регистрация обработчиков ошибок из модуля errors_handlers
+    # Регистрация обработчиков ошибок(404, 500 и др.) из модуля errors_handlers
     register_errors_handlers(app)
     return app

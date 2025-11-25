@@ -13,13 +13,36 @@ log = logging.getLogger(__name__)
 
 
 def register_errors_handlers(app: FastAPI) -> None:
+    """
+    Регистрирует глобальные обработчики ошибок для приложения FastAPI.
+
+    Args:
+        app: Экземпляр FastAPI, в который добавляются обработчики.
+
+    Добавляет обработчики для:
+        - ValidationError (Pydantic)
+        - DatabaseError (SQLAlchemy)
+        - HTTPException (FastAPI)
+        - Логирует критические ошибки
+        - Перенаправляет пользователей при ошибках в UI
+
+    Returns:
+        - API-ошибки возвращают JSON
+        - UI-ошибки (не API) перенаправляют на страницы (/page-missing)
+    """
 
     @app.exception_handler(ValidationError)
     def handle_pydantic_validation_error(
         request: Request,
         exc: ValidationError,
     ) -> ORJSONResponse:
-        """Обработчик ошибок валидации данных"""
+        """
+        Обрабатывает ошибки валидации Pydantic при создании/обновлении моделей.
+
+        :param request: Объект запроса (для логирования и анализа контекста).
+        :param exc: Исключение ValidationError от Pydantic.
+        :return: JSON-ответ, с деталями ошибок валидации и со статусом 422 Unprocessable Entity.
+        """
 
         return ORJSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -34,7 +57,13 @@ def register_errors_handlers(app: FastAPI) -> None:
         request: Request,
         exc: DatabaseError,
     ) -> ORJSONResponse:
-        """Обработчик ошибок базы данных"""
+        """
+        Обрабатывает критические ошибки базы данных (например, разрыв соединения).
+
+        :param request: Объект запроса.
+        :param exc: Исключение от SQLAlchemy (IntegrityError, OperationalError и др.).
+        :return: JSON-ответ, с общим сообщением об ошибке и со статусом 500 Internal Server Error.
+        """
 
         log.error(
             "Произошла ошибка базы данных",
@@ -53,6 +82,21 @@ def register_errors_handlers(app: FastAPI) -> None:
         request: Request,
         exc: HTTPException,
     ):
+        """
+        Централизованный обработчик HTTP-исключений.
+
+        Example:
+            - Защита от раскрытия внутренних путей
+            - Единое поведение для UI
+
+        Args:
+            request: Объект запроса.
+            exc: HTTPException с кодом и деталями.
+
+        Returns:
+             - Для API-запросов: JSON с `{"detail": ...}`.
+             - Для UI-запросов: редирект на /page-missing.
+        """
         if request.url.path.startswith("/api"):
             return ORJSONResponse(
                 status_code=exc.status_code,
