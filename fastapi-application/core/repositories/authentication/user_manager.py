@@ -29,15 +29,25 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
     Класс для управления жизненным циклом пользователя: регистрация, сброс пароля, подтверждение почты и т.д.
     Добавляет пользовательские действия после ключевых событий.
 
-    :reset_password_token_secret: Секретный токен для создания токена сброса пароля.
-    :verification_token_secret: Секретный токен для создания токена подтверждения почты.
+    Обеспечивает расширенную логику поверх стандартного `BaseUserManager` из `fastapi-users`,
+    позволяя выполнять фоновые задачи (например, отправку писем) и сброс кэша при изменениях.
 
-    :methods:
-        - on_after_register: Вызывается после успешной регистрации пользователя.
-        - on_after_forgot_password: Вызывается после запроса на сброс пароля.
-        - on_after_request_verify: Вызывается после запроса на подтверждение почты.
-        - on_after_verify: Вызывается после успешного подтверждения почты.
-        - on_after_delete: Вызывается после успешного удаления пользователя.
+    Attributes:
+        reset_password_token_secret (str): Секретный ключ для генерации токена сброса пароля.
+        verification_token_secret (str): Секретный ключ для генерации токена подтверждения email.
+        background_tasks (BackgroundTasks | None): Объект для выполнения фоновых задач (например, отправка email).
+
+    Args:
+        user_db (BaseUserDatabase[User, UserIdType]): База данных пользователей.
+        password_helper (PasswordHelperProtocol | None): Вспомогательный инструмент для хеширования паролей.
+        background_tasks (BackgroundTasks | None): Объект для асинхронного выполнения задач (опционально).
+
+    Methods:
+        on_after_register: Вызывается после успешной регистрации.
+        on_after_forgot_password: Вызывается при запросе сброса пароля.
+        on_after_request_verify: Вызывается при запросе подтверждения email.
+        on_after_verify: Вызывается после успешного подтверждения email.
+        on_after_delete: Вызывается после удаления пользователя.
     """
 
     reset_password_token_secret = settings.access_token.reset_password_token_secret
@@ -49,14 +59,6 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         password_helper: Optional["PasswordHelperProtocol"] = None,
         background_tasks: Optional["BackgroundTasks"] = None,
     ):
-        """
-        Инициализация UserManager.
-
-        :param user_db: База данных пользователей.
-        :param password_helper: Вспомогательный инструмент для работы с паролями.
-        :param background_tasks: Объект для выполнения фоновых задач (например, отправка писем).
-        """
-
         super().__init__(user_db, password_helper)
         self.background_tasks = background_tasks
 
@@ -68,9 +70,19 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         """
         Вызывается после успешной регистрации пользователя.
 
-        :param user: Объект пользователя, который зарегистрировался.
-        :param request: HTTP-запрос, который инициировал регистрацию (опционально).
-        :return: - сброс кэша.
+        Выполняет:
+            - Сброс кэша списка пользователей (для актуализации в админке).
+            - Логирование события.
+            - (Опционально) Отправка уведомления о новом пользователе.
+
+        Args:
+            user (User): Объект зарегистрированного пользователя.
+            request (Request | None): HTTP-запрос, инициировавший регистрацию.
+
+        Side effects:
+            - Очищает кэш: `namespace=settings.cache.namespace.users_list`
+            - Логирует: "User {id} has registered."
+            - (Закомментировано) Может отправить вебхук: `send_new_user_notification(user)`
         """
 
         if self.background_tasks:
@@ -99,10 +111,17 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         """
         Вызывается после запроса на сброс пароля.
 
-        :param user: Объект пользователя, который запрашивает сброс пароля.
-        :param token: Токен для сброса пароля.
-        :param request: HTTP-запрос, который инициировал сброс (опционально).
-        :return: Отправляет письмо со ссылкой для сброса пароля.
+        Генерирует ссылку для сброса и отправляет её на email пользователя.
+
+        Args:
+            user (User): Пользователь, запросивший сброс пароля.
+            token (str): Сгенерированный токен для сброса.
+            request (Request | None): HTTP-запрос, инициировавший сброс.
+
+        Side effects:
+            - Формирует ссылку: `{base_url}/password-reset?token={token}`
+            - Добавляет в фоновую очередь: отправку email через `send_reset_password`
+            - Логирует событие
         """
 
         log.warning(
@@ -128,14 +147,19 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         request: Optional["Request"] = None,
     ):
         """
-        Вызывается после запроса на подтверждение почты.
+        Вызывается после запроса подтверждения email.
 
-        Формирует ссылку для подтверждения и запускает фоновую задачу на отправку письма.
+        Генерирует ссылку для подтверждения и отправляет письмо с инструкциями.
 
-        :param user: Объект пользователя, который запрашивает подтверждение почты.
-        :param token: Токен для подтверждения почты.
-        :param request: HTTP-запрос, который инициировал подтверждение (опционально).
-        :return: Отправляет письмо со ссылкой для подтверждения почты.
+        Args:
+            user (User): Пользователь, запросивший подтверждение email.
+            token (str): Токен для подтверждения.
+            request (Request | None): HTTP-запрос, инициировавший запрос.
+
+        Side effects:
+            - Формирует ссылку: `{base_url}/verify-email?token={token}`
+            - Добавляет в фоновую очередь: отправку письма через `send_verification_email`
+            - Логирует событие
         """
 
         log.warning(
@@ -159,13 +183,20 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
         request: Optional["Request"] = None,
     ):
         """
-        Вызывается после успешного подтверждения почты.
+        Вызывается после успешного подтверждения email.
 
-        Логирует событие и запускает фоновую задачу на отправку уведомления о подтверждении.
+        Выполняет:
+            - Отправку уведомления о подтверждении.
+            - Сброс кэша списка пользователей.
 
-        :param user: Объект пользователя, чья почта была подтверждена.
-        :param request: HTTP-запрос, который инициировал подтверждение (опционально).
-        :return: Отправляет письмо, о том что почта подтверждена.
+        Args:
+            user (User): Пользователь, подтвердивший email.
+            request (Request | None): HTTP-запрос, инициировавший подтверждение.
+
+        Side effects:
+            - Добавляет в фоновую очередь: отправку письма `send_email_confirmed`
+            - Сбрасывает кэш: `users_list`
+            - Логирует событие
         """
 
         log.warning(
@@ -195,6 +226,18 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, UserIdType]):
     ):
         """
         Вызывается после успешного удаления пользователя.
+
+        Выполняет:
+            - Сброс кэша списка пользователей.
+            - Логирование события.
+
+        Args:
+            user (User): Пользователь, который был удалён.
+            request (Request | None): HTTP-запрос, инициировавший удаление.
+
+        Side effects:
+            - Сбрасывает кэш: `users_list`
+            - Логирует: "User {id} has been deleted."
         """
         log.warning("User %r has been deleted.", user.id)
 
