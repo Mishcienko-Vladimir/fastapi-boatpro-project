@@ -9,9 +9,7 @@ from .category import CategoryRead
 
 
 class BoatBaseModel(ProductBaseModel):
-    """
-    Базовая схема для катеров.
-    """
+    """Базовая схема для катеров."""
 
     length_hull: int = Field(
         gt=0,
@@ -76,9 +74,7 @@ class BoatBaseModel(ProductBaseModel):
 
 
 class BoatCreate(BoatBaseModel):
-    """
-    Схема для создания нового катера
-    """
+    """Схема создания нового катера."""
 
     category_id: int = Field(
         description="ID категории товара",
@@ -86,9 +82,7 @@ class BoatCreate(BoatBaseModel):
 
 
 class BoatUpdate(BoatBaseModel):
-    """
-    Схема для обновления дынных катера
-    """
+    """Схема частичного обновления катера."""
 
     name: Optional[str] = None
     price: Optional[int] = None
@@ -110,9 +104,7 @@ class BoatUpdate(BoatBaseModel):
 
 
 class BoatRead(BoatBaseModel):
-    """
-    Схемы для чтения данных катера
-    """
+    """Схема для чтения катера."""
 
     id: int = Field(
         description="ID катера",
@@ -132,9 +124,7 @@ class BoatRead(BoatBaseModel):
 
 
 class BoatSummarySchema(BaseSchemaModel):
-    """
-    Краткая информация о катере.
-    """
+    """Схема с краткой информации о катере."""
 
     id: int = Field(
         description="ID товара",

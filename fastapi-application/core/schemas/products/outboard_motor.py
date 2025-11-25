@@ -10,36 +10,28 @@ from .category import CategoryRead
 
 
 class EngineType(str, Enum):
-    """
-    Типы двигателей.
-    """
+    """Типы двигателей."""
 
     two_stroke = "двухтактный"
     four_stroke = "четырехтактный"
 
 
 class ControlType(str, Enum):
-    """
-    Типы управления.
-    """
+    """Типы управления."""
 
     tiller_control = "румпельное"
     remote_control = "дистанционное"
 
 
 class StarterType(str, Enum):
-    """
-    Типы стартера.
-    """
+    """Типы стартера."""
 
     manual_starter = "ручной"
     electric_starter = "электрический"
 
 
 class OutboardMotorBaseModel(ProductBaseModel):
-    """
-    Базовая схема для лодочных моторов.
-    """
+    """Базовая схема для лодочных моторов."""
 
     engine_power: int = Field(
         gt=0,
@@ -73,9 +65,7 @@ class OutboardMotorBaseModel(ProductBaseModel):
 
 
 class OutboardMotorCreate(OutboardMotorBaseModel):
-    """
-    Схема для создания нового мотора
-    """
+    """Схема создания нового мотора."""
 
     category_id: int = Field(
         description="ID категории товара",
@@ -83,9 +73,7 @@ class OutboardMotorCreate(OutboardMotorBaseModel):
 
 
 class OutboardMotorUpdate(OutboardMotorBaseModel):
-    """
-    Схема для обновления дынных мотора
-    """
+    """Схема частичного обновления мотора."""
 
     name: Optional[str] = None
     price: Optional[int] = None
@@ -102,9 +90,7 @@ class OutboardMotorUpdate(OutboardMotorBaseModel):
 
 
 class OutboardMotorRead(OutboardMotorBaseModel):
-    """
-    Схемы для чтения данных мотора
-    """
+    """Схемы для чтения мотора."""
 
     id: int = Field(
         description="ID мотора",
@@ -124,9 +110,7 @@ class OutboardMotorRead(OutboardMotorBaseModel):
 
 
 class OutboardMotorSummarySchema(BaseSchemaModel):
-    """
-    Краткая информация о лодочном моторе.
-    """
+    """Схема с краткой информации о лодочном моторе."""
 
     id: int = Field(
         description="ID товара",

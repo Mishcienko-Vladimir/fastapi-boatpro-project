@@ -6,9 +6,7 @@ from core.models.orders.order import OrderStatus
 
 
 class OrderCreate(BaseSchemaModel):
-    """
-    Модель создания заказа.
-    """
+    """Схема создания заказа."""
 
     product_id: int = Field(
         description="ID товар для заказа",
@@ -19,9 +17,7 @@ class OrderCreate(BaseSchemaModel):
 
 
 class OrderCreateExtended(OrderCreate):
-    """
-    Расширенная модель создания заказа.
-    """
+    """Расширенная схема создания заказа."""
 
     user_id: int = Field(
         description="ID владельца заказа",
@@ -41,9 +37,7 @@ class OrderCreateExtended(OrderCreate):
 
 
 class OrderUpdate(BaseSchemaModel):
-    """
-    Модель обновления заказа.
-    """
+    """Схема частичного обновления заказа."""
 
     status: OrderStatus = Field(
         description="Статус заказа",
@@ -51,9 +45,7 @@ class OrderUpdate(BaseSchemaModel):
 
 
 class OrderRead(OrderCreateExtended):
-    """
-    Модель чтения заказа.
-    """
+    """Схема для чтения заказа."""
 
     id: int = Field(
         description="ID заказа",
@@ -73,9 +65,7 @@ class OrderRead(OrderCreateExtended):
 
 
 class OrderPaymentUpdate(BaseSchemaModel):
-    """
-    Модель оплаты заказа.
-    """
+    """Схема обновления данных платежа."""
 
     payment_id: str = Field(
         description="ID платежа в YooKassa",

@@ -25,7 +25,6 @@ __all__ = (
     "TrailerRead",
     "TrailerSummarySchema",
     "ImagePathCreate",
-    "ImagePathUpdate",
     "ImagePathRead",
 )
 
@@ -66,6 +65,5 @@ from .trailer import (
 )
 from .image_path import (
     ImagePathCreate,
-    ImagePathUpdate,
     ImagePathRead,
 )

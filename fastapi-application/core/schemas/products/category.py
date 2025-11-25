@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 
 class CategoryBaseModel(BaseSchemaModel):
-    """
-    Базовая схема для категории товара
-    """
+    """Базовая схема для категорий товаров."""
 
     name: str = Field(
         min_length=1,
@@ -26,26 +24,20 @@ class CategoryBaseModel(BaseSchemaModel):
 
 
 class CategoryCreate(CategoryBaseModel):
-    """
-    Схемы для создания новой категории товара
-    """
+    """Схема создания новой категории товара."""
 
     pass
 
 
 class CategoryUpdate(CategoryBaseModel):
-    """
-    Схемы для обновления данных о категории товара
-    """
+    """Схема частичного обновления категории товара."""
 
     name: Optional[str] = None
     description: Optional[str] = None
 
 
 class CategoryRead(CategoryBaseModel):
-    """
-    Схемы для чтения данных о категории товара
-    """
+    """Схема для чтения данных категории товара."""
 
     id: int = Field(
         description="ID категории товара",
@@ -53,9 +45,7 @@ class CategoryRead(CategoryBaseModel):
 
 
 class CategoryListBaseModel(CategoryBaseModel):
-    """
-    Базовая модель для схемы чтения списка категорий товара
-    """
+    """Базовая схема, которая используется для чтения списка товара категории."""
 
     products_count: int = Field(
         description="Количество товаров в категории",
@@ -63,9 +53,7 @@ class CategoryListBaseModel(CategoryBaseModel):
 
 
 class CategoryListBoat(CategoryListBaseModel):
-    """
-    Список всех товаров в категории катера и их количество.
-    """
+    """Схема списка всех товаров в категории катера."""
 
     products_preview: list["BoatSummarySchema"] = Field(
         description="Превью товаров в категории",
@@ -73,9 +61,7 @@ class CategoryListBoat(CategoryListBaseModel):
 
 
 class CategoryListOutboardMotor(CategoryListBaseModel):
-    """
-    Список всех товаров в категории лодочные моторы и их количество.
-    """
+    """Схема списка всех товаров в категории лодочные моторы."""
 
     products_preview: list["OutboardMotorSummarySchema"] = Field(
         description="Превью товаров в категории",
@@ -83,9 +69,7 @@ class CategoryListOutboardMotor(CategoryListBaseModel):
 
 
 class CategoryListTrailer(CategoryListBaseModel):
-    """
-    Список всех товаров в категории прицепы и их количество.
-    """
+    """Схема списка всех товаров в категории прицепы."""
 
     products_preview: list["TrailerSummarySchema"] = Field(
         description="Превью товаров в категории",

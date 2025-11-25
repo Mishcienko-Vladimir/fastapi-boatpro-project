@@ -2,16 +2,15 @@ from datetime import datetime
 from typing import Optional
 from pydantic import Field
 
-from core.schemas.base_model import BaseSchemaModel
 from .product_base_model import ProductBaseModel
 from .image_path import ImagePathRead
 from .category import CategoryRead
 
+from core.schemas.base_model import BaseSchemaModel
+
 
 class TrailerBaseModel(ProductBaseModel):
-    """
-    Базовая схема для прицепа
-    """
+    """Базовая схема прицепа."""
 
     full_mass: int = Field(
         gt=0,
@@ -36,9 +35,7 @@ class TrailerBaseModel(ProductBaseModel):
 
 
 class TrailerCreate(TrailerBaseModel):
-    """
-    Схемы для создания нового прицепа
-    """
+    """Схемы создания нового прицепа."""
 
     category_id: int = Field(
         description="ID категории товара",
@@ -46,9 +43,7 @@ class TrailerCreate(TrailerBaseModel):
 
 
 class TrailerUpdate(TrailerBaseModel):
-    """
-    Схемы для обновления данных прицепа
-    """
+    """Схемы частичного обновления прицепа."""
 
     name: Optional[str] = None
     price: Optional[int] = None
@@ -62,9 +57,7 @@ class TrailerUpdate(TrailerBaseModel):
 
 
 class TrailerRead(TrailerBaseModel):
-    """
-    Схемы для чтения данных прицепа
-    """
+    """Схемы для чтения прицепа."""
 
     id: int = Field(
         description="ID прицепа",
@@ -84,9 +77,7 @@ class TrailerRead(TrailerBaseModel):
 
 
 class TrailerSummarySchema(BaseSchemaModel):
-    """
-    Краткая информация о прицепе.
-    """
+    """Схема с краткой информации о прицепе."""
 
     id: int = Field(
         description="ID товара",

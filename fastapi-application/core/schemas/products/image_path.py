@@ -4,9 +4,7 @@ from core.schemas.base_model import BaseSchemaModel
 
 
 class ImagePathBaseModel(BaseSchemaModel):
-    """
-    Базовая схема для пути к изображению.
-    """
+    """Базовая схема для путей к изображениям."""
 
     path: str = Field(
         min_length=1,
@@ -16,25 +14,13 @@ class ImagePathBaseModel(BaseSchemaModel):
 
 
 class ImagePathCreate(ImagePathBaseModel):
-    """
-    Схема для создания новому пути к изображению.
-    """
-
-    pass
-
-
-class ImagePathUpdate(ImagePathBaseModel):
-    """
-    Схема для обновления новых и удаления старых изображений.
-    """
+    """Схема создания нового пути к изображению."""
 
     pass
 
 
 class ImagePathRead(ImagePathBaseModel):
-    """
-    Схема для чтения пути к изображению.
-    """
+    """Схема для чтения пути к изображению."""
 
     id: int = Field(
         description="ID категории товара",

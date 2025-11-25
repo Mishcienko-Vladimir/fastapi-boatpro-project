@@ -2,14 +2,12 @@ from typing import Optional
 from datetime import datetime
 from pydantic import Field
 
-from core.schemas.base_model import BaseSchemaModel
 from .image_path import ImagePathRead
+from core.schemas.base_model import BaseSchemaModel
 
 
 class ProductBaseModel(BaseSchemaModel):
-    """
-    Базовая модель для товаров.
-    """
+    """Базовая схема для товаров."""
 
     name: str = Field(
         min_length=1,
@@ -35,7 +33,7 @@ class ProductBaseModel(BaseSchemaModel):
 
 
 class ProductBaseModelCreate(ProductBaseModel):
-    """Базовая модель для создания товаров."""
+    """Базовая схема создания товара."""
 
     category_id: int = Field(
         description="ID категории товара",
@@ -43,9 +41,7 @@ class ProductBaseModelCreate(ProductBaseModel):
 
 
 class ProductBaseModelUpdate(ProductBaseModel):
-    """
-    Базовая модель для обновления товаров.
-    """
+    """Схема для частичного обновления товара."""
 
     name: Optional[str] = None
     price: Optional[int] = None
@@ -55,9 +51,7 @@ class ProductBaseModelUpdate(ProductBaseModel):
 
 
 class ProductBaseModelRead(ProductBaseModel):
-    """
-    Базовая модель для чтения товаров.
-    """
+    """Схема для чтения товаров."""
 
     id: int = Field(
         description="ID товара",

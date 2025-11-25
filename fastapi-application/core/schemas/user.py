@@ -5,16 +5,8 @@ from core.types.user_id import UserIdType
 from .favorite import FavoriteRead
 
 
-class UserRead(schemas.BaseUser[UserIdType]):
-
-    first_name: str = Field(
-        min_length=1,
-        max_length=50,
-        description="Имя пользователя",
-    )
-
-
 class UserCreate(schemas.BaseUserCreate):
+    """Схема создания пользователя"""
 
     first_name: str = Field(
         min_length=1,
@@ -24,6 +16,17 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
+    """Схема обновления пользователя"""
+
+    first_name: str = Field(
+        min_length=1,
+        max_length=50,
+        description="Имя пользователя",
+    )
+
+
+class UserRead(schemas.BaseUser[UserIdType]):
+    """Схема для чтения пользователя"""
 
     first_name: str = Field(
         min_length=1,
@@ -33,14 +36,18 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 
 class UserRegisteredNotification(BaseModel):
-    user: UserRead
-    ts: int
+    """Схема уведомление о регистрации пользователя"""
+
+    user: UserRead = Field(
+        description="Пользователь",
+    )
+    ts: int = Field(
+        description="Время регистрации",
+    )
 
 
 class UserFavorites(BaseModel):
-    """
-    Список избранных товаров пользователя
-    """
+    """Схема списка избранных товаров пользователя"""
 
     favorites: list[FavoriteRead] = Field(
         description="Список избранных товаров",

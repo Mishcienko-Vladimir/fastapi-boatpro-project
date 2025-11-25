@@ -5,9 +5,7 @@ from core.schemas.base_model import BaseSchemaModel
 
 
 class PickupPointBaseModel(BaseSchemaModel):
-    """
-    Базовая модель для точки самовывоза.
-    """
+    """Базовая схема точки самовывоза."""
 
     name: str = Field(
         min_length=1,
@@ -26,17 +24,13 @@ class PickupPointBaseModel(BaseSchemaModel):
 
 
 class PickupPointCreate(PickupPointBaseModel):
-    """
-    Схемы для создания новой точки самовывоза.
-    """
+    """Схемы создания новой точки самовывоза."""
 
     pass
 
 
 class PickupPointUpdate(PickupPointBaseModel):
-    """
-    Схемы для обновления данных о точки самовывоза.
-    """
+    """Схемы частичного обновления данных точки самовывоза."""
 
     name: Optional[str] = None
     address: Optional[str] = None
@@ -44,9 +38,7 @@ class PickupPointUpdate(PickupPointBaseModel):
 
 
 class PickupPointRead(PickupPointBaseModel):
-    """
-    Схемы для чтения данных о точки самовывоза.
-    """
+    """Схемы для чтения данных точки самовывоза."""
 
     id: int = Field(
         description="ID точки самовывоза",
