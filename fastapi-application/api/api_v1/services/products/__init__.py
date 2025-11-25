@@ -3,5 +3,5 @@ __all__ = (
     "ProductsService",
 )
 
-from .category import CategoryService
+from .category_service import CategoryService
 from .products_service import ProductsService
