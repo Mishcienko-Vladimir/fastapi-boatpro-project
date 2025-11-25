@@ -7,6 +7,7 @@ from yookassa.domain.request import PaymentRequest
 from core.config import settings
 
 
+# Настройка конфигурации YooKassa с использованием данных из настроек приложения.
 Configuration.account_id = settings.yookassa.account_id
 Configuration.secret_key = settings.yookassa.secret_key
 
@@ -18,6 +19,12 @@ def generate_payment_link(
 ) -> dict:
     """
     Генерирует ссылку на оплату через YooKassa.
+
+    :param order_id: ID заказа.
+    :param amount: Сумма платежа в рублях.
+    :param description: Описание платежа, отображается пользователю при оформлении оплаты.
+    :raise: Исключения от YooKassa API пробрасываются на уровень вызывающего кода.
+    :return: Словарь с данными о созданном платеже.
     """
     request = PaymentRequest()
     request.amount = {
@@ -45,11 +52,11 @@ def verify_webhook_signature(
     signature: str,
 ) -> bool:
     """
-    Проверяет подпись вебхука YooKassa.
+    Проверяет подпись вебхука YooKassa для защиты от поддельных уведомлений.
 
-    :param body: Тело запроса (в виде строки)
-    :param signature: Значение заголовка X-YooKassa-Signature
-    :return: True, если подпись валидна
+    :param body: Тело запроса (в виде строки).
+    :param signature: Значение заголовка X-YooKassa-Signature.
+    :return: True, если подпись валидна.
     """
     secret_key = settings.yookassa.secret_key
     digest = hmac.new(

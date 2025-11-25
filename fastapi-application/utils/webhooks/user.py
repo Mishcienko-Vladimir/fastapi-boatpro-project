@@ -11,6 +11,14 @@ log = logging.getLogger(__name__)
 
 
 async def send_new_user_notification(user: User) -> None:
+    """
+    Асинхронно отправляет вебхук-уведомление о регистрации нового пользователя.
+
+    :param user: Экземпляр ORM-модели User, представляющий нового пользователя.
+    :return: None. Функция ничего не возвращает.
+
+    :raises Exception: Если произошла ошибка при HTTP-запросе, она логируется, но не прерывает выполнение.
+    """
     wh_data = UserRegisteredNotification(
         user=UserRead.model_validate(user),
         ts=int(time.time()),
