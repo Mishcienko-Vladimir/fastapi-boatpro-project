@@ -78,7 +78,6 @@ class ApiV1Prefix(BaseModel):
     auth: str = "/auth"
     users: str = "/users"
     favorites: str = "/favorites"
-    messages: str = "/messages"
     products: str = "/products"
     boats: str = "/boats"
     trailers: str = "/trailers"
