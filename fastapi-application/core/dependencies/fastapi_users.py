@@ -1,7 +1,7 @@
 from fastapi_users import FastAPIUsers
 
-from api.api_v1.dependencies.authentication import get_user_manager
-from api.api_v1.dependencies.authentication import authentication_backend
+from api.api_v1.dependencies.authentication.user_manager import get_user_manager
+from api.api_v1.dependencies.authentication.backend import authentication_backend
 
 from core.models.user import User
 from core.types.user_id import UserIdType

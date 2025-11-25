@@ -4,7 +4,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.services.products.category import CategoryService
+from api.api_v1.services.products.category_service import CategoryService
 
 from core.models.products import Category
 from core.schemas.products import CategoryCreate, CategoryUpdate

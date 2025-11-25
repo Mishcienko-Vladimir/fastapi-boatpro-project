@@ -12,11 +12,14 @@ from api.api_v1.routers.products.trailers import (
     update_trailer_images_by_id,
     delete_trailer_by_id,
 )
+from api.api_v1.dependencies.parser_forms_create import parse_trailer_create
 
-from core.dependencies import get_db_session, current_active_superuser
+from core.dependencies import get_db_session
+from core.dependencies.fastapi_users import current_active_superuser
+
 from core.config import settings
 from core.models import User
-from core.schemas.products.trailer import TrailerUpdate
+from core.schemas.products.trailer import TrailerUpdate, TrailerCreate
 
 from utils.templates import templates
 

@@ -5,7 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.products.boats import get_boats_summary, get_boat_by_name
 
-from core.dependencies import get_db_session, optional_user
+from core.dependencies import get_db_session
+from core.dependencies.fastapi_users import optional_user
+
 from core.config import settings
 from core.models import User
 

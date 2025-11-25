@@ -13,7 +13,9 @@ from api.api_v1.routers.products.boats import (
     delete_boat_by_id,
 )
 
-from core.dependencies import get_db_session, current_active_superuser
+from core.dependencies import get_db_session
+from core.dependencies.fastapi_users import current_active_superuser
+
 from core.config import settings
 from core.models import User
 from core.schemas.products.boat import BoatUpdate

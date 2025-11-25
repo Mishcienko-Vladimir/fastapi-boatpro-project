@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.routers.favorites import get_favorites
 
-from core.dependencies import get_db_session, optional_user
+from core.dependencies import get_db_session
+from core.dependencies.fastapi_users import optional_user
+
 from core.config import settings
 from core.models import User
 

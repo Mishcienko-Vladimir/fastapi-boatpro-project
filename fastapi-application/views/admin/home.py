@@ -4,7 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
 
-from core.dependencies import get_db_session, current_active_superuser
+from core.dependencies import get_db_session
+from core.dependencies.fastapi_users import current_active_superuser
+
 from core.config import settings
 from core.models import User
 from core.models.products import Product
