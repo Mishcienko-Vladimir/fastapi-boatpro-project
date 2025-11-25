@@ -12,9 +12,9 @@ async def send_verification_email(
     """
     Отправка пользователю письма с подтверждением email.
 
-    :param user: - пользователь.
-    :param verification_link: - ссылка для подтверждения email.
-    :return:
+    :param user: Пользователь.
+    :param verification_link: Ссылка для подтверждения email.
+    :return: None. Функция ничего не возвращает.
     """
 
     recipient = user.email

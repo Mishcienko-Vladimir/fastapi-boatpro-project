@@ -12,9 +12,9 @@ async def send_reset_password(
     """
     Отправка пользователю письма со сбросом пароля.
 
-    :param user: - пользователь.
-    :param reset_password_link: - ссылка для сброса пароля.
-    :return:
+    :param user: Пользователь.
+    :param reset_password_link: Ссылка для сброса пароля.
+    :return: None. Функция ничего не возвращает.
     """
 
     recipient = user.email

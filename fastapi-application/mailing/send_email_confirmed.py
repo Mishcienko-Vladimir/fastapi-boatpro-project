@@ -9,8 +9,8 @@ async def send_email_confirmed(user: User):
     """
     Отправка письма пользователю о подтверждении email.
 
-    :param user: - пользователь.
-    :return:
+    :param user: Пользователь.
+    :return: None. Функция ничего не возвращает.
     """
 
     recipient = user.email

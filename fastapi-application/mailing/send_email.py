@@ -15,11 +15,11 @@ async def send_email(
     """
     Функция отправки письма.
 
-    :param recipient: - кому мы отправляем.
-    :param subject: - тема письма.
-    :param plain_content: - текст письма.
-    :param html_content: - html письма.
-    :return:
+    :param recipient: Кому отправляется письмо.
+    :param subject: Тема письма.
+    :param plain_content: Текст письма.
+    :param html_content: HTML письма.
+    :return: None. Функция ничего не возвращает.
     """
 
     admin_email = settings.admin.admin_email
