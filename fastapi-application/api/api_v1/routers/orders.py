@@ -2,12 +2,16 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.api_v1.services.orders_service import OrdersService
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
 
-from core.config import settings
+from api.api_v1.services.orders_service import OrdersService
+from utils.key_builder import user_orders_key_builder
+
 from core.dependencies import get_db_session
 from core.dependencies.fastapi_users import current_active_user
 
+from core.config import settings
 from core.models import User
 from core.schemas.order import OrderCreate, OrderRead, OrderUpdate
 
@@ -40,17 +44,34 @@ async def create_order(
     """
     ## Создание нового заказа.
 
+    **Описание:**
+    Используется для оформления заказа пользователем на сайте.
+
     **Принимает поля:**
-    - `product_id`: ID товара
-    - `pickup_point_id`: ID пункта самовывоза
+    - `product_id`: ID товара (int, id > 0).
+    - `pickup_point_id`: ID пункта самовывоза (int, id > 0).
 
     **Логика:**
-    - Проверяет наличие пункта самовывоза и товара
-    - Создаёт заказ со статусом `pending`
-    - Генерирует ссылку на оплату через YooKassa
+    - Проверяет наличие пункта самовывоза.
+    - Проверяет, что товар существует и `is_active=True`.
+    - Создаёт заказ со статусом `pending`.
+    - Генерирует ссылку на оплату через YooKassa.
+    - Возвращает данные заказа с `payment_url`.
+
+    **Ответы:**
+    - `201 Created` — заказ успешно создан. Возвращает `OrderRead`.
+    - `400 Bad Request` — товар неактивен.
+    - `404 Not Found` — пункт самовывоза или товар не найден.
+    - `422 Unprocessable Entity` — ошибка валидации.
+    - `500 Internal Server Error` — внутренняя ошибка.
     """
     _service = OrdersService(session=session)
-    return await _service.create_order(user_id=user.id, order_data=order_data)
+    new_order = await _service.create_order(
+        user_id=user.id,
+        order_data=order_data,
+    )
+    await FastAPICache.clear(namespace=settings.cache.namespace.orders_list)
+    return new_order
 
 
 @router.get(
@@ -66,12 +87,26 @@ async def create_order(
         500: {"description": "Внутренняя ошибка сервера"},
     },
 )
+@cache(
+    expire=120,
+    key_builder=user_orders_key_builder,  # type: ignore
+    namespace=settings.cache.namespace.orders_list,
+)
 async def get_user_orders(
     session: Annotated[AsyncSession, Depends(get_db_session)],
     user: Annotated[User, Depends(current_active_user)],
 ) -> list[OrderRead]:
     """
     ## Получение всех заказов текущего пользователя.
+
+    **Описание:**
+    Используется в личном кабинете для отображения истории заказов.
+
+    **Ответы:**
+    - `200 OK` — возвращает список заказов.
+    - `401 Unauthorized` — пользователь не авторизован.
+    - `404 Not Found` — у пользователя нет заказов.
+    - `500 Internal Server Error` — внутренняя ошибка.
     """
     service = OrdersService(session=session)
     return await service.get_orders_by_user(user_id=user.id)
@@ -93,7 +128,15 @@ async def get_all_orders(
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[OrderRead]:
     """
-    ## Получение всех заказов.
+    ## Получение всех заказов в системе.
+
+    **Описание:**
+    Используется в админ-панели для аналитики и модерации.
+
+    **Ответы:**
+    - `200 OK` — возвращает список всех заказов.
+    - `404 Not Found` — нет ни одного заказа.
+    - `500 Internal Server Error` — внутренняя ошибка.
     """
     service = OrdersService(session=session)
     return await service.get_all_orders()
@@ -120,6 +163,9 @@ async def update_order_status(
     """
     ## Обновление статуса заказа
 
+    **Описание:**
+    Используется в админ-панели и вебхуках (например, при подтверждении оплаты).
+
     ### Доступные статусы:
     - `pending` — ожидает оплаты
     - `paid` — оплачен
@@ -127,9 +173,17 @@ async def update_order_status(
     - `ready` — готов к выдаче
     - `completed` — завершён
     - `cancelled` — отменён
+
+    **Ответы:**
+    - `200 OK` — статус обновлён. Возвращает обновлённый заказ.
+    - `404 Not Found` — заказ не найден.
+    - `422 Unprocessable Entity` — ошибка валидации.
+    - `500 Internal Server Error` — внутренняя ошибка.
     """
     service = OrdersService(session=session)
-    return await service.update_order_status(
+    updated_order = await service.update_order_status(
         order_id=order_id,
         order_update=order_update,
     )
+    await FastAPICache.clear(namespace=settings.cache.namespace.orders_list)
+    return updated_order
