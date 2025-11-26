@@ -6,6 +6,9 @@ from fastapi_cache.decorator import cache
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.api_v1.dependencies.create_multipart_form_data import (
+    create_multipart_form_data,
+)
 from api.api_v1.services.products import ProductsService
 
 from core.config import settings
@@ -30,90 +33,26 @@ router = APIRouter(prefix=settings.api.v1.trailers, tags=["Прицепы 🚛"]
 
 @router.post("/", status_code=201, response_model=TrailerRead)
 async def create_trailer(
-    session: Annotated[AsyncSession, Depends(get_db_session)],
-    category_id: int = Form(
-        ...,
-        description="ID категории товара",
-    ),
-    name: str = Form(
-        ...,
-        min_length=1,
-        max_length=255,
-        description="Название модели",
-    ),
-    price: int = Form(
-        ...,
-        gt=0,
-        description="Цена в рублях",
-    ),
-    company_name: str = Form(
-        ...,
-        min_length=1,
-        max_length=100,
-        description="Название производителя",
-    ),
-    description: str = Form(
-        ...,
-        min_length=0,
-        description="Описание",
-    ),
-    is_active: bool = Form(
-        ...,
-        description="Наличие товара",
-    ),
-    full_mass: int = Form(
-        ...,
-        gt=0,
-        lt=32767,
-        description="Полный вес прицепа в кг",
-    ),
-    load_capacity: int = Form(
-        ...,
-        gt=0,
-        lt=32767,
-        description="Грузоподъемность в кг",
-    ),
-    trailer_length: int = Form(
-        ...,
-        gt=0,
-        lt=32767,
-        description="Длина прицепа в см",
-    ),
-    max_ship_length: int = Form(
-        ...,
-        gt=0,
-        lt=32767,
-        description="Максимальная длина перевозимого судна в см",
-    ),
-    images: list[UploadFile] = File(
-        ...,
-        description="Изображения товара",
-    ),
+    session: Annotated[
+        AsyncSession,
+        Depends(get_db_session),
+    ],
+    trailer_data: Annotated[
+        TrailerCreate,
+        Depends(create_multipart_form_data(TrailerCreate)),
+    ],
+    images: Annotated[
+        list[UploadFile],
+        File(..., description="Изображения товара"),
+    ],
 ) -> TrailerRead:
     """
     Создание нового прицепа.
     """
-    trailer_data_json = {
-        "category_id": category_id,
-        "name": name,
-        "price": price,
-        "company_name": company_name,
-        "description": description,
-        "is_active": is_active,
-        "full_mass": full_mass,
-        "load_capacity": load_capacity,
-        "trailer_length": trailer_length,
-        "max_ship_length": max_ship_length,
-    }
-    trailer_data = TrailerCreate(**trailer_data_json)
     _service = ProductsService(session, Trailer)
     new_trailer = await _service.create_product(trailer_data, images)
-    await FastAPICache.clear(
-        namespace=settings.cache.namespace.trailers_list,
-    )
-    await FastAPICache.clear(
-        namespace=settings.cache.namespace.trailer,
-    )
+    await FastAPICache.clear(namespace=settings.cache.namespace.trailers_list)
+    await FastAPICache.clear(namespace=settings.cache.namespace.trailer)
     return TrailerRead.model_validate(new_trailer)
 
 

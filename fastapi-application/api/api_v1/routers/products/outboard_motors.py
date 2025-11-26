@@ -7,14 +7,14 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.api_v1.services.products import ProductsService
+from api.api_v1.dependencies.create_multipart_form_data import (
+    create_multipart_form_data,
+)
 
 from core.config import settings
 from core.dependencies import get_db_session
 from core.models.products import OutboardMotor
 from core.schemas.products import (
-    EngineType,
-    ControlType,
-    StarterType,
     OutboardMotorRead,
     OutboardMotorUpdate,
     OutboardMotorCreate,
@@ -33,105 +33,26 @@ router = APIRouter(prefix=settings.api.v1.outboard_motors, tags=["Лодочны
 
 @router.post("/", status_code=201, response_model=OutboardMotorRead)
 async def create_outboard_motor(
-    session: Annotated[AsyncSession, Depends(get_db_session)],
-    category_id: int = Form(
-        ...,
-        description="ID категории товара",
-    ),
-    name: str = Form(
-        ...,
-        min_length=1,
-        max_length=255,
-        description="Название модели",
-    ),
-    price: int = Form(
-        ...,
-        gt=0,
-        description="Цена в рублях",
-    ),
-    company_name: str = Form(
-        ...,
-        min_length=1,
-        max_length=100,
-        description="Название производителя",
-    ),
-    description: str = Form(
-        ...,
-        min_length=0,
-        description="Описание",
-    ),
-    is_active: bool = Form(
-        ...,
-        description="Наличие товара",
-    ),
-    engine_power: int = Form(
-        ...,
-        gt=0,
-        lt=1000,
-        description="Мощность двигателя в л.с.",
-    ),
-    engine_type: EngineType = Form(
-        ...,
-        description="Тип двигателя",
-    ),
-    weight: int = Form(
-        ...,
-        gt=0,
-        lt=1000,
-        description="Вес мотора в кг",
-    ),
-    number_cylinders: int = Form(
-        ...,
-        gt=0,
-        lt=100,
-        description="Количество цилиндров в двигателе",
-    ),
-    engine_displacement: int = Form(
-        ...,
-        gt=0,
-        lt=10000,
-        description="Объем двигателя в куб.см",
-    ),
-    control_type: ControlType = Form(
-        ...,
-        description="Тип управления",
-    ),
-    starter_type: StarterType = Form(
-        ...,
-        description="Тип стартера",
-    ),
-    images: list[UploadFile] = File(
-        ...,
-        description="Изображения товара",
-    ),
+    session: Annotated[
+        AsyncSession,
+        Depends(get_db_session),
+    ],
+    outboard_motor_data: Annotated[
+        OutboardMotorCreate,
+        Depends(create_multipart_form_data(OutboardMotorCreate)),
+    ],
+    images: Annotated[
+        list[UploadFile],
+        File(..., description="Изображения товара"),
+    ],
 ) -> OutboardMotorRead:
     """
     Создание нового лодочного мотора.
     """
-    outboard_motor_data_json = {
-        "category_id": category_id,
-        "name": name,
-        "price": price,
-        "company_name": company_name,
-        "description": description,
-        "is_active": is_active,
-        "engine_power": engine_power,
-        "engine_type": engine_type,
-        "weight": weight,
-        "number_cylinders": number_cylinders,
-        "engine_displacement": engine_displacement,
-        "control_type": control_type,
-        "starter_type": starter_type,
-    }
-    outboard_motor_data = OutboardMotorCreate(**outboard_motor_data_json)
     _service = ProductsService(session, OutboardMotor)
     new_outboard_motor = await _service.create_product(outboard_motor_data, images)
-    await FastAPICache.clear(
-        namespace=settings.cache.namespace.outboard_motors_list,
-    )
-    await FastAPICache.clear(
-        namespace=settings.cache.namespace.outboard_motor,
-    )
+    await FastAPICache.clear(namespace=settings.cache.namespace.outboard_motors_list)
+    await FastAPICache.clear(namespace=settings.cache.namespace.outboard_motor)
     return OutboardMotorRead.model_validate(new_outboard_motor)
 
 
