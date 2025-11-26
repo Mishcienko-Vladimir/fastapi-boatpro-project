@@ -12,7 +12,9 @@ from api.api_v1.routers.products.trailers import (
     update_trailer_images_by_id,
     delete_trailer_by_id,
 )
-from api.api_v1.dependencies.parser_forms_create import parse_trailer_create
+from api.api_v1.dependencies.create_multipart_form_data import (
+    create_multipart_form_data,
+)
 
 from core.dependencies import get_db_session
 from core.dependencies.fastapi_users import current_active_superuser
@@ -97,36 +99,24 @@ async def admin_create_trailer(
         User,
         Depends(current_active_superuser),
     ],
-    category_id: int = Form(...),
-    name: str = Form(...),
-    price: int = Form(...),
-    company_name: str = Form(...),
-    description: str = Form(...),
-    is_active: bool = Form(...),
-    full_mass: int = Form(...),
-    load_capacity: int = Form(...),
-    trailer_length: int = Form(...),
-    max_ship_length: int = Form(...),
-    images: list[UploadFile] = File(...),
+    trailer_data: Annotated[
+        "TrailerCreate",
+        Depends(create_multipart_form_data(TrailerCreate)),
+    ],
+    images: Annotated[
+        list[UploadFile],
+        File(...),
+    ],
 ):
     try:
-        new_trailer = await create_trailer(
+        response = await create_trailer(
             session=session,
-            category_id=category_id,
-            name=name,
-            price=price,
-            company_name=company_name,
-            description=description,
-            is_active=is_active,
-            full_mass=full_mass,
-            load_capacity=load_capacity,
-            trailer_length=trailer_length,
-            max_ship_length=max_ship_length,
+            trailer_data=trailer_data,
             images=images,
         )
-        message = f"Прицеп с ID {new_trailer.id} успешно создан"
+        message = f"Прицеп с ID {response.id} успешно создан"
     except HTTPException as exc:
-        message = f"Прицеп с именем {name} уже существует"
+        message = f"Прицеп с именем {trailer_data.name} уже существует"
     except Exception as exc:
         message = f"Ошибка при создании прицепа: {str(exc)}"
 

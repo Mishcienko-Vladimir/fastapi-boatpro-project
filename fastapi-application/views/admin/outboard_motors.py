@@ -12,6 +12,9 @@ from api.api_v1.routers.products.outboard_motors import (
     update_outboard_motor_images_by_id,
     delete_outboard_motor_by_id,
 )
+from api.api_v1.dependencies.create_multipart_form_data import (
+    create_multipart_form_data,
+)
 
 from core.dependencies import get_db_session
 from core.dependencies.fastapi_users import current_active_superuser
@@ -23,6 +26,7 @@ from core.schemas.products.outboard_motor import (
     ControlType,
     StarterType,
     OutboardMotorUpdate,
+    OutboardMotorCreate,
 )
 
 from utils.templates import templates
@@ -104,42 +108,24 @@ async def admin_create_outboard_motor(
         User,
         Depends(current_active_superuser),
     ],
-    category_id: int = Form(...),
-    name: str = Form(...),
-    price: int = Form(...),
-    company_name: str = Form(...),
-    description: str = Form(...),
-    is_active: bool = Form(...),
-    engine_power: int = Form(...),
-    engine_type: EngineType = Form(...),
-    weight: int = Form(...),
-    number_cylinders: int = Form(...),
-    engine_displacement: int = Form(...),
-    control_type: ControlType = Form(...),
-    starter_type: StarterType = Form(...),
-    images: list[UploadFile] = File(...),
+    outboard_motor_data: Annotated[
+        "OutboardMotorCreate",
+        Depends(create_multipart_form_data(OutboardMotorCreate)),
+    ],
+    images: Annotated[
+        list[UploadFile],
+        File(...),
+    ],
 ):
     try:
-        new_outboard_motor = await create_outboard_motor(
+        response = await create_outboard_motor(
             session=session,
-            category_id=category_id,
-            name=name,
-            price=price,
-            company_name=company_name,
-            description=description,
-            is_active=is_active,
-            engine_power=engine_power,
-            engine_type=engine_type,
-            weight=weight,
-            number_cylinders=number_cylinders,
-            engine_displacement=engine_displacement,
-            control_type=control_type,
-            starter_type=starter_type,
+            outboard_motor_data=outboard_motor_data,
             images=images,
         )
-        message = f"Прицеп с ID {new_outboard_motor.id} успешно создан"
+        message = f"Прицеп с ID {response.id} успешно создан"
     except HTTPException as exc:
-        message = f"Прицеп с именем {name} уже существует"
+        message = f"Прицеп с именем {outboard_motor_data.name} уже существует"
     except Exception as exc:
         message = f"Ошибка при создании прицепа: {str(exc)}"
 

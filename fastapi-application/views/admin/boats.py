@@ -12,13 +12,16 @@ from api.api_v1.routers.products.boats import (
     update_boat_images_by_id,
     delete_boat_by_id,
 )
+from api.api_v1.dependencies.create_multipart_form_data import (
+    create_multipart_form_data,
+)
 
 from core.dependencies import get_db_session
 from core.dependencies.fastapi_users import current_active_superuser
 
 from core.config import settings
 from core.models import User
-from core.schemas.products.boat import BoatUpdate
+from core.schemas.products.boat import BoatUpdate, BoatCreate
 
 from utils.templates import templates
 
@@ -96,52 +99,24 @@ async def admin_create_boat(
         User,
         Depends(current_active_superuser),
     ],
-    category_id: int = Form(...),
-    name: str = Form(...),
-    price: int = Form(...),
-    company_name: str = Form(...),
-    description: str = Form(...),
-    is_active: bool = Form(...),
-    length_hull: int = Form(...),
-    width_hull: int = Form(...),
-    weight: int = Form(...),
-    capacity: int = Form(...),
-    maximum_load: int = Form(...),
-    hull_material: str = Form(...),
-    thickness_side_sheet: int | None = Form(0),
-    bottom_sheet_thickness: int | None = Form(0),
-    fuel_capacity: int | None = Form(0),
-    maximum_engine_power: int | None = Form(0),
-    height_side_midship: int | None = Form(0),
-    transom_height: int | None = Form(0),
-    images: list[UploadFile] = File(...),
+    boat_data: Annotated[
+        "BoatCreate",
+        Depends(create_multipart_form_data(BoatCreate)),
+    ],
+    images: Annotated[
+        list[UploadFile],
+        File(...),
+    ],
 ):
     try:
-        new_boat = await create_boat(
+        response = await create_boat(
             session=session,
-            category_id=category_id,
-            name=name,
-            price=price,
-            company_name=company_name,
-            description=description,
-            is_active=is_active,
-            length_hull=length_hull,
-            width_hull=width_hull,
-            weight=weight,
-            capacity=capacity,
-            maximum_load=maximum_load,
-            hull_material=hull_material,
-            thickness_side_sheet=thickness_side_sheet,
-            bottom_sheet_thickness=bottom_sheet_thickness,
-            fuel_capacity=fuel_capacity,
-            maximum_engine_power=maximum_engine_power,
-            height_side_midship=height_side_midship,
-            transom_height=transom_height,
+            boat_data=boat_data,
             images=images,
         )
-        message = f"Катер с ID {new_boat.id} успешно создан"
+        message = f"Катер с ID {response.id} успешно создан"
     except HTTPException as exc:
-        message = f"Катер с именем {name} уже существует"
+        message = f"Катер с именем {boat_data.name} уже существует"
     except Exception as exc:
         message = f"Ошибка при создании катера: {str(exc)}"
 
