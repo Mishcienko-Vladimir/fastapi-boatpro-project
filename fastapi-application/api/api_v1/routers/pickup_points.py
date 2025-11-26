@@ -25,18 +25,6 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     operation_id="create_pickup_point",
     summary="Создание нового пункта выдачи",
-    description=(
-        "## Создание нового пункта выдачи.\n\n"
-        "**Принимает поля:**\n"
-        "- `name`: Название (уникальное, 1–100 символов).\n"
-        "- `address`: Полный адрес (минимум 1 символ).\n"
-        "- `work_hours`: Время работы (1–100 символов), например: Пн-Пт 9:00-18:00.\n\n"
-        "**Ответы:**\n"
-        "- `201 Created` — успешно создан.\n"
-        "- `400 Bad Request` — имя занято или данные некорректны.\n"
-        "- `422 Unprocessable Entity` — ошибка валидации.\n"
-        "- `500 Internal Server Error` — внутренняя ошибка."
-    ),
     responses={
         201: {"model": PickupPointRead},
         400: {"description": "Имя уже занято или данные некорректны."},
@@ -49,10 +37,24 @@ async def create_pickup_point(
     pickup_point_data: PickupPointCreate,
 ) -> PickupPointRead:
     """
-    Создание нового пункта выдачи.
+    ## Создание нового пункта выдачи.
+
+    **Описание:**
+    Используется для создания нового пункта выдачи в админ-панели.
+
+    **Принимает поля:**
+    - `name`: Название (уникальное, str, 1–100 символов).
+    - `address`: Полный адрес (str, минимум 1 символ).
+    - `work_hours`: Время работы (str, 1–100 символов), например: Пн-Пт 9:00-18:00.
+
+    **Ответы:**
+    - `201 Created` — успешно создан. Возвращает созданный объект.
+    - `400 Bad Request` — имя занято или данные некорректны.
+    - `422 Unprocessable Entity` — ошибка валидации.
+    - `500 Internal Server Error` — внутренняя ошибка
     """
     _service = PickupPointsService(session=session)
-    return await _service.create_pickup_point(pickup_point_data)
+    return await _service.create_pickup_point(pickup_point_data=pickup_point_data)
 
 
 @router.get(
@@ -61,13 +63,6 @@ async def create_pickup_point(
     status_code=status.HTTP_200_OK,
     operation_id="get_pickup_point_by_name",
     summary="Получение пункта выдачи по имени",
-    description=(
-        "## Получение пункта выдачи по имени.\n\n"
-        "**Ответы:**\n"
-        "- `200 OK` — успешно найден.\n"
-        "- `404 Not Found` — не найден.\n"
-        "- `422 Unprocessable Entity` — некорректный формат имени."
-    ),
     responses={
         200: {"model": PickupPointRead},
         404: {"description": "Пункт выдачи не найден."},
@@ -80,7 +75,19 @@ async def get_pickup_point_by_name(
     pickup_point_name: str,
 ) -> PickupPointRead:
     """
-    Получение пункта выдачи по имени.
+    ## Получение пункта выдачи по имени.
+
+    **Описание:**
+    Используется для получения пункта выдачи по его имени в админ-панели.
+
+    **Принимает поле:**
+    - `pickup_point_name`: Название пункта выдачи (уникальное, str, 1–100 символов).
+
+    **Ответы:**
+    - `200 OK` — успешно найден. Возвращает объект пункта выдачи.
+    - `404 Not Found` — не найден.
+    - `422 Unprocessable Entity` — некорректный формат имени.
+    - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
     return await _service.get_pickup_point_by_name(pickup_point_name=pickup_point_name)
@@ -92,13 +99,6 @@ async def get_pickup_point_by_name(
     status_code=status.HTTP_200_OK,
     operation_id="get_pickup_point_by_id",
     summary="Получение пункта выдачи по id",
-    description=(
-        "## Получение пункта выдачи по ID.\n\n"
-        "**Ответы:**\n"
-        "- `200 OK` — успешно найден.\n"
-        "- `404 Not Found` — не найден.\n"
-        "- `422 Unprocessable Entity` — некорректный формат ID."
-    ),
     responses={
         200: {"model": PickupPointRead},
         404: {"description": "Пункт выдачи не найден."},
@@ -111,12 +111,22 @@ async def get_pickup_point_by_id(
     pickup_point_id: int,
 ) -> PickupPointRead:
     """
-    Получение пункта выдачи по id.
+    ## Получение пункта выдачи по id.
+
+    **Описание:**
+    Используется для получения пункта выдачи по его ID в админ-панели.
+
+    **Принимает поле:**
+    - `pickup_point_id`: ID пункта выдачи (int, целое число).
+
+    **Ответы:**
+    - `200 OK` — успешно найден. Возвращает объект пункта выдачи.
+    - `404 Not Found` — не найден.
+    - `422 Unprocessable Entity` — некорректный формат ID.
+    - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
-    pickup_point = await _service.get_pickup_point_by_id(
-        pickup_point_id=pickup_point_id
-    )
+    pickup_point = await _service.get_pickup_point_by_id(pickup_point_id)
     return PickupPointRead.model_validate(pickup_point)
 
 
@@ -126,12 +136,6 @@ async def get_pickup_point_by_id(
     status_code=status.HTTP_200_OK,
     operation_id="get_all_pickup_points",
     summary="Получение всех пунктов выдачи",
-    description=(
-        "## Получение всех пунктов выдачи.\n\n"
-        "**Ответы:**\n"
-        "- `200 OK` — список найден.\n"
-        "- `404 Not Found` — список пуст."
-    ),
     responses={
         200: {"model": list[PickupPointRead]},
         404: {"description": "Пункты выдачи отсутствуют."},
@@ -142,7 +146,15 @@ async def get_all_pickup_points(
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[PickupPointRead]:
     """
-    Получение всех пунктов выдачи.
+    ## Получение всех пунктов выдачи.
+
+    **Описание:**
+    Используется для получения всех пунктов выдачи в оформлении заказа и в админ-панели.
+
+    **Ответы:**
+    - `200 OK` — список найден. Возвращает список пунктов выдачи.
+    - `404 Not Found` — список пуст.
+    - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
     return await _service.get_pickup_points()
@@ -153,20 +165,7 @@ async def get_all_pickup_points(
     response_model=PickupPointRead,
     status_code=status.HTTP_200_OK,
     operation_id="update_pickup_point_by_id",
-    summary="Обновление пункта выдачи",
-    description=(
-        "## Частичное обновление пункта выдачи.\n"
-        "### Можно обновить одно или несколько полей. Если поле не указано — оно не изменится.\n\n"
-        "**Принимает поля:**\n"
-        "- `name`: Название (уникальное, 1–100 символов).\n"
-        "- `address`: Полный адрес (минимум 1 символ).\n"
-        "- `work_hours`: Время работы (1–100 символов), например: Пн-Пт 9:00-18:00.\n\n"
-        "**Ответы:**\n\n"
-        "- `200 OK` — успешно обновлён.\n"
-        "- `400 Bad Request` — имя занято.\n"
-        "- `404 Not Found` — не найден.\n"
-        "- `422 Unprocessable Entity` — ошибка валидации."
-    ),
+    summary="Частичное обновление пункта выдачи",
     responses={
         200: {"model": PickupPointRead},
         400: {"description": "Имя уже занято или данные некорректны."},
@@ -181,7 +180,23 @@ async def update_pickup_point_by_id(
     pickup_point_data: PickupPointUpdate,
 ) -> PickupPointRead:
     """
-    Обновление пункта выдачи.
+    ## Частичное обновление пункта выдачи.
+
+    **Описание:**
+    Используется для частичного обновления пункта выдачи в админ-панели.
+
+    **Принимает поля:**
+    - `pickup_point_id`: ID пункта выдачи (int, целое число), для изменения.
+    - `name`: Название (уникальное, Optional[str], 1–100 символов). Если не указано, не изменяется.
+    - `address`: Полный адрес (Optional[str], минимум 1 символ). Если не указано, не изменяется.
+    - `work_hours`: Время работы (Optional[str], 1–100 символов), пример: Пн-Пт 9:00-18:00. Если не указано, не изменяется.
+
+    **Ответы:**
+    - `200 OK` — успешно обновлён. Возвращает обновлённый объект.
+    - `400 Bad Request` — имя занято или данные некорректны.
+    - `404 Not Found` — пункт выдачи не найден.
+    - `422 Unprocessable Entity` — ошибка валидации.
+    - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
     return await _service.update_pickup_point_by_id(
@@ -195,13 +210,6 @@ async def update_pickup_point_by_id(
     status_code=status.HTTP_204_NO_CONTENT,
     operation_id="delete_pickup_point_by_id",
     summary="Удаление пункта выдачи",
-    description=(
-        "## Удаление пункта выдачи по ID.\n\n"
-        "**Ответы:**\n"
-        "- `204 No Content` — успешно удалён.\n"
-        "- `404 Not Found` — не найден.\n"
-        "- `422 Unprocessable Entity` — некорректный ID."
-    ),
     responses={
         204: {"description": "Пункт выдачи успешно удалён, ответ пуст."},
         404: {"description": "Пункт выдачи не найден."},
@@ -214,7 +222,19 @@ async def delete_pickup_point_by_id(
     pickup_point_id: int,
 ) -> None:
     """
-    Удаление пункта выдачи.
+    ## Удаление пункта выдачи по id.
+
+    **Описание:**
+    Используется для удаления пункта выдачи в админ-панели.
+
+    **Принимает поле:**
+    - `pickup_point_id`: ID пункта выдачи (int, целое число), для удаления.
+
+    **Ответы:**
+    - `204 No Content` — успешно удалён. Ничего не возвращается.
+    - `404 Not Found` — пункт выдачи не найден.
+    - `422 Unprocessable Entity` — некорректный ID.
+    - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
     return await _service.delete_pickup_point_by_id(pickup_point_id=pickup_point_id)
