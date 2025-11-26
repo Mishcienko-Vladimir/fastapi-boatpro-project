@@ -37,6 +37,30 @@ def universal_list_key_builder(
     return f"{namespace}:{cache_key}"
 
 
+def user_orders_key_builder(
+    func: Callable[..., Any],
+    namespace: str,
+    *,
+    request: Optional[Request] = None,
+    response: Optional[Any] = None,
+    args: Tuple[Any, ...],
+    kwargs: Dict[str, Any],
+) -> str:
+    """
+    Ключ кэша для заказов пользователя.
+    Использует user.id из Depends(current_active_user).
+    """
+    user = kwargs.get("user")
+    user_id = getattr(user, "id", "anonymous")
+
+    path = request.scope.get("path", "") if request else ""
+    method = request.scope.get("method", "GET") if request else ""
+
+    key_str = f"{func.__module__}:{func.__name__}:{method}:{path}:user_id={user_id}"
+    cache_key = hashlib.md5(key_str.encode()).hexdigest()
+    return f"{namespace}:{cache_key}"
+
+
 def users_list_key_builder(
     func: Callable[..., Any],
     namespace: str,

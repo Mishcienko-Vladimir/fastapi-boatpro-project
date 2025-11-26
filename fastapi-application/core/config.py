@@ -205,6 +205,7 @@ class CacheNamespace(BaseModel):
     outboard_motors_list: str = "outboard-motors-list"
     trailers_list: str = "trailers-list"
     favorites_list: str = "favorites-list"
+    orders_list: str = "orders-list"
 
     boat: str = "boat"
     outboard_motor: str = "outboard-motor"
@@ -242,4 +243,4 @@ class Settings(BaseSettings):
     cache: CacheConfig = CacheConfig()
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
