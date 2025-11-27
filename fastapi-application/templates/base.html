@@ -241,6 +241,14 @@
         </div>
     </footer>
 
+    <div id="orderModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="orderModalContent">
+            </div>
+        </div>
+    </div>
+
     <input type="hidden" id="register-url" value="{{ url_for('register:register') }}">
     <input type="hidden" id="login-url" value="{{ url_for('auth:access-token-db.login') }}">
     <input type="hidden" id="logout-url" value="{{ url_for('auth:access-token-db.logout') }}">
