@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+    Заказы
+{% endblock %}
+
+{% block main %}
+    <h2>Заказы</h2>
+    {% if orders_list|length == 0 %}
+        <h3>В заказах пока пусто...</h3>
+        <p>
+            Заказывайте товары с помощью кнопки<button class="btn-buy-icon">Купить</button> ,
+            после чего они появятся здесь.
+        </p>
+    {% else %}
+        {% for order in orders_list %}
+            <div class="bloc-favorite">
+                <div class="favorite-item">
+                    <a href="
+                    {% if order.type_product == 'boat' %}
+                        {{ url_for('boat_detail', boat_name=order.product_name|replace(' ', '%20')) }}
+                    {% elif order.type_product == 'outboard_motor' %}
+                        {{ url_for('outboard_motor_detail', outboard_motor_name=order.product_name|replace(' ', '%20')) }}
+                    {% elif order.type_product == 'trailer' %}
+                        {{ url_for('trailer_detail', trailer_name=order.product_name|replace(' ', '%20')) }}
+                    {% endif %}">Ссылка на товар(может быть устарела).
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
