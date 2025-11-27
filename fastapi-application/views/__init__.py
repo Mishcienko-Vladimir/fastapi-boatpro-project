@@ -7,6 +7,7 @@ from .limit_exceeded import router as limit_exceeded_router
 from .favorites import router as favorites_router
 from .search import router as search_router
 from .products import router as catalog_router
+from .orders import router as orders_router
 
 from views.auth.verification import router as verification_router
 from views.auth.reset_password import router as reset_password_router
@@ -25,3 +26,4 @@ router.include_router(catalog_router)
 router.include_router(verification_router)
 router.include_router(reset_password_router)
 router.include_router(change_password_router)
+router.include_router(orders_router)
