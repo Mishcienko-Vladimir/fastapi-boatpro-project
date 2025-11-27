@@ -57,6 +57,10 @@ class Order(
         String(255),
         comment="Название товара",
     )
+    type_product: Mapped[str] = mapped_column(
+        String(50),
+        comment="Тип товара",
+    )
     pickup_point_name: Mapped[str] = mapped_column(
         String(100),
         comment="Имя пункта самовывоза",
@@ -103,7 +107,10 @@ class Order(
             f"status={self.status!r}, "
             f"total_price={self.total_price!r}, "
             f"product_name={self.product_name!r}, "
+            f"type_product={self.type_product!r}, "
             f"pickup_point_name={self.pickup_point_name!r}, "
+            f"pickup_point_address={self.pickup_point_address!r}, "
+            f"work_hours={self.work_hours!r}, "
             f"payment_id={self.payment_id!r}, "
             f"payment_url={self.payment_url!r}, "
             f"expires_at={self.expires_at!r}, "

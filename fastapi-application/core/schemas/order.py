@@ -31,16 +31,16 @@ class OrderCreateExtended(OrderCreate):
     product_name: str = Field(
         description="Название товара",
     )
+    type_product: str = Field(
+        description="Тип товара",
+    )
     pickup_point_name: str = Field(
         description="Имя пункта самовывоза",
     )
     pickup_point_address: str = Field(
-        min_length=1,
         description="Полный адрес",
     )
     work_hours: str = Field(
-        min_length=1,
-        max_length=100,
         description="Время работы. Пример: Пн-Пт, 9:00-19:00",
     )
 
