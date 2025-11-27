@@ -61,6 +61,14 @@ class Order(
         String(100),
         comment="Имя пункта самовывоза",
     )
+    pickup_point_address: Mapped[str] = mapped_column(
+        String(500),
+        comment="Полный адрес",
+    )
+    work_hours: Mapped[str] = mapped_column(
+        String(100),
+        comment="Время работы. Пример: Пн-Пт, 9:00-19:00",
+    )
     payment_id: Mapped[str | None] = mapped_column(
         String(255),
         comment="ID платежа в YooKassa",

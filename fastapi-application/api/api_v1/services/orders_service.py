@@ -108,6 +108,8 @@ class OrdersService:
             status=OrderStatus.PENDING,
             product_name=product.name,
             pickup_point_name=pickup_point.name,
+            pickup_point_address=pickup_point.address,
+            work_hours=pickup_point.work_hours,
             **order_data.model_dump(),
         )
         order = await self.repo_order.create(data=new_order_data)
