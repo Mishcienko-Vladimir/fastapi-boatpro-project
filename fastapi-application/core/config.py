@@ -205,6 +205,7 @@ class CacheNamespace(BaseModel):
     outboard_motors_list: str = "outboard-motors-list"
     trailers_list: str = "trailers-list"
     favorites_list: str = "favorites-list"
+    pickup_points_list: str = "pickup-points-list"
     orders_list: str = "orders-list"
 
     boat: str = "boat"

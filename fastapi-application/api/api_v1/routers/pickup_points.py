@@ -2,7 +2,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+
 from api.api_v1.services.pickup_points_service import PickupPointsService
+from utils.key_builder import universal_list_key_builder
 
 from core.config import settings
 from core.dependencies import get_db_session
@@ -54,7 +58,11 @@ async def create_pickup_point(
     - `500 Internal Server Error` — внутренняя ошибка
     """
     _service = PickupPointsService(session=session)
-    return await _service.create_pickup_point(pickup_point_data=pickup_point_data)
+    new_pickup_point = await _service.create_pickup_point(
+        pickup_point_data=pickup_point_data
+    )
+    await FastAPICache.clear(namespace=settings.cache.namespace.pickup_points_list)
+    return new_pickup_point
 
 
 @router.get(
@@ -142,6 +150,11 @@ async def get_pickup_point_by_id(
         500: {"description": "Внутренняя ошибка сервера."},
     },
 )
+@cache(
+    expire=300,
+    key_builder=universal_list_key_builder,  # type: ignore
+    namespace=settings.cache.namespace.pickup_points_list,
+)
 async def get_all_pickup_points(
     session: Annotated[AsyncSession, Depends(get_db_session)],
 ) -> list[PickupPointRead]:
@@ -199,10 +212,12 @@ async def update_pickup_point_by_id(
     - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
-    return await _service.update_pickup_point_by_id(
+    update_pickup = await _service.update_pickup_point_by_id(
         pickup_point_id=pickup_point_id,
         pickup_point_data=pickup_point_data,
     )
+    await FastAPICache.clear(namespace=settings.cache.namespace.pickup_points_list)
+    return update_pickup
 
 
 @router.delete(
@@ -237,4 +252,8 @@ async def delete_pickup_point_by_id(
     - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)
-    return await _service.delete_pickup_point_by_id(pickup_point_id=pickup_point_id)
+    delete_pickup_point = await _service.delete_pickup_point_by_id(
+        pickup_point_id=pickup_point_id
+    )
+    await FastAPICache.clear(namespace=settings.cache.namespace.pickup_points_list)
+    return delete_pickup_point
