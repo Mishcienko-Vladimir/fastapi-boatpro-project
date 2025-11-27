@@ -107,6 +107,7 @@ class OrdersService:
             total_price=product.price,
             status=OrderStatus.PENDING,
             product_name=product.name,
+            type_product=product.type_product,
             pickup_point_name=pickup_point.name,
             pickup_point_address=pickup_point.address,
             work_hours=pickup_point.work_hours,
