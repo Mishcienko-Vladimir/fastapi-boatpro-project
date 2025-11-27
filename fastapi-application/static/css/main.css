@@ -261,6 +261,14 @@ main.content {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+.btn-buy:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.7;
+}
+
 .btn-favorites {
     background-color: #B22222;
     width: 180px;

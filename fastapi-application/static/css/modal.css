@@ -1,0 +1,152 @@
+/* Стили для модального окна "Купить" */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-weight: bold;
+}
+
+.close:hover {
+    color: #B22222;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Кастомный select */
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.select-btn {
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: border-color 0.2s;
+}
+
+.select-btn:focus {
+    outline: none;
+    border-color: #fe5000;
+}
+
+.select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1001;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.select-dropdown li {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.select-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+
+.select-dropdown li:last-child {
+    border-bottom: none;
+}
+
+.select-dropdown li small,
+.select-dropdown li em {
+    display: block;
+    font-size: 0.85em;
+    color: #555;
+}
+
+.select-dropdown li em {
+    color: #777;
+    font-style: italic;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        margin-top: 20%;
+        padding: 15px;
+    }
+
+    .close {
+        font-size: 24px;
+        right: 10px;
+    }
+
+    .select-dropdown {
+        max-height: 150px;
+    }
+}
