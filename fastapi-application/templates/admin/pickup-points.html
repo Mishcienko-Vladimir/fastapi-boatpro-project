@@ -1,0 +1,91 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}
+    Admin Panel - Пунктов выдачи
+{% endblock %}
+
+{% block main %}
+    <h2>Панель управления пунктами выдачами</h2>
+    <div class="window_content">
+        {% for pickup_point in pickup_points_list %}
+            <div class="data_content">
+                <h3>{{ pickup_point.name }}</h3>
+                <p><strong>ID пункта выдачи:</strong> {{ pickup_point.id }}</p>
+                <p><strong>Адрес:</strong> {{ pickup_point.address }}</p>
+                <p><strong>Режим работы:</strong> {{ pickup_point.work_hours }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Создание Пункта Выдачи</summary>
+        <div class="details_content">
+            <h3>Создание нового пункта выдачи.</h3>
+            <p>Заполните все поля, чтобы добавить пункт выдачи. Поле "Название" должно быть уникальным.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_create_pickup_point') }}" method="post">
+                <label for="pickup_point_name">Название пункта выдачи:</label>
+                <input type="text" name="pickup_point_name" id="pickup_point_name" required><br>
+
+                <label for="address">Адрес:</label>
+                <input type="text" name="address" id="address" required><br>
+
+                <label for="work_hours">Режим работы (пример: Пн-Пт 9:00-18:00):</label>
+                <input type="text" name="work_hours" id="work_hours" required><br>
+
+                <button type="submit" class="btn-details">Создать пункт выдачи</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Обновление Пункта Выдачи</summary>
+        <div class="details_content">
+            <h3>Обновить пункт выдачи.</h3>
+            <p>Укажите ID пункта выдачи и заполните поля, которые хотите изменить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+            <form action="{{ url_for('admin_update_pickup_point') }}" method="post">
+                <label for="pickup_point_id_up">ID пункта выдачи:</label>
+                <input type="number" name="pickup_point_id_up" id="pickup_point_id_up" required><br>
+
+                <label for="pickup_point_new_name">Новое название:</label>
+                <input type="text" name="pickup_point_new_name"><br>
+
+                <label for="address">Адрес:</label>
+                <input type="text" name="address"><br>
+
+                <label for="work_hours">Режим работы (пример: Пн-Пт 9:00-18:00):</label>
+                <input type="text" name="work_hours"><br>
+
+                <button type="submit" class="btn-details">Обновить данные</button>
+            </form>
+        </div>
+    </details>
+
+    <details class="details">
+        <summary class="details_title">Удаление Пункта Выдачи</summary>
+        <div class="details_content">
+            <h3>Удаление пункта выдачи по ID.</h3>
+            <p>Укажите ID пункта выдачи, который хотите удалить.</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_delete_pickup_point') }}" method="post">
+                <label for="pickup_point_id_del">ID пункта выдачи:</label>
+                <input type="number" name="pickup_point_id_del" id="pickup_point_id_del" required>
+                <button type="submit" class="btn-details">Удалить</button>
+            </form>
+        </div>
+    </details>
+{% endblock %}
