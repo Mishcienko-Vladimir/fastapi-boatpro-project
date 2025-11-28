@@ -100,19 +100,11 @@ class PickupPointsService:
 
         Используется в интерфейсе оформления заказа и в админ-панели.
 
-        Raises:
-            HTTPException: 404 NOT FOUND — Если в системе нет ни одного пункта
-
         Returns:
             list[PickupPointRead]: Список всех пунктов самовывоза
         """
 
         pickup_points = await self.repo.get_all()
-        if not pickup_points:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Pickup points are missing",
-            )
         return [
             PickupPointRead.model_validate(pickup_point)
             for pickup_point in pickup_points
@@ -139,7 +131,7 @@ class PickupPointsService:
         """
 
         # Проверка на существование пункта выдачи с таким же именем
-        if await self.repo.get_by_fields(
+        if await self.repo.get_all_by_field(
             field="name",
             value=pickup_point_data.name,
         ):
