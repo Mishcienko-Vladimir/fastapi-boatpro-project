@@ -118,7 +118,6 @@ async def get_user_orders(
     summary="Получение всех заказов",
     responses={
         200: {"model": list[OrderRead]},
-        404: {"description": "Заказы отсутствуют."},
         500: {"description": "Внутренняя ошибка сервера."},
     },
 )
@@ -133,7 +132,6 @@ async def get_all_orders(
 
     **Ответы:**
     - `200 OK` — возвращает список всех заказов.
-    - `404 Not Found` — нет ни одного заказа.
     - `500 Internal Server Error` — внутренняя ошибка.
     """
     service = OrdersService(session=session)

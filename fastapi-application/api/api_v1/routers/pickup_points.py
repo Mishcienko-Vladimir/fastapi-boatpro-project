@@ -146,7 +146,6 @@ async def get_pickup_point_by_id(
     summary="Получение всех пунктов выдачи",
     responses={
         200: {"model": list[PickupPointRead]},
-        404: {"description": "Пункты выдачи отсутствуют."},
         500: {"description": "Внутренняя ошибка сервера."},
     },
 )
@@ -166,7 +165,6 @@ async def get_all_pickup_points(
 
     **Ответы:**
     - `200 OK` — список найден. Возвращает список пунктов выдачи.
-    - `404 Not Found` — список пуст.
     - `500 Internal Server Error` — внутренняя ошибка сервера.
     """
     _service = PickupPointsService(session=session)

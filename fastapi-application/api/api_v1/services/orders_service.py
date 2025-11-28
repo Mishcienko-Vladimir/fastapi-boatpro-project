@@ -167,19 +167,10 @@ class OrdersService:
 
         Используется в админ-панели для модерации и аналитики.
 
-        Raises:
-            HTTPException: 404 NOT FOUND — Если в системе нет ни одного заказа
-
         Returns:
             list[OrderRead]: Список всех заказов
         """
         orders = await self.repo_order.get_all()
-
-        if not orders:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Нет заказов",
-            )
         return [OrderRead.model_validate(order) for order in orders]
 
     async def update_order_status(
