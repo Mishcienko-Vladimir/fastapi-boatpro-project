@@ -69,6 +69,7 @@ class ViewPrefix(BaseModel):
     admin: str = "/admin"
     users: str = "/users"
     orders: str = "/orders"
+    pickup_points: str = "/pickup-points"
 
 
 class ApiV1Prefix(BaseModel):
