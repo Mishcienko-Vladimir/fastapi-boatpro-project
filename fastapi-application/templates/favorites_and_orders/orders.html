@@ -15,6 +15,16 @@
         {% for order in orders_list %}
             <div class="bloc-favorite">
                 <div class="favorite-item">
+                    <h3>{{ order.product_name }}</h3>
+                    <p><b>Тип товара:</b><br>
+                        {% if order.type_product == 'boat' %}
+                            Лодка
+                        {% elif order.type_product == 'outboard_motor' %}
+                            Лодочный мотор
+                        {% elif order.type_product == 'trailer' %}
+                            Прицеп
+                        {% endif %}
+                    </p>
                     <a href="
                     {% if order.type_product == 'boat' %}
                         {{ url_for('boat_detail', boat_name=order.product_name|replace(' ', '%20')) }}
@@ -22,8 +32,43 @@
                         {{ url_for('outboard_motor_detail', outboard_motor_name=order.product_name|replace(' ', '%20')) }}
                     {% elif order.type_product == 'trailer' %}
                         {{ url_for('trailer_detail', trailer_name=order.product_name|replace(' ', '%20')) }}
-                    {% endif %}">Ссылка на товар(может быть устарела).
+                    {% endif %}">Ссылка на товар.
                     </a>
+                </div>
+
+                <div class="favorite-item">
+                    <p><b>Номер заказа:</b> {{ order.id }}</p>
+                    <p><b>Статус заказа:</b><br>
+                        {% if order.status == 'pending' %}
+                            <span class="status-unavailable">Ожидание оплаты</span>
+                        {% elif order.status == 'paid' %}
+                            <span class="status-available">Оплачен</span>
+                        {% elif order.status == 'cancelled' %}
+                            <span class="status-unavailable">Отменен</span>
+                        {% elif order.status == 'processing' %}
+                            <span class="status-available">В пути</span>
+                        {% elif order.status == 'ready' %}
+                            <span class="status-available">Готов к выдачи</span>
+                        {% elif order.status == 'completed' %}
+                            <span class="status-available">Завершен</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="favorite-item">
+                    <p><b>Цена:</b> {{ order.total_price }} ₽</p>
+                    <p><b>Дата покупки:</b> {{ order.created_at | format_datetime }}</p>
+                    <p><b>Код платежа:</b><br> {{ order.payment_id }}</p>
+                    <p><b>Ссылка на оплату:</b>
+                        <a href="{{ order.payment_url }}"> Ссылка</a>
+                    </p>
+                </div>
+
+                <div class="favorite-item">
+                    <h3>Пункт выдачи</h3>
+                    <p><b>Названия магазина:</b> {{ order.pickup_point_name }}</p>
+                    <p><b>Адрес:</b> {{ order.pickup_point_address }}</p>
+                    <p><b>Режим работы:</b> {{ order.work_hours }}</p>
                 </div>
             </div>
         {% endfor %}

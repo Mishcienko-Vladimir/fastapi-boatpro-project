@@ -269,9 +269,9 @@ main.content {
     opacity: 0.7;
 }
 
-btn-buy-icon {
+.btn-buy-icon {
     background-color: #fe5000;
-    width: 110px;
+    width: 90px;
     color: white;
     border: none;
     border-radius: 15px;
