@@ -83,7 +83,6 @@ async def create_order(
     responses={
         200: {"model": list[OrderRead]},
         401: {"description": "Пользователь не авторизован"},
-        404: {"description": "Заказы не найдены"},
         500: {"description": "Внутренняя ошибка сервера"},
     },
 )
@@ -105,7 +104,6 @@ async def get_user_orders(
     **Ответы:**
     - `200 OK` — возвращает список заказов.
     - `401 Unauthorized` — пользователь не авторизован.
-    - `404 Not Found` — у пользователя нет заказов.
     - `500 Internal Server Error` — внутренняя ошибка.
     """
     service = OrdersService(session=session)

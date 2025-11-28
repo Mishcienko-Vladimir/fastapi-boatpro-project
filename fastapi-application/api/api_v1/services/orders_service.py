@@ -150,9 +150,6 @@ class OrdersService:
         Args:
             user_id (int): Уникальный идентификатор пользователя
 
-        Raises:
-            HTTPException: 404 NOT FOUND — Если у пользователя нет заказов
-
         Returns:
             list[OrderRead]: Список заказов пользователя
         """
@@ -160,12 +157,6 @@ class OrdersService:
             field="user_id",
             value=user_id,
         )
-
-        if not orders:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="У пользователя нет заказов",
-            )
         return [OrderRead.model_validate(order) for order in orders]
 
     async def get_all_orders(self) -> list[OrderRead]:
