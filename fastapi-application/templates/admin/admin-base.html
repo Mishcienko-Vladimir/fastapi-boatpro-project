@@ -27,9 +27,13 @@
                 <ion-icon name="person" alt="Пользователи"></ion-icon>
                 &nbsp; Пользователи
             </a>
-            <a href="#">
+            <a href="{{ url_for('admin_orders') }}">
                 <ion-icon name="id-card" alt="Заказы"></ion-icon>
                 &nbsp; Заказы
+            </a>
+            <a href="{{ url_for('admin_pickup_points') }}">
+                <ion-icon name="earth" alt="Пункты выдачи"></ion-icon>
+                &nbsp; Пункты выдачи
             </a>
             <a href="{{ url_for('admin_categories') }}">
                 <ion-icon name="menu" alt="Категории"></ion-icon>
