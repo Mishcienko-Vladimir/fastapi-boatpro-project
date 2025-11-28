@@ -1,0 +1,79 @@
+{% extends "admin/admin-base.html" %}
+{% block title %}
+    Admin Panel - Заказов
+{% endblock %}
+
+{% block main %}
+    <h2>Панель управления Заказами</h2>
+    <div class="window_content">
+        {% for order in orders_list %}
+        <div class="data_content">
+            <h3>ID: {{ order.id }}</h3>
+            <p><strong>Статус заказа:</strong>
+                {% if order.status == 'cancelled' %}
+                    Отменен
+                {% elif order.status == 'pending' %}
+                    Ожидает оплаты
+                {% elif order.status == 'paid' %}
+                    Оплачен
+                {% elif order.status == 'processing' %}
+                    В пути
+                {% elif order.status == 'ready' %}
+                    Готов к выдаче
+                {% elif order.status == 'completed' %}
+                    Заказ завершён
+                {% endif %}
+            </p>
+            <p><strong>ID пользователя:</strong> {{ order.user_id }}</p>
+            <p><strong>ID товара:</strong> {{ order.product_id }}</p>
+            <p><strong>ID пункта выдачи:</strong> {{ order.pickup_point_id }}</p>
+            <p><strong>Названия товара:</strong> {{ order.product_name }}</p>
+            <p><strong>Тип товара :</strong>
+                {% if order.type_product == 'boat' %}
+                    Катер
+                {% elif order.type_product == 'outboard_motor' %}
+                    Лодочный мотор
+                {% elif order.type_product == 'trailer' %}
+                    Прицеп
+                {% endif %}
+            </p>
+            <p><strong>Цена:</strong> {{ order.total_price }} ₽</p>
+            <p><strong>Дата заказа:</strong> {{ order.created_at | format_datetime }}</p>
+            <p><strong>Названия магазина выдачи:</strong> {{ order.pickup_point_name }}</p>
+            <p><strong>Адрес выдачи:</strong> {{ order.pickup_point_address }}</p>
+            <p><strong>Режим работы:</strong> {{ order.work_hours }}</p>
+            <p><strong>Код платежа:</strong> {{ order.payment_id }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <details class="details">
+        <summary class="details_title">Обновление Статуса</summary>
+        <div class="details_content">
+            <h3>Обновление статуса заказа.</h3>
+            <p>Укажите ID заказа, статус которого нужно обновить. Выберете новый статус и нажмите кнопку "Обновить данные".</p>
+            {% if message %}
+                <div class="alert {{ 'alert-success' if 'успешно' in message else 'alert-danger' }}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('admin_update_order') }}" method="post">
+                <label for="order_id_up">ID заказа, который нужно обновить:</label>
+                <input type="number" name="order_id_up" id="order_id_up" required><br>
+
+                <label for="status">Статус заказа:</label>
+                <select name="status" id="status">
+                    <option value="cancelled">Отменить</option>
+                    <option value="pending">Ожидает оплаты</option>
+                    <option value="paid">Оплачен</option>
+                    <option value="processing">В пути</option>
+                    <option value="ready">Готов к выдаче</option>
+                    <option value="completed">Заказ завершён</option>
+                </select><br>
+
+                <button type="submit" class="btn-details">Обновить статус</button>
+            </form>
+        </div>
+    </details>
+{% endblock %}
