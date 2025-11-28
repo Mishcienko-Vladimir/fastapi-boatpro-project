@@ -4,10 +4,12 @@ from typing import Annotated
 from fastapi import APIRouter, Request, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.api_v1.services.orders_service import OrdersService
+
 from core.config import settings
 from core.dependencies import get_db_session
-from core.models.orders import Order, OrderStatus
-from core.repositories.manager_сrud import ManagerCrud
+from core.models.orders import OrderStatus
+from core.schemas.order import OrderUpdate
 
 from utils.payment.yookassa import verify_webhook_signature
 
@@ -44,6 +46,30 @@ async def yookassa_webhook(
     - `200 OK` — вебхук успешно обработан.
     - `400 Bad Request` — ошибка валидации, подпись не совпадает, неверные данные.
     - `404 Not Found` — заказ не найден.
+
+    ## Тест через терминал:
+    $body = @{
+        event = "payment.succeeded"
+        object = @{
+            id = "test_123"
+            status = "succeeded"
+            metadata = @{
+                order_id = вставить id заказа
+            }
+        }
+    } | ConvertTo-Json -Depth 5
+
+    $headers = @{
+        "X-YooKassa-Signature" = "dummy"
+        "Content-Type" = "application/json"
+    }
+
+    Invoke-WebRequest `
+    -Uri "http://localhost:8000/api/webhooks/yookassa" `
+    -Method POST `
+    -Headers $headers `
+    -Body $body `
+    -ContentType "application/json"
     """
     body = await request.body()
     signature = request.headers.get("X-YooKassa-Signature")
@@ -72,21 +98,12 @@ async def yookassa_webhook(
         if not order_id:
             raise HTTPException(status_code=400, detail="Invalid order_id in metadata")
 
-        order = await ManagerCrud(
-            session=session,
-            model_db=Order,
-        ).get_by_id(instance_id=order_id)
-
-        if not order:
-            raise HTTPException(
-                status_code=404,
-                detail="Order not found",
-            )
-
-        if payment["status"] == "succeeded":
-            order.status = OrderStatus.PAID
-            await session.commit()
-
+        # Используем сервис
+        service = OrdersService(session=session)
+        await service.update_order_status(
+            order_id=order_id,
+            order_update=OrderUpdate(status=OrderStatus.PAID),
+        )
         return {"status": "ok"}
     except Exception as e:
         raise HTTPException(
