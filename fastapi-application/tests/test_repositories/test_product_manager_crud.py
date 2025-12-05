@@ -22,7 +22,7 @@ async def test_create_product(
     Тест создания продукта, через репозиторий.
     """
 
-    fake_product_data["name"] = "New Product"
+    fake_product_data["name"] = f"Product-{faker.uuid4()}"
     product_data = ProductBaseModelCreate(
         category_id=test_category.id,
         **fake_product_data,
@@ -35,7 +35,7 @@ async def test_create_product(
     product = await repo.create_product(product_data=product_data)
 
     assert product.id is not None
-    assert product.name == "New Product"
+    assert product.name == fake_product_data.get("name")
 
 
 @pytest.mark.anyio
@@ -119,7 +119,7 @@ async def test_update_product_data(
     Тест обновления данных продукта, через репозиторий.
     """
     update_data = ProductBaseModelUpdate(
-        name="Updated Name",
+        name=f"Updated-{faker.uuid4()}",
         price=99999,
     )
     repo = ProductManagerCrud(
@@ -131,7 +131,7 @@ async def test_update_product_data(
         product_data=update_data,
     )
 
-    assert updated.name == "Updated Name"
+    assert updated.name == update_data.name
     assert updated.price == 99999
 
 
