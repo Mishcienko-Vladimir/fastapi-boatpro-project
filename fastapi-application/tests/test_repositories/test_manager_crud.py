@@ -22,7 +22,7 @@ async def test_create_product(
     Тест создания продукта, через универсальный репозиторий ManagerCrud.
     """
 
-    fake_product_data["name"] = f"Product-{faker.uuid4()}"
+    fake_product_data["name"] = f"Product-{faker.uuid4()[:100]}"
     product_data = ProductBaseModelCreate(
         category_id=test_category.id,
         **fake_product_data,
@@ -65,7 +65,7 @@ async def test_get_all_products_by_field_with_relations(
     """
     Тест получения продукта по полю field со значением value, с подгруженными связями.
     """
-    fake_product_data["name"] = f"Product-{faker.uuid4()}"
+    fake_product_data["name"] = f"Product-{faker.uuid4()[:100]}"
     product = Product(
         category_id=test_category.id,
         **fake_product_data,
@@ -124,7 +124,7 @@ async def test_get_all_product_by_fields(
     """
     product_one = Product(
         category_id=test_category.id,
-        name=f"Product-{faker.uuid4()}",
+        name=f"Product-{faker.uuid4()[:100]}",
         price=100000,
         company_name="Company",
         is_active=True,
@@ -132,7 +132,7 @@ async def test_get_all_product_by_fields(
     )
     product_two = Product(
         category_id=test_category.id,
-        name=f"Product-{faker.uuid4()}",
+        name=f"Product-{faker.uuid4()[:100]}",
         price=222222,
         company_name="Company",
         is_active=True,
@@ -185,7 +185,7 @@ async def test_update_product(
     Тест обновления продукта, через универсальный репозиторий ManagerCrud.
     """
     update_data = ProductBaseModelUpdate(
-        name=f"Updated-{faker.uuid4()}",
+        name=f"Updated-{faker.uuid4()[:100]}",
         price=99999,
     )
     repo = ManagerCrud(

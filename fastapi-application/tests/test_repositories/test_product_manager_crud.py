@@ -22,7 +22,7 @@ async def test_create_product(
     Тест создания продукта, через репозиторий.
     """
 
-    fake_product_data["name"] = f"Product-{faker.uuid4()}"
+    fake_product_data["name"] = f"Product-{faker.uuid4()[:100]}"
     product_data = ProductBaseModelCreate(
         category_id=test_category.id,
         **fake_product_data,
@@ -119,7 +119,7 @@ async def test_update_product_data(
     Тест обновления данных продукта, через репозиторий.
     """
     update_data = ProductBaseModelUpdate(
-        name=f"Updated-{faker.uuid4()}",
+        name=f"Updated-{faker.uuid4()[:100]}",
         price=99999,
     )
     repo = ProductManagerCrud(
