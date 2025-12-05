@@ -27,6 +27,7 @@ from create_fastapi_app import create_app
 from core.dependencies import get_db_session
 from core.models import Base, User
 from core.models.products import Product, Category
+from core.models.orders.pickup_point import PickupPoint
 from core.config import settings, BASE_DIR
 
 
@@ -339,3 +340,21 @@ async def test_product(
     await test_session.commit()
     await test_session.refresh(product)
     return product
+
+
+@pytest.fixture(scope="function")
+async def test_pickup_point(
+    test_session: AsyncSession,
+) -> PickupPoint:
+    """
+    Создаёт тестовый пункт выдачи.
+    """
+    pickup_point = PickupPoint(
+        name=f"Pickup Point-{uuid.uuid4().hex[:100]}",
+        address=faker.address(),
+        work_hours="Пн-Вс: 9:00-21:00",
+    )
+    test_session.add(pickup_point)
+    await test_session.commit()
+    await test_session.refresh(pickup_point)
+    return pickup_point
