@@ -44,3 +44,24 @@ async def test_create_pickup_points(
     assert db_pickup_point.name == pickup_point_data.name
     assert db_pickup_point.address == pickup_point_data.address
     assert db_pickup_point.work_hours == pickup_point_data.work_hours
+
+
+@pytest.mark.anyio
+async def test_get_pickup_point_by_id(test_session: AsyncSession):
+    """
+    Тест получения точки самовывоза по ID.
+    """
+    service = PickupPointsService(session=test_session)
+    pickup_point_data = PickupPointCreate(
+        name=f"Pickup Point-{faker.uuid4()[:100]}",
+        address=faker.address(),
+        work_hours="Пн-Вс: 9:00-21:00",
+    )
+    created = await service.create_pickup_point(pickup_point_data)
+    retrieved = await service.get_pickup_point_by_id(created.id)
+
+    assert retrieved.id == created.id
+    assert retrieved.name == created.name
+    assert retrieved.address == created.address
+    assert retrieved.work_hours == created.work_hours
+
