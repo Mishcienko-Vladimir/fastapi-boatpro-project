@@ -111,3 +111,39 @@ async def test_get_pickup_points(test_session: AsyncSession):
     assert all(created_id in retrieved_ids for created_id in created_ids)
     assert len(all_points) >= 3
 
+
+@pytest.mark.anyio
+async def test_update_pickup_point_by_id(test_session: AsyncSession):
+    """
+    Тест обновления точки самовывоза по ID.
+    """
+    service = PickupPointsService(session=test_session)
+
+    pickup_point_data = PickupPointCreate(
+        name=f"Pickup Point-{faker.uuid4()[:100]}",
+        address=faker.address(),
+        work_hours="Пн-Вс: 9:00-21:00",
+    )
+    created = await service.create_pickup_point(pickup_point_data)
+
+    update_data = PickupPointUpdate(
+        name=f"Updated-{faker.uuid4()[:10]}",
+        address=faker.address(),
+        work_hours="Пн-Пт: 10:00-18:00",
+    )
+    updated = await service.update_pickup_point_by_id(
+        pickup_point_id=created.id,
+        pickup_point_data=update_data,
+    )
+
+    assert updated.id == created.id
+    assert updated.name == update_data.name
+    assert updated.address == update_data.address
+    assert updated.work_hours == update_data.work_hours
+
+    result = await test_session.execute(
+        select(PickupPoint).where(PickupPoint.id == created.id)
+    )
+    db_point = result.scalars().first()
+    assert db_point.name == update_data.name
+    assert db_point.address == update_data.address
