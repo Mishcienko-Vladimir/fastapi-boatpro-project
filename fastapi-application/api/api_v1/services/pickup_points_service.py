@@ -82,10 +82,7 @@ class PickupPointsService:
             PickupPointRead: Модель найденного пункта самовывоза
         """
 
-        pickup_points = await self.repo.get_by_fields(
-            field="name",
-            value=pickup_point_name,
-        )
+        pickup_points = await self.repo.get_by_fields(name=pickup_point_name)
         pickup_point = pickup_points[0] if pickup_points else None
         if not pickup_point:
             raise HTTPException(
