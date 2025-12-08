@@ -1,4 +1,3 @@
-# Запуск тестов: python -m pytest fastapi-application/tests/ -v
 import pytest
 import shutil
 import uuid
