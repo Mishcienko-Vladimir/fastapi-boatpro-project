@@ -50,7 +50,7 @@ async def admin_pickup_points(
 
 
 @router.post(
-    path="/create-pickup_point",
+    path="/create-pickup-point",
     name="admin_create_pickup_point",
     include_in_schema=False,
     response_model=None,
@@ -94,7 +94,7 @@ async def admin_pickup_point(
 
 
 @router.post(
-    path="/update-pickup_point",
+    path="/update-pickup-point",
     name="admin_update_pickup_point",
     include_in_schema=False,
     response_model=None,
@@ -146,7 +146,7 @@ async def admin_update_pickup_point(
 
 
 @router.post(
-    path="/delete-pickup_point",
+    path="/delete-pickup-point",
     name="admin_delete_pickup_point",
     include_in_schema=False,
     response_model=None,
