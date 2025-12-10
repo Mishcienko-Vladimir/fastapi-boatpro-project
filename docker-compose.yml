@@ -1,32 +1,36 @@
 services:
-
-  redis:
-    image: redis:8-alpine
-    ports:
-      - "6379:6379"
-
-  rabbitmq:
-    image: rabbitmq:4.2-management
-    hostname: rabbitmq
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+  app:
+    build:
+      dockerfile: ./docker-build/app/Dockerfile
+      context: ./
     environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
-    volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      APP_CONFIG__DB__URL: postgresql+asyncpg://postgres:password@pg:5432/postgres
+      APP_CONFIG__DB__ECHO: 0
+    ports:
+      - "8000:8000"
+    depends_on:
+      pg:
+        condition: service_healthy
+#    command:
+#      - python
+#      - run_main.py
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./fastapi-application
+          target: /app
+        - action: rebuild
+          path: ./poetry.lock
 
   pg:
-    image: postgres
+    image: postgres:17.4
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_USER: user
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       PGDATA: /var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -35,21 +39,22 @@ services:
       timeout: 3s
       retries: 3
 
-  maildev:
-    image: maildev/maildev
+  pgadmin:
+    image: dpage/pgadmin4:8.7
     environment:
-      - TZ=Europe/Moscow
-      - MAILDEV_WEB_PORT=1080
-      - MAILDEV_SMTP_PORT=1025
+      PGADMIN_DEFAULT_EMAIL: admin@admin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "8080:1080"
-      - "1025:1025"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
+      - "5050:80"
+    depends_on:
+      pg:
+        condition: service_healthy
 
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
 
 volumes:
   pgdata:
-  rabbitmq-data:
