@@ -16,7 +16,7 @@ RUN poetry install
 COPY fastapi-application .
 
 RUN chmod +x prestart.sh
-RUN chmod +x run
+RUN chmod +x run.py
 
 ENTRYPOINT ["./prestart.sh"]
-CMD ["./run"]
+CMD ["./run.py"]
