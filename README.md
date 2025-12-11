@@ -4,246 +4,29 @@ BoatPro — масштабируемое полнофункциональное 
 ---
 ## 🛠️ Технологический стек
 
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🐍 Язык:</strong> Python 3.12+
-  </div>
-  <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; ⚡ Фреймворк:</strong> FastAPI
-  </div>
-  <a href="https://fastapi.tiangolo.com/">
-    <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🌐 Фронтенд:</strong> HTML + CSS + JavaScript (Vanilla)
-  </div>
-  <div>
-    <a href="https://developer.mozilla.org/ru/docs/Web/HTML">
-      <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
-    </a>
-    <a href="https://developer.mozilla.org/ru/docs/Web/CSS">
-      <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS">
-    </a>
-    <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript">
-      <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🚀 ASGI-сервер:</strong> Uvicorn + Gunicorn
-  </div>
-  <div>
-    <a href="https://www.uvicorn.org/">
-      <img src="https://img.shields.io/badge/Uvicorn-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="Uvicorn">
-    </a>
-    <a href="https://gunicorn.org/">
-      <img src="https://img.shields.io/badge/Gunicorn-F46D43?style=for-the-badge&logo=apache&logoColor=white" alt="Gunicorn">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🗄️ База Данных:</strong> PostgreSQL + asyncpg
-  </div>
-  <div>
-    <a href="https://www.postgresql.org/">
-      <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
-    </a>
-    <a href="https://magicstack.github.io/asyncpg/">
-      <img src="https://img.shields.io/badge/asyncpg-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="asyncpg">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🔁 ORM:</strong> SQLAlchemy (async)
-  </div>
-  <a href="https://www.sqlalchemy.org/">
-    <img src="https://img.shields.io/badge/SQLAlchemy-0B5566?style=for-the-badge&logo=python&logoColor=white" alt="SQLAlchemy">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🔄 Миграции БД:</strong> Alembic
-  </div>
-  <a href="https://alembic.sqlalchemy.org/">
-    <img src="https://img.shields.io/badge/Alembic-0B5566?style=for-the-badge&logo=python&logoColor=white" alt="Alembic">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🔐 Аутентификация:</strong> FastAPI-Users
-  </div>
-  <a href="https://fastapi-users.github.io/fastapi-users/">
-    <img src="https://img.shields.io/badge/FastAPI--Users-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI-Users">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; ✅ Валидация:</strong> Pydantic v2 + pydantic-settings
-  </div>
-  <div>
-    <a href="https://docs.pydantic.dev/">
-      <img src="https://img.shields.io/badge/Pydantic-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Pydantic v2">
-    </a>
-    <a href="https://docs.pydantic.dev/latest/concepts/pydantic_settings/">
-      <img src="https://img.shields.io/badge/pydantic--settings-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="pydantic-settings">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🧩 Кэширование:</strong> Redis
-  </div>
-  <a href="https://redis.io/">
-    <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📨 Очереди:</strong> RabbitMQ (Pika)
-  </div>
-  <div>
-    <a href="https://www.rabbitmq.com/">
-      <img src="https://img.shields.io/badge/RabbitMQ-F16737?style=for-the-badge&logo=rabbitmq&logoColor=white" alt="RabbitMQ">
-    </a>
-    <a href="https://pika.readthedocs.io/">
-      <img src="https://img.shields.io/badge/Pika-F16737?style=for-the-badge&logo=python&logoColor=white" alt="Pika">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📄 Шаблонизация:</strong> Jinja2
-  </div>
-  <a href="https://jinja.palletsprojects.com/">
-    <img src="https://img.shields.io/badge/Jinja2-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Jinja2">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📝 Логирование:</strong> logging
-  </div>
-  <a href="https://docs.python.org/3/library/logging.html">
-    <img src="https://img.shields.io/badge/Logging-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="logging">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🛡️ Защита:</strong> slowapi + кастомный CORS
-  </div>
-  <div>
-    <a href="https://slowapi.readthedocs.io/">
-      <img src="https://img.shields.io/badge/slowapi-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="slowapi">
-    </a>
-    <a href="https://fastapi.tiangolo.com/tutorial/cors/">
-      <img src="https://img.shields.io/badge/CORS-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="CORS">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 💳 Оплата:</strong> YooKassa
-  </div>
-  <a href="https://yookassa.ru/">
-    <img src="https://img.shields.io/badge/YooKassa-1E90FF?style=for-the-badge&logo=yandex&logoColor=white" alt="YooKassa">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📧 Почта:</strong> aiosmtplib
-  </div>
-  <a href="https://aiosmtplib.readthedocs.io/">
-    <img src="https://img.shields.io/badge/aiosmtplib-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="aiosmtplib">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📁 Загрузка файлов:</strong> aiofiles + python-multipart
-  </div>
-  <div>
-    <a href="https://github.com/Tinche/aiofiles">
-      <img src="https://img.shields.io/badge/aiofiles-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="aiofiles">
-    </a>
-    <a href="https://andrew-d.github.io/python-multipart/">
-      <img src="https://img.shields.io/badge/python--multipart-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="python-multipart">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📦 Управление зависимостями:</strong> Poetry
-  </div>
-  <a href="https://python-poetry.org/">
-    <img src="https://img.shields.io/badge/Poetry-6D3BA9?style=for-the-badge&logo=python&logoColor=white" alt="Poetry">
-  </a>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🐳 Контейнеризация:</strong> Docker + Docker Compose
-  </div>
-  <div>
-    <a href="https://www.docker.com/">
-      <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
-    </a>
-    <a href="https://docs.docker.com/compose/">
-      <img src="https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 🧪 Тестирование:</strong> Pytest + httpx + faker
-  </div>
-  <div>
-    <a href="https://docs.pytest.org/">
-      <img src="https://img.shields.io/badge/Pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="Pytest">
-    </a>
-    <a href="https://www.python-httpx.org/">
-      <img src="https://img.shields.io/badge/HTTPX-0A9EDC?style=for-the-badge&logo=python&logoColor=white" alt="httpx">
-    </a>
-    <a href="https://faker.readthedocs.io/">
-      <img src="https://img.shields.io/badge/Faker-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="faker">
-    </a>
-  </div>
-</div>
-
-<div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-left: 10px;">
-  <div>
-    <strong>&#8226; 📘 Документация:</strong> OpenAPI (автоматически через Swagger UI)
-  </div>
-  <a href="https://swagger.io/specification/">
-    <img src="https://img.shields.io/badge/OpenAPI-10985B?style=for-the-badge&logo=swagger&logoColor=white" alt="OpenAPI">
-  </a>
-</div>
-
+| Компоненты | |
+|----------|---:|
+| **🐍 Язык:** Python 3.12+ | [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/) |
+| **⚡ Фреймворк:** FastAPI | [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) |
+| **🌐 Фронтенд:** HTML + CSS + JavaScript | [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/ru/docs/Web/HTML) [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/ru/docs/Web/CSS) [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/ru/docs/Web/JavaScript) |
+| **🚀 ASGI-сервер:** Uvicorn + Gunicorn | [![Uvicorn](https://img.shields.io/badge/Uvicorn-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://www.uvicorn.org/) [![Gunicorn](https://img.shields.io/badge/Gunicorn-F46D43?style=for-the-badge&logo=apache&logoColor=white)](https://gunicorn.org/) |
+| **🗄️ База Данных:** PostgreSQL + asyncpg | [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/) [![asyncpg](https://img.shields.io/badge/asyncpg-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://magicstack.github.io/asyncpg/) |
+| **🔁 ORM:** SQLAlchemy (async) | [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-0B5566?style=for-the-badge&logo=python&logoColor=white)](https://www.sqlalchemy.org/) |
+| **🔄 Миграции БД:** Alembic | [![Alembic](https://img.shields.io/badge/Alembic-0B5566?style=for-the-badge&logo=python&logoColor=white)](https://alembic.sqlalchemy.org/) |
+| **🔐 Аутентификация:** FastAPI-Users | [![FastAPI-Users](https://img.shields.io/badge/FastAPI--Users-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi-users.github.io/fastapi-users/) |
+| **✅ Валидация:** Pydantic v2 + pydantic-settings | [![Pydantic](https://img.shields.io/badge/Pydantic-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://docs.pydantic.dev/) [![pydantic--settings](https://img.shields.io/badge/pydantic--settings-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://docs.pydantic.dev/latest/concepts/pydantic_settings/) |
+| **🧩 Кэширование:** Redis | [![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/) |
+| **📨 Очереди:** RabbitMQ (Pika) | [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-F16737?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/) [![Pika](https://img.shields.io/badge/Pika-F16737?style=for-the-badge&logo=python&logoColor=white)](https://pika.readthedocs.io/) |
+| **📄 Шаблонизация:** Jinja2 | [![Jinja2](https://img.shields.io/badge/Jinja2-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://jinja.palletsprojects.com/) |
+| **📝 Логирование:** logging | [![Logging](https://img.shields.io/badge/Logging-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://docs.python.org/3/library/logging.html) |
+| **🛡️ Защита:** slowapi + CORS | [![slowapi](https://img.shields.io/badge/slowapi-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://slowapi.readthedocs.io/) [![CORS](https://img.shields.io/badge/CORS-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://fastapi.tiangolo.com/tutorial/cors/) |
+| **💳 Оплата:** YooKassa | [![YooKassa](https://img.shields.io/badge/YooKassa-1E90FF?style=for-the-badge&logo=yandex&logoColor=white)](https://yookassa.ru/) |
+| **📧 Почта:** aiosmtplib | [![aiosmtplib](https://img.shields.io/badge/aiosmtplib-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://aiosmtplib.readthedocs.io/) |
+| **📁 Загрузка файлов:** aiofiles + python-multipart | [![aiofiles](https://img.shields.io/badge/aiofiles-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/Tinche/aiofiles) [![python--multipart](https://img.shields.io/badge/python--multipart-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://andrew-d.github.io/python-multipart/) |
+| **📦 Зависимости:** Poetry | [![Poetry](https://img.shields.io/badge/Poetry-6D3BA9?style=for-the-badge&logo=python&logoColor=white)](https://python-poetry.org/) |
+| **🐳 Контейнеризация:** Docker + Docker Compose | [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/) [![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/compose/) |
+| **🧪 Тестирование:** Pytest + httpx + faker | [![Pytest](https://img.shields.io/badge/Pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/) [![HTTPX](https://img.shields.io/badge/HTTPX-0A9EDC?style=for-the-badge&logo=python&logoColor=white)](https://www.python-httpx.org/) [![Faker](https://img.shields.io/badge/Faker-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://faker.readthedocs.io/) |
+| **📘 Документация:** OpenAPI (Swagger UI) | [![OpenAPI](https://img.shields.io/badge/OpenAPI-10985B?style=for-the-badge&logo=swagger&logoColor=white)](https://swagger.io/specification/) |
 
 ---
 
