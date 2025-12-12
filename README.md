@@ -67,50 +67,49 @@ BoatPro — масштабируемое полнофункциональное 
 
 ```bash
 fastapi-application/
-├── actions                # Скрипты (создание суперпользователя)
-├── alembic                # Миграции БД 
-├── api                    # Всё, что связано с HTTP API
-│   ├── api_v1             # Версия API v1
-│   │   ├── dependencies   # Зависимости FastAPI
-│   │   ├── routers        # Роутеры, эндпоинты (конечные точки доступа API)
-│   │   ├── services       # Бизнес-логика
+├── actions                    # Скрипты (создание суперпользователя)
+├── alembic                    # Миграции БД 
+├── api                        # Всё, что связано с HTTP API
+│   ├── api_v1                 # Версия API v1
+│   │   ├── dependencies       # Зависимости FastAPI
+│   │   ├── routers            # Роутеры, эндпоинты (конечные точки доступа API)
+│   │   ├── services           # Бизнес-логика
 │   │   └── __init__.py
-│   ├── webhooks           # Обработка внешних вебхуков 
-│   └── __init__.py        # Регистрация роутеров API и Webhooks
-├── core                   # Ядро приложения: модели, схемы, конфигурация
-│   ├── dependencies       # Глобальные зависимости (get_db_session, 
-│   │                      # fastapi-users - для проверки пользователя)
-│   ├── gunicorn           # Конфигурация Gunicorn
-│   ├── models             # ORM-модели, миксины и помощник для работы с БД
-│   ├── repositories       # Операции с БД и файлами
-│   ├── schemas            # Pydantic-схемы для валидации данных
-│   ├── types              # Кастомные типы (например, UserId)
+│   ├── webhooks               # Обработка внешних вебхуков 
+│   └── __init__.py            # Регистрация роутеров API и Webhooks
+├── core                       # Ядро приложения: модели, схемы, конфигурация
+│   ├── dependencies           # Глобальные зависимости (get_db_session, fastapi-users)
+│   ├── gunicorn               # Конфигурация Gunicorn
+│   ├── models                 # ORM-модели, миксины и помощник для работы с БД
+│   ├── repositories           # Операции с БД и файлами
+│   ├── schemas                # Pydantic-схемы для валидации данных
+│   ├── types                  # Кастомные типы (например, UserId)
 │   ├── __init__.py
-│   └── config.py          # Настройки приложения через pydantic-settings(.env)
-├── mailing                # Отправка email (подтверждение, сброс пароля и т.д)
-├── middleware             # Кастомные middleware
-├── static                 # Статические файлы
-│   ├── css                # Стили сайта и админ-панели
-│   ├── images             # Изображения товаров и иконки
-│   └── js                 # JavaScript для форм, поиска, избранного и т.д.
-├── templates              # HTML-шаблоны (Jinja2)
-├── tests                  # Автотесты Pytest (интеграционные и unit тесты)
-├── utils                  # Вспомогательные утилиты
-│   ├── payment            # Интеграция с YooKassa
-│   ├── webhooks           # Вспомогательные функции для вебхуков
+│   └── config.py              # Настройки приложения через pydantic-settings (.env)
+├── mailing                    # Отправка email (подтверждение, сброс пароля и т.д)
+├── middleware                 # Кастомные middleware 
+├── static                     # Статические файлы
+│   ├── css                    # Стили сайта и админ-панели
+│   ├── images                 # Изображения товаров и иконки
+│   └── js                     # JavaScript для форм, поиска, избранного и т.д.
+├── templates                  # HTML-шаблоны (Jinja2)
+├── tests                      # Автотесты Pytest (интеграционные и unit тесты)
+├── utils                      # Вспомогательные утилиты
+│   ├── payment                # Интеграция с YooKassa
+│   ├── webhooks               # Вспомогательные функции для вебхуков
 │   ├── __init__.py
-│   ├── case_converter.py  # Функция конвертации имени таблицы
-│   ├── key_builder.py     # Генерация ключей для кэширования в Redis
-│   ├── limiter.py         # Инициализация и настройка rate limiting
-│   └── templates.py       # Инициализация и настройка Jinja2Templates
-├── views                  # View-функции для рендеринга HTML-страниц
-├── .env                   # Переменные окружения (не для git)
-├── .env.template          # Шаблон .env для отображения в git
-├── alembic.ini            # Конфигурация Alembic
-├── create_fastapi_app.py  # Создания и настройка FastAPI-приложения 
-├── errors_handlers.py     # Обработчик ошибок
-├── main.py                # Точка входа: создаёт и запускает приложение
-├── prestart.sh            # Скрипт, для запуска миграции перед создания БД
-├── run.py                 # Запуск приложения через Gunicorn (для Docker)
-└── run_main.py            # Создания и запуск приложения через Gunicorn
+│   ├── case_converter.py      # Функция конвертации имени таблицы
+│   ├── key_builder.py         # Генерация ключей для кэширования в Redis
+│   ├── limiter.py             # Инициализация и настройка rate limiting
+│   └── templates.py           # Инициализация и настройка Jinja2Templates
+├── views                      # View-функции для рендеринга HTML-страниц
+├── .env                       # Переменные окружения (не отображается в git)
+├── .env.template              # Шаблон .env (автоматически заменяет .env, если его нет)
+├── alembic.ini                # Конфигурация Alembic
+├── create_fastapi_app.py      # Создания и настройка FastAPI-приложения 
+├── errors_handlers.py         # Обработчик ошибок
+├── main.py                    # Точка входа: создаёт и запускает приложение
+├── prestart.sh                # Скрипт, для запуска миграции перед создания БД в Docker
+├── run.py                     # Запуск приложения через Gunicorn (для Docker)
+└── run_main.py                # Создания и запуск приложения через Gunicorn
 ```
