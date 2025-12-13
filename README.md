@@ -113,3 +113,35 @@ fastapi-application/
 ├── run.py                     # Запуск приложения через Gunicorn (для Docker)
 └── run_main.py                # Создания и запуск приложения через Gunicorn
 ```
+
+## 📸 Примеры работы приложения
+
+### Визуал приложения
+<video src="docs/media/Website-visuals.mp4" width="800" autoplay muted loop></video>
+
+### Регистрация и Аутентификация
+<video src="docs/media/Registration-Authentication.mp4" width="800" autoplay muted loop></video>
+
+### Подтверждения почты
+<video src="docs/media/Email-confirmations.mp4" width="800" autoplay muted loop></video>
+
+### Изменения пароля
+<video src="docs/media/Change-password.mp4" width="800" autoplay muted loop></video>
+
+### Каталог и страницы с товарами
+<video src="docs/media/Catalog-and-product-pages.mp4" width="800" autoplay muted loop></video>
+
+### Адаптивность страниц
+<video src="docs/media/Website-adaptability.mp4" width="800" autoplay muted loop></video>
+
+### Покупка товара
+<video src="docs/media/Buy-product.mp4" width="800" autoplay muted loop></video>
+
+### Панель администрирования
+<video src="docs/media/Admin-panel.mp4" width="800" autoplay muted loop></video>
+
+### Создания товара
+<video src="docs/media/Creation-outboard-motor.mp4" width="800" autoplay muted loop></video>
+
+### Обновления и удаления товара
+<video src="docs/media/CRUD-data.mp4" width="800" autoplay muted loop></video>
