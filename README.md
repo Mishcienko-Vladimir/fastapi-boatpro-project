@@ -10,6 +10,7 @@ BoatPro — масштабируемое полнофункциональное 
 - [📂 Структура проекта](#-структура-проекта)
 - [📸 Примеры работы приложения](#-примеры-работы-приложения)
 - [📘 Документация API (Swagger UI)](#-документация-api-swagger-ui)
+- [🧩 Расширение функционала](#-расширение-функционала)
 
 ## 🛠️ Технологический стек
 
@@ -178,3 +179,150 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
 
 ![Изображения эндпоинтов](docs/images/swagger.png)
 
+## 🧩 Расширение функционала
+
+> В данном разделе представлен пример добавления нового раздела `Гидроциклы`.
+ 
+1. **Добавления модели SQLAlchemy**.
+  > Помечаем главную папку `fastapi-application` как корневой источник.
+  > > *Нажимаем ПКМ по папке `fastapi-application` выбираем `Mark Directory as -> Sources Root`.*
+  > 
+  > По пути `core/models/products` создаем новый модуль `jet_ski.py`. И создаем модель гидроциклов.
+  > ```python
+  > from sqlalchemy import SmallInteger, ForeignKey, String
+  > from sqlalchemy.orm import Mapped, mapped_column
+  > 
+  > from core.models.products.product_base import Product
+  > 
+  > 
+  > class JetSki(Product):
+  >     __mapper_args__ = {"polymorphic_identity": "jet_ski"}
+  > 
+  >     id: Mapped[int] = mapped_column(ForeignKey("products.id"), primary_key=True)
+  >     length_hull: Mapped[int] = mapped_column(SmallInteger, comment="Длина корпуса в см")
+  >     width_hull: Mapped[int] = mapped_column(SmallInteger, comment="Ширина корпуса в см")
+  >     weight: Mapped[int] = mapped_column(SmallInteger, comment="Вес в кг")
+  >     capacity: Mapped[int] = mapped_column(SmallInteger, comment="Количество мест")
+  >     load_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Грузоподъемность в кг")
+  >     engine_power: Mapped[int] = mapped_column(SmallInteger, comment="Мощность в л.с.")
+  >     engine_displacement: Mapped[int] = mapped_column(SmallInteger, comment="Объем в куб.см")
+  >     fuel_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Объем топливного бака в л")
+  >     hull_material: Mapped[str] = mapped_column(String(50), comment="Материал корпуса")
+  >     gasoline_brand: Mapped[int] = mapped_column(SmallInteger, comment="Марка бензина")
+  > ```
+  > Инициализируем модель `JetSki`. В модуле `core/models/__init__.py` импортируем модель.
+  > ```python
+  > from .products.jet_ski import JetSki
+  > ```
+
+2. **Генерация и применение миграции Alembic**.
+  > Автоматическая генерация миграции. В терминале выполняем команду:
+  > ```bash
+  >  (.venv) PS ...\BoatPro\fastapi-application> alembic revision --autogenerate -m "Описание миграции"
+  >```
+  > Файл с миграции создан в папку `alembic/versions`. Применяем миграцию:
+  > ```bash
+  >  (.venv) PS ...\BoatPro\fastapi-application> alembic upgrade head
+  >```
+
+3. **Создание Pydantic-схем**.
+  > Создадим модуль `jet_ski.py` со схемами в папку `core/schemas/products`.
+  > ```python
+  > from datetime import datetime
+  > from typing import Optional
+  > from pydantic import Field
+  > 
+  > from core.schemas.base_model import BaseSchemaModel
+  > from .product_base_model import ProductBaseModel
+  > from .image_path import ImagePathRead
+  > from .category import CategoryRead
+  > 
+  > 
+  > class JetSkiBaseModel(ProductBaseModel):
+  >     """Базовая схема для гидроциклов."""
+  > 
+  >     length_hull: int = Field(gt=0, lt=1000, description="Длина в см")
+  >     width_hull: int = Field(gt=0, lt=200, description="Ширина в см")
+  >     weight: int = Field(gt=0, lt=1000, description="Вес в кг")
+  >     capacity: int = Field(gt=0, lt=10, description="Вместимость")
+  >     load_capacity: int = Field(gt=0, lt=1000, description="Грузоподъемность в кг")
+  >     engine_power: int = Field(gt=0, lt=1000, description="Мощность двигателя в л.с.")
+  >     engine_displacement: int = Field(gt=0, lt=10000, description="Объем двигателя в куб.см")
+  >     fuel_capacity: int = Field(gt=0, lt=200, description="Объем топливного бака в л.")
+  >     hull_material: str = Field(min_length=1, max_length=50, description="Материал корпуса")
+  >     gasoline_brand: int = Field(gt=0, lt=200, description="Марка бензина")
+  > 
+  > 
+  > class JetSkiCreate(JetSkiBaseModel):
+  >     """Схема создания."""
+  > 
+  >     category_id: int = Field(description="ID категории товара")
+  > 
+  > 
+  > class JetSkiUpdate(JetSkiBaseModel):
+  >     """Схема частичного обновления."""
+  > 
+  >     name: Optional[str] = None
+  >     price: Optional[int] = None
+  >     company_name: Optional[str] = None
+  >     description: Optional[str] = None
+  >     is_active: Optional[bool] = None
+  >     length_hull: Optional[int] = None
+  >     width_hull: Optional[int] = None
+  >     weight: Optional[int] = None
+  >     capacity: Optional[int] = None
+  >     load_capacity: Optional[int] = None
+  >     engine_power: Optional[int] = None
+  >     engine_displacement: Optional[int] = None
+  >     fuel_capacity: Optional[int] = None
+  >     hull_material: Optional[str] = None
+  >     gasoline_brand: Optional[int] = None
+  > 
+  > 
+  > class JetSkiRead(JetSkiBaseModel):
+  >     """Схема для чтения."""
+  > 
+  >     id: int = Field(description="ID гидроцикла")
+  >     category: CategoryRead = Field(description="Категория")
+  >     created_at: datetime = Field(description="Дата создания")
+  >     updated_at: datetime = Field(description="Дата последнего обновления")
+  >     images: list[ImagePathRead] = Field(description="Список изображений")
+  > 
+  > 
+  > class JetSkiSummarySchema(BaseSchemaModel):
+  >     """Схема с краткой информации."""
+  > 
+  >     id: int = Field(description="ID гидроцикла")
+  >     name: str = Field(min_length=1, max_length=255, description="Название модели")
+  >     price: int = Field(gt=0, description="Цена в рублях")
+  >     company_name: str = Field(min_length=1, max_length=100, description="Название производителя")
+  >     length_hull: int = Field(gt=0, lt=1000, description="Длина в см")
+  >     width_hull: int = Field(gt=0, lt=200, description="Ширина в см")
+  >     weight: int = Field(gt=0, lt=1000, description="Вес в кг")
+  >     capacity: int = Field(gt=0, lt=10, description="Вместимость")
+  >     fuel_capacity: int = Field(gt=0, lt=200, description="Объем топливного бака в л.")
+  >     engine_power: int = Field(gt=0, lt=1000, description="Мощность двигателя в л.с.")
+  >     is_active: bool = Field(description="Наличие товара")
+  >     image: Optional[ImagePathRead] = Field(None, description="Главное изображение")
+  > ```
+
+4. **Создание и регистрация эндпоинтво (конечных точек API)**.
+  > Добавим префикс для кэша и пути роутера `jet_skis`, в котором находятся эндпоинты для гидроциклов.
+  > В конфигурационном модуле `core/config.py`, в классах `ApiV1Prefix` и `CacheNamespace` добавляем:
+  > ```python
+  > class ApiV1Prefix(BaseModel):
+  >  """Конфигурация префикса API версии 1"""
+  >  
+  >  jet_skis: str = "/jet-skis"
+  > 
+  > 
+  > class CacheNamespace(BaseModel):
+  >  """Именование пространства кэша"""
+  >
+  >  jet_skis_list: str = "jet-skis-list"
+  >  jet_ski: str = "jet-ski"
+  > ```
+  > Создадим модуль `jet_skis.py` с роутером в папку `api/api_v1/routers/products`. И добавим эндпоинты для гидроциклов:
+  > ```python
+  > 
+  >```
