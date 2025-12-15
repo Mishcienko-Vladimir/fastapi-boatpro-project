@@ -145,6 +145,9 @@ https://github.com/user-attachments/assets/4fe2473d-f650-4c12-8bd5-1bdec112ffe5
 ### 🛒 Покупка товара
 https://github.com/user-attachments/assets/823be6f6-1ad6-4709-a048-a2c682a4eb57
 
+### 🔍 Поиск товара
+https://github.com/user-attachments/assets/6969a831-26a2-4beb-96cf-65125167f21f
+
 ### 🛠️ Панель администрирования
 https://github.com/user-attachments/assets/afb57c40-abb0-4c0a-8a35-9d5406c7d905
 
