@@ -322,7 +322,143 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
   >  jet_skis_list: str = "jet-skis-list"
   >  jet_ski: str = "jet-ski"
   > ```
-  > Создадим модуль `jet_skis.py` с роутером в папку `api/api_v1/routers/products`. И добавим эндпоинты для гидроциклов:
+  > Создадим модуль `jet_skis.py` с роутером в папку `api/api_v1/routers/products`. И добавим эндпоинты с кэшем для гидроциклов:
   > ```python
+  > from typing import Annotated
+  > from fastapi import APIRouter, Depends, UploadFile, Form, File, status
+  > from sqlalchemy.ext.asyncio import AsyncSession
   > 
+  > from fastapi_cache import FastAPICache
+  > from fastapi_cache.decorator import cache
+  > 
+  > from api.api_v1.dependencies.create_multipart_form_data import create_multipart_form_data
+  > from api.api_v1.services.products import ProductsService
+  > 
+  > from core.config import settings
+  > from core.dependencies import get_db_session
+  > from core.models.products.jet_ski import JetSki
+  > from core.schemas.products.jet_ski import JetSkiRead, JetSkiUpdate, JetSkiCreate, JetSkiSummarySchema
+  > 
+  > from utils.key_builder import (
+  >     universal_list_key_builder,
+  >     get_by_name_key_builder,
+  >     get_by_id_key_builder,
+  > )
+  > 
+  > router = APIRouter(prefix=settings.api.v1.jet_skis, tags=["Гидроциклы 🚤"])
+  > 
+  > @router.post("/", status_code=status.HTTP_201_CREATED, response_model=JetSkiRead)
+  > async def create_jet_ski(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_data: Annotated[JetSkiCreate, Depends(create_multipart_form_data(JetSkiCreate))],
+  >     images: Annotated[list[UploadFile], File(..., description="Изображения товара")],
+  > ) -> JetSkiRead:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     new_jet_ski = await _service.create_product(product_data=jet_ski_data, images=images)
+  >     
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_skis_list)
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_ski)
+  >     return JetSkiRead.model_validate(new_jet_ski)
+  > 
+  > @router.get("/jet_ski-name/{jet_ski_name}", status_code=status.HTTP_200_OK, response_model=JetSkiRead)
+  > @cache(expire=300, key_builder=get_by_name_key_builder, namespace=settings.cache.namespace.jet_ski)
+  > async def get_jet_ski_by_name(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_name: str,
+  > ) -> JetSkiRead:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     jet_ski = await _service.get_product_by_name(product_name=jet_ski_name)
+  >     return JetSkiRead.model_validate(jet_ski)
+  > 
+  > @router.get("/jet_ski-id/{jet_ski_id}", status_code=status.HTTP_200_OK, response_model=JetSkiRead)
+  > @cache(expire=300, key_builder=get_by_id_key_builder, namespace=settings.cache.namespace.jet_ski)
+  > async def get_jet_ski_by_id(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_id: int,
+  > ) -> JetSkiRead:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     jet_ski = await _service.get_product_by_id(product_id=jet_ski_id)
+  >     return JetSkiRead.model_validate(jet_ski)
+  > 
+  > @router.get("/", status_code=status.HTTP_200_OK, response_model=list[JetSkiRead])
+  > @cache(expire=300, key_builder=universal_list_key_builder, namespace=settings.cache.namespace.jet_skis_list)
+  > async def get_jet_skis(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  > ) -> list[JetSkiRead]:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     all_jet_skis = await _service.get_products()
+  >     return [JetSkiRead.model_validate(jet_ski) for jet_ski in all_jet_skis]
+  > 
+  > @router.get("/summary", status_code=status.HTTP_200_OK, response_model=list[JetSkiSummarySchema])
+  > @cache(expire=300, key_builder=universal_list_key_builder, namespace=settings.cache.namespace.jet_skis_list)
+  > async def get_jet_skis_summary(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  > ) -> list[JetSkiSummarySchema]:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     all_jet_skis = await _service.get_products()
+  >     return [JetSkiSummarySchema.model_validate(
+  >             {
+  >                 **jet_ski.__dict__,
+  >                 "image": jet_ski.images[0] if jet_ski.images else None,
+  >             }
+  >         ) for jet_ski in all_jet_skis
+  >     ]
+  > 
+  > @router.patch("/{jet_ski_id}", status_code=status.HTTP_200_OK, response_model=JetSkiRead)
+  > async def update_jet_ski_data_by_id(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_id: int,
+  >     jet_ski_data: JetSkiUpdate,
+  > ) -> JetSkiRead:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     jet_ski = await _service.update_product_data_by_id(
+  >         product_id=jet_ski_id,
+  >         product_data=jet_ski_data,
+  >     )
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_skis_list)
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_ski)
+  >     return JetSkiRead.model_validate(jet_ski)
+  > 
+  > @router.patch("/images/{jet_ski_id}", status_code=status.HTTP_200_OK, response_model=JetSkiRead)
+  > async def update_jet_ski_images_by_id(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_id: int,
+  >     remove_images: str | None = Form(None, description="id изображений для удаления, через запятую, без пробелов"),
+  >     add_images: list[UploadFile] = File(..., description="Новые изображения для товара"),
+  > ) -> JetSkiRead:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     jet_ski = await _service.update_product_images_by_id(
+  >         product_id=jet_ski_id,
+  >         remove_images=remove_images,
+  >         add_images=add_images,
+  >     )
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_skis_list)
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_ski)
+  >     return JetSkiRead.model_validate(jet_ski)
+  > 
+  > @router.delete("/{jet_ski_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=None)
+  > async def delete_jet_ski_by_id(
+  >     session: Annotated[AsyncSession, Depends(get_db_session)],
+  >     jet_ski_id: int,
+  > ) -> None:
+  >     _service = ProductsService(session=session, product_db=JetSki)
+  >     delete_jet_ski = await _service.delete_product_by_id(product_id=jet_ski_id)
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_skis_list)
+  >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_ski)
+  >     return delete_jet_ski
   >```
+  > Инициализируем роутер гидроциклов. В инициализатор `api/api_v1/routers/products/__init__.py`, добавляем:
+  > ```python
+  > from fastapi import APIRouter
+  > from core.config import settings
+  > 
+  > from .jet_skis import router as jet_skis_router
+  > 
+  > router = APIRouter(prefix=settings.api.v1.products)
+  > 
+  > router.include_router(jet_skis_router)
+  >```
+  > Получаем полностью функциональный API-раздел для управления гидроциклами. 
+  > Доступный в интерактивной документации Swagger UI по адресу `http://localhost:8000/docs`.
+
+![Изображения эндпоинтов гидроциклов](docs/images/jet-skis-docs.png)
