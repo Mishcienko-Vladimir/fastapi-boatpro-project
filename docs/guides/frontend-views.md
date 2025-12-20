@@ -311,4 +311,4 @@ router.include_router(jet_skis_router)
 - `views/admin/__init__.py`
 
 ---
-[← Назад в README](../../../README.md)
+[← Назад в README](../../../../)

@@ -429,4 +429,4 @@
 - `templates/products/jet-ski-detail.html`
 - `templates/admin/jet-skis.html`
 ---
-[← Назад в README](../../../README.md)
+[← Назад в README](../../../../)
