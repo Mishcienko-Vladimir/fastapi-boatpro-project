@@ -1,7 +1,7 @@
 ## Создание HTML-страниц
 
-Добавим изображения гидроцикла в папку `/static/images/website/categories/`.
-Дополним HTML-страницу `catalog` в `templates/products`.
+Добавьте изображения гидроцикла в папку `/static/images/website/categories/`.
+Дополните страницу `catalog.html` в `templates/products`.
 ```html
 ...
 <div class="category"
@@ -12,7 +12,7 @@
 </div>
 ...
 ```
-Создадим в этой папке страницу `jet-skis.html`.
+Создайте в папке `templates/products` страницу `jet-skis.html`.
 ```html
 {% extends "base.html" %}
 {% block title %}
@@ -77,7 +77,7 @@
   </div>
 {% endblock %}
 ```
-Также создадим `jet-ski-detail.html`, шаблон страницы с детальной информации о каждом гидроцикле.
+Там же создайте `jet-ski-detail.html`. Это шаблон страницы с детальной информации о каждом гидроцикле.
 ```html
 {% extends "base.html" %}
 {% block title %}
@@ -180,7 +180,7 @@
   <script src="/static/js/order.js"></script>
 {% endblock %}
 ```
-Расширим Admin-panel. Добавим ссылку в `templates/admin/admin-base.html` на новую страницу с администрированием гидроциклов:
+Расширим Admin-panel. Добавьте ссылку в `templates/admin/admin-base.html` на новую страницу с администрированием гидроциклов:
 ```html
 ...
 <a href="{{ url_for('admin_jet_skis') }}">
@@ -189,7 +189,7 @@
 </a>
 ...
 ```
-Создадим новую страницу администрирования гидроциклов `templates/admin/jet-skis.html`:
+Создайте новую страницу администрирования гидроциклов `templates/admin/jet-skis.html`:
 ```html
 {% extends "admin/admin-base.html" %}
 {% block title %}

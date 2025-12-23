@@ -1,5 +1,6 @@
 ## Создание и инициализация Views 
-Добавим префикс для views гидроциклов в `core/config.py`:
+
+В `core/config.py` добавьте префикс для views гидроциклов:
 ```python
 class ViewPrefix(BaseModel):
     """Конфигурация префикса для страниц"""
@@ -7,7 +8,7 @@ class ViewPrefix(BaseModel):
     ...
     jet_skis: str = "/jet-skis"
 ```
-Создадим модуль `jet_skis.py` в `views/products`, для представления HTML-страниц, связанных с гидроциклами — 
+Создайте модуль `jet_skis.py` в `views/products`, для представления HTML-страниц, связанных с гидроциклами — 
 таких, как каталог и детальная страница товара:
 ```python
 from typing import Optional, Annotated
@@ -66,7 +67,7 @@ async def jet_ski_detail(
         },
     )
 ```
-Инициализируем его в `views/products/__init__.py`:
+Инициализируйте его в `views/products/__init__.py`:
 ```python
 ...
 from .jet_skis import router as jet_skis_router
@@ -76,7 +77,7 @@ router = APIRouter(prefix=settings.view.catalog)
 router.include_router(jet_skis_router)
 ...
 ```
-Создадим модуль `jet_skis.py` в `views/admin`, для представления административной HTML-страницы, позволяющий управлять 
+Создайте модуль `jet_skis.py` в `views/admin`, для представления административной HTML-страницы, позволяющий управлять 
 гидроциклами — просматривать, редактировать и удалять товары через веб-интерфейс.
 ```python
 from typing import Annotated, Optional
@@ -289,7 +290,7 @@ async def admin_update_jet_ski_images(
         },
     )
 ```
-Инициализируем его в `views/admin/__init__.py`:
+Инициализируйте его в `views/admin/__init__.py`:
 ```python
 ...
 from .jet_skis import router as jet_skis_router
