@@ -12,6 +12,8 @@ BoatPro — масштабируемое полнофункциональное 
 - [📸 Примеры работы приложения](#-примеры-работы-приложения)
 - [📘 Документация API (Swagger UI)](#-документация-api-swagger-ui)
 - [🧩 Расширение функционала](#-расширение-функционала)
+- [⚙️ Установка и запуск](#-установка-и-запуск)
+- [📬 Контакты](#-контакты)
 
 ## 🛠️ Технологический стек
 
@@ -127,38 +129,71 @@ fastapi-application/
 
 ## 📸 Примеры работы приложения
 
-### 🎥 Визуал приложения
+<details>
+<summary style="font-size: 16px;"><b>🎥 Визуал приложения</b></summary>
+
 https://github.com/user-attachments/assets/3ee276dd-0796-4377-955c-054fa3deaf19
+</details>
 
-### 📝 Регистрация и Аутентификация
+<details>
+<summary style="font-size: 16px;"><b>📝 Регистрация и Аутентификация</b></summary>
+
 https://github.com/user-attachments/assets/ab91299e-f185-4049-ac74-d024592d5ae2
+</details>
 
-### ✅ Подтверждения почты
+<details>
+<summary style="font-size: 16px;"><b>✅ Подтверждение почты</b></summary>
+
 https://github.com/user-attachments/assets/c9b3eab1-81a6-4675-98b5-1f343416392a
+</details>
 
-### 🔐 Изменения пароля
+<details>
+<summary style="font-size: 16px;"><b>🔐 Изменения пароля</b></summary>
+
 https://github.com/user-attachments/assets/d252a7aa-ba51-420c-ab2f-235eb2b32fcd
+</details>
 
-### 🗂️ Каталог и страницы с товарами
+<details>
+<summary style="font-size: 16px;"><b>🗂️ Каталог и страницы с товарами</b></summary>
+
 https://github.com/user-attachments/assets/e9e63dd0-6fc8-4ef7-a398-7940fc6da08c
+</details>
 
-### 📱 Адаптивность страниц
+<details>
+<summary style="font-size: 16px;"><b>📱 Адаптивность страниц</b></summary>
+
 https://github.com/user-attachments/assets/4fe2473d-f650-4c12-8bd5-1bdec112ffe5
+</details>
 
-### 🛒 Покупка товара
+<details>
+<summary style="font-size: 16px;"><b>🛒 Покупка товара</b></summary>
+
 https://github.com/user-attachments/assets/823be6f6-1ad6-4709-a048-a2c682a4eb57
+</details>
 
-### 🔍 Поиск товара
+<details>
+<summary style="font-size: 16px;"><b>🔍 Поиск товара</b></summary>
+
 https://github.com/user-attachments/assets/6969a831-26a2-4beb-96cf-65125167f21f
+</details>
 
-### 🛠️ Панель администрирования
+<details>
+<summary style="font-size: 16px;"><b>🛠️ Панель администрирования</b></summary>
+
 https://github.com/user-attachments/assets/afb57c40-abb0-4c0a-8a35-9d5406c7d905
+</details>
 
-### ➕ Создания товара
+<details>
+<summary style="font-size: 16px;"><b>➕ Создание товара</b></summary>
+
 https://github.com/user-attachments/assets/378e47ef-5f4c-4c0b-88cb-ca0528d0dc5c
+</details>
 
-### 🔄 Обновления и удаления товара
+<details>
+<summary style="font-size: 16px;"><b>🔄 Обновление и удаление товара</b></summary>
+
 https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
+</details>
 
 ## 📘 Документация API (Swagger UI)
 
@@ -179,57 +214,69 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
 - `Orders 🧾` — Управление заказами
 - `Webhooks 🔄` — Обработка внешних уведомлений
 
+<details>
+<summary><b>🖼️ Изображение эндпоинтов.</b></summary>
+
 ![Изображения эндпоинтов](docs/images/swagger.png)
+</details>
 
 ## 🧩 Расширение функционала
 
-> В данном разделе представлен пример добавления нового раздела `Гидроциклы`.
- 
-1. **Добавления модели SQLAlchemy**.
-  > Помечаем главную папку `fastapi-application` как корневой источник.
-  > > *Нажимаем ПКМ по папке `fastapi-application` выбираем `Mark Directory as -> Sources Root`.*
-  > 
-  > По пути `core/models/products` создаем новый модуль `jet_ski.py`. И создаем модель гидроциклов.
-  > ```python
-  > from sqlalchemy import SmallInteger, ForeignKey, String
-  > from sqlalchemy.orm import Mapped, mapped_column
-  > 
-  > from core.models.products.product_base import Product
-  > 
-  > 
-  > class JetSki(Product):
-  >     __mapper_args__ = {"polymorphic_identity": "jet_ski"}
-  > 
-  >     id: Mapped[int] = mapped_column(ForeignKey("products.id"), primary_key=True)
-  >     length_hull: Mapped[int] = mapped_column(SmallInteger, comment="Длина корпуса в см")
-  >     width_hull: Mapped[int] = mapped_column(SmallInteger, comment="Ширина корпуса в см")
-  >     weight: Mapped[int] = mapped_column(SmallInteger, comment="Вес в кг")
-  >     capacity: Mapped[int] = mapped_column(SmallInteger, comment="Количество мест")
-  >     load_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Грузоподъемность в кг")
-  >     engine_power: Mapped[int] = mapped_column(SmallInteger, comment="Мощность в л.с.")
-  >     engine_displacement: Mapped[int] = mapped_column(SmallInteger, comment="Объем в куб.см")
-  >     fuel_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Объем топливного бака в л")
-  >     hull_material: Mapped[str] = mapped_column(String(50), comment="Материал корпуса")
-  >     gasoline_brand: Mapped[int] = mapped_column(SmallInteger, comment="Марка бензина")
-  > ```
-  > Инициализируем модель `JetSki`. В модуле `core/models/__init__.py` импортируем модель.
-  > ```python
-  > ...
-  > from .products.jet_ski import JetSki
-  > ```
+_В данном разделе представлен пример добавления нового раздела `Гидроциклы`._
 
-2. **Генерация и применение миграции Alembic**.
-  > Автоматическая генерация миграции. В терминале выполняем команду:
+<details>
+<summary><b>1. Добавления модели SQLAlchemy.</b></summary>
+
+> Пометьте главную папку `fastapi-application` как корневой источник.
+> > *Нажмите ПКМ по папке `fastapi-application` и выберите `Mark Directory as -> Sources Root`.*
+>  
+> По пути `core/models/products` создадите новый модуль `jet_ski.py`. И создайте модель гидроциклов.
+> ```python
+> from sqlalchemy import SmallInteger, ForeignKey, String
+> from sqlalchemy.orm import Mapped, mapped_column
+> 
+> from core.models.products.product_base import Product
+> 
+>  
+> class JetSki(Product):
+>     __mapper_args__ = {"polymorphic_identity": "jet_ski"}
+> 
+>     id: Mapped[int] = mapped_column(ForeignKey("products.id"), primary_key=True)
+>     length_hull: Mapped[int] = mapped_column(SmallInteger, comment="Длина корпуса в см")
+>     width_hull: Mapped[int] = mapped_column(SmallInteger, comment="Ширина корпуса в см")
+>     weight: Mapped[int] = mapped_column(SmallInteger, comment="Вес в кг")
+>     capacity: Mapped[int] = mapped_column(SmallInteger, comment="Количество мест")
+>     load_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Грузоподъемность в кг")
+>     engine_power: Mapped[int] = mapped_column(SmallInteger, comment="Мощность в л.с.")
+>     engine_displacement: Mapped[int] = mapped_column(SmallInteger, comment="Объем в куб.см")
+>     fuel_capacity: Mapped[int] = mapped_column(SmallInteger, comment="Топливный бак в л")
+>     hull_material: Mapped[str] = mapped_column(String(50), comment="Материал корпуса")
+>     gasoline_brand: Mapped[int] = mapped_column(SmallInteger, comment="Марка бензина")
+> ```
+> Инициализируйте модель `JetSki`. В модуле `core/models/__init__.py` импортируйте модель.
+> ```python
+> ...
+> from .products.jet_ski import JetSki
+> ```
+</details>
+
+<details>
+<summary><b>2. Генерация и применение миграции Alembic.</b></summary>
+
+  > Автоматическая генерация миграции. В терминале выполните команду:
   > ```bash
   >  (.venv) PS ...\BoatPro\fastapi-application> alembic revision --autogenerate -m "Описание миграции"
   > ```
-  > Файл с миграции создан в папку `alembic/versions`. Применяем миграцию:
+  > Файл с миграции создан в папку `alembic/versions`. Примените миграцию:
   > ```bash
   >  (.venv) PS ...\BoatPro\fastapi-application> alembic upgrade head
   > ```
+</details>
 
-3. **Создание Pydantic-схем**.
-  > Создадим модуль `jet_ski.py` со схемами в папку `core/schemas/products`.
+<details>
+<summary><b>3. Создание Pydantic-схем.</b></summary>
+
+  > Создайте модуль `jet_ski.py` со схемами в папку `core/schemas/products`.
   > ```python
   > from datetime import datetime
   > from typing import Optional
@@ -308,16 +355,19 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
   >     is_active: bool = Field(description="Наличие товара")
   >     image: Optional[ImagePathRead] = Field(None, description="Главное изображение")
   > ```
+</details>
 
-4. **Создание и регистрация эндпоинтво (конечных точек API)**.
-  > Добавим префикс для кэша и пути роутера `jet_skis`, в котором находятся эндпоинты для гидроциклов.
-  > В конфигурационном модуле `core/config.py`, в классах `ApiV1Prefix` и `CacheNamespace` добавляем:
+<details>
+<summary><b>4. Создание и регистрация эндпоинтво (конечных точек API).</b></summary>
+
+  > Добавьте префикс для кэша и пути роутера jet_skis в core/config.py:
   > ```python
   > ...
   > class ApiV1Prefix(BaseModel):
   >  """Конфигурация префикса API версии 1"""
   >  
   >  jet_skis: str = "/jet-skis"
+  > ...
   > 
   > class CacheNamespace(BaseModel):
   >  """Именование пространства кэша"""
@@ -326,7 +376,7 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
   >  jet_ski: str = "jet-ski"
   > ...
   > ```
-  > Создадим модуль `jet_skis.py` с роутером в папку `api/api_v1/routers/products`. И добавим эндпоинты с кэшем для гидроциклов:
+  > Создайте модуль `jet_skis.py` с роутером в папку `api/api_v1/routers/products`. И добавьте эндпоинты с кэшем для гидроциклов:
   > ```python
   > from typing import Annotated
   > from fastapi import APIRouter, Depends, UploadFile, Form, File, status
@@ -451,7 +501,7 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
   >     await FastAPICache.clear(namespace=settings.cache.namespace.jet_ski)
   >     return delete_jet_ski
   > ```
-  > Инициализируем роутер гидроциклов. В инициализатор `api/api_v1/routers/products/__init__.py`, добавляем:
+  > Инициализируйте роутер гидроциклов. В инициализатор `api/api_v1/routers/products/__init__.py`, добавьте:
   > ```python
   > ...
   > from .jet_skis import router as jet_skis_router
@@ -472,8 +522,10 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
 - ✅ Обеспечивают валидацию входных данных (Pydantic)
 - ✅ Интегрированы с общей бизнес-логикой через `ProductsService`
 - ✅ Участвуют в общей системе очистки кэша при изменениях
+</details>
 
-5. **Расширение `views` и шаблонов: добавление HTML-страниц для гидроциклов**.
+<details>
+<summary><b>5. Расширение `views` и шаблонов: добавление HTML-страниц для гидроциклов.</b></summary>
 
 - 🖼️ **Создания шаблонов HTML-страниц** — [см. `frontend-templates.md`](docs/guides/frontend-templates.md)  
 - 🧩 **Создания View-функции** — [см. `frontend-views.md`](docs/guides/frontend-views.md)
@@ -487,8 +539,49 @@ https://github.com/user-attachments/assets/581085dc-eedb-4a60-b5b5-0ac4d2b3fbf6
 > на **Jinja2-шаблонах** и интегрированные с существующей системой роутинга.
 
 ![Изображения гидроциклов](docs/images/new-category.png)
+</details>
 
-Архитектура остаётся **масштабируемой**: добавление новых категорий (например, ПВХ лодки или яхты) требует аналогичных шагов.
+_Архитектура остаётся **масштабируемой**: добавление новых категорий (например, ПВХ лодки или яхты) требует аналогичных шагов._
+
+## ⚙️ Установка и запуск
+
+1. **Клонируйте репозиторий**
+> В терминале выполните команду:
+> ```bash
+> git clone https://github.com/Mishchenko-Vladimir/fastapi-boatpro-project.git
+> ```
+> Перейдите в директорию проекта:
+> ```bash
+> cd fastapi-boatpro-project
+> ```
+
+2. **Настройка переменных окружения**
+> Заполните файлы `.env.template` и `docker-compose.yml` своими значениями.
+ 
+3. **Запустите приложение через Docker**
+> Сборка образа с именем `app`:
+> ```bash
+> docker compose build app
+> ```
+> Запуск сборки (приложения):
+> ```bash
+> docker compose up -d
+> ```
+> Остальные команды `docker`:
+> - `docker compose ps` - посмотреть какие контейнеры запущены
+> - `docker compose logs` -f app - посмотреть логи приложения
+> - `docker compose stop` - остановка приложения
+> - `docker compose down` - удаления сборки
+
+## 📬 Контакты
+
+### 💻 Автор: Мищенко Владимир
+- **GitHub:** [Mishchenko-Vladimir](https://github.com/Mishchenko-Vladimir)
+- **Mail.ru:** [mishchienko.2001@mail.ru](mailto:mishchienko.2001@mail.ru)
+- **Gmail:** [mishchieko.2001@gmail.com](mailto:mishchieko.2001@gmail.com)
+- **Telegram:** [@VM_Dev](https://t.me/VM_Dev)
+
+💌 Не забудьте поставить звезду ⭐ на GitHub, если вам понравился проект! 😉
 
 ---
 [↑ Вернуться наверх](#-boatpro)
