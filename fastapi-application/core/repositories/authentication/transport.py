@@ -11,6 +11,9 @@ bearer_transport = BearerTransport(
 )
 
 cookie_transport = CookieTransport(
-    cookie_max_age=settings.api.cookie_max_age,
-    cookie_secure=settings.api.cookie_secure,
+    cookie_name="fastapiusersauth",  # Имя куки
+    cookie_max_age=settings.api.cookie_max_age,  # Время жизни куки
+    cookie_secure=settings.api.cookie_secure,  # HTTPS
+    cookie_httponly=True,  # Защита от XSS
+    cookie_samesite="lax",  # Защита от CSRF
 )
